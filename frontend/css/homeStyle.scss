@@ -1,0 +1,44 @@
+$dark-color: #121212;
+$second-color: #0D6CE8;
+$success-color: #1EA51D;
+$warning-color: #FFCD05;
+$error-color: #D62237;
+$orange-color: #FF4F00;
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: $dark-color;
+}
+
+.sidebar {
+    float: left;
+    width: 15%;
+    height: 100vh;
+    background-color: #262833;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+#menuTitle, .menuItem {
+    font-size: 55px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.menuItem{
+    position: relative;
+    display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    background-color: transparent;
+    margin-top: 10%;
+    font-size: 35px;
+}
+
