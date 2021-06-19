@@ -27,82 +27,82 @@ body {
     min-height: 100vh;
 }
 
-// .redLine {
-//     opacity: 0;
-//     height: 100vw;
-//     width: 20px;
-//     margin-left: 100px;
-//     background-color: $error-color;
-//     box-shadow: $error-color 0px 0px 20px;
-//     position: relative;
-//     animation: moveRed 2.5s forwards;
-//     animation-delay: 4s;
-// }
+.redLine {
+    opacity: 0;
+    height: 100vw;
+    width: 20px;
+    margin-left: 100px;
+    background-color: $error-color;
+    box-shadow: $error-color 0px 0px 20px;
+    position: relative;
+    animation: moveRed 2.5s forwards;
+    animation-delay: 4s;
+}
 
-// .turn {
-//     height: 20px;
-//     width: 0;
-//     background-color: $error-color;
-//     box-shadow: $error-color 0px 0px 20px;
-//     position: relative;
+.turn {
+    height: 20px;
+    width: 0;
+    background-color: $error-color;
+    box-shadow: $error-color 0px 0px 20px;
+    position: relative;
 
-//     animation: makeTurn 5s forwards;
-//     animation-delay: 6.27s;
-// }
+    animation: makeTurn 5s forwards;
+    animation-delay: 6.27s;
+}
 
-// .yellowLine {
-//     opacity: 0;
-//     height: 20px;
-//     width: 0;
-//     margin-right: 100px;
-//     background-color: $warning-color;
-//     box-shadow: $warning-color 0px 0px 20px;
-//     position: absolute;
-//     top: 120px;
-//     right: 30px;
-//     float: right;
-//     animation: moveYellow 2s forwards;
-//     animation-delay: 2s;
-// }
+.yellowLine {
+    opacity: 0;
+    height: 20px;
+    width: 0;
+    margin-right: 100px;
+    background-color: $warning-color;
+    box-shadow: $warning-color 0px 0px 20px;
+    position: absolute;
+    top: 120px;
+    right: 30px;
+    float: right;
+    animation: moveYellow 2s forwards;
+    animation-delay: 2s;
+}
 
-// .yellowCircleStart, .yellowCircleFinish,
-// .redCircleFinish {
-//     width: 57px;
-//     height: 57px;
-//     background-color: $warning-color;
-//     box-shadow: $warning-color 0px 0px 20px;
-//     position: relative;
-//     top: 100px;
-//     float: right;
-//     margin-right: 100px;
-//     border-radius: 200px;
-// }
+.yellowCircleStart, .yellowCircleFinish,
+.redCircleFinish {
+    width: 57px;
+    height: 57px;
+    background-color: $warning-color;
+    box-shadow: $warning-color 0px 0px 20px;
+    position: relative;
+    top: 100px;
+    float: right;
+    margin-right: 100px;
+    border-radius: 200px;
+}
 
-// .redCircleFinish {
-//     background-color: $error-color;
-//     box-shadow: $error-color 0px 0px 20px;
-//     left: 50vw;
-//     top: 33.5vw;
-// }
+.redCircleFinish {
+    background-color: $error-color;
+    box-shadow: $error-color 0px 0px 20px;
+    left: 50vw;
+    top: 33.5vw;
+}
 
-// .yellowCircleFinish {
-//     margin-right: 1200px;
-// }
+.yellowCircleFinish {
+    margin-right: 1200px;
+}
 
-// @keyframes moveRed {
-//     from {top: 150vh; opacity: 0;}
-//     to {top: 70vh; opacity: 1;}
-// }
+@keyframes moveRed {
+    from {top: 150vh; opacity: 0;}
+    to {top: 70vh; opacity: 1;}
+}
 
-// @keyframes moveYellow {
-//     from {width: 0px; opacity: 0;}
-//     to {width: 1250px; opacity: 1;}
-// }
+@keyframes moveYellow {
+    from {width: 0px; opacity: 0;}
+    to {width: 1250px; opacity: 1;}
+}
 
-// @keyframes makeTurn {
-//     from { width: 0;}
-//     to { width: 85vw;}
-// }
+@keyframes makeTurn {
+    from { width: 0;}
+    to { width: 85vw;}
+}
 
 .loginPane {
     position: absolute;

@@ -6,14 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../css/homeStyle.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/c22152e651.js" crossorigin="anonymous"></script>
 </head>
 <body>
+
+    <input type="checkbox" id="check">
+
+    <label for="check">
+        <i class="fas fa-bars" id="btn"></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+
     <div class="sidebar">
-        <p id="menuTitle">MENU</p>
-        <button class="menuItem">HOME</button>
-        <button class="menuItem">GRAJ</button>
-        <button class="menuItem">TOP</button>
-        <button class="menuItem">OPCJE</button>
+        <header>Menu</header>
+        <ul>
+            <li><a href="#"><i class="fas fa-home"></i>HOME</a></li>
+            <li><a href="#"><i class="fas fa-play"></i>GRAJ</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>OPCJE</a></li>
+            <li><a href="#"><i class="fas fa-power-off"></i>WYLOGUJ</a></li>
+        </ul>
     </div>
+
+    <section>
+        <canvas id="game">
+
+        </canvas>
+    </section>
+
+
+    <script src="../javascript/script.js"></script>
 </body>
 </html>
