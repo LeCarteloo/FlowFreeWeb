@@ -3,6 +3,7 @@ $text-secondary: #ececec;
 $bg-primary: #23232e;
 $bg-secondary: #141418;
 $transition-speed: 600ms;
+$hover-color: #EE2737FF;
 
 :root {
     font-size: 16px;
@@ -21,16 +22,11 @@ $transition-speed: 600ms;
   }
   
   body::-webkit-scrollbar-track {
-    background: #1e1e24;
+    background: lightgray;
   }
   
   body::-webkit-scrollbar-thumb {
-    background: #6649b8;
-  }
-  
-  main {
-    margin-left: 5rem;
-    padding: 1rem;
+    background: $hover-color;
   }
   
   .navbar {
@@ -38,6 +34,7 @@ $transition-speed: 600ms;
     background-color: $bg-primary;
     transition: width $transition-speed ease;
     overflow: hidden;
+    z-index: 1;
   }
   
   .navbar-nav {
@@ -71,7 +68,7 @@ $transition-speed: 600ms;
   .nav-link:hover, nav-link:hover svg {
     filter: grayscale(0%) opacity(1);
     background: $bg-secondary;
-    color: #EE2737FF;
+    color: $hover-color;
   }
   
   .link-text {
@@ -114,7 +111,7 @@ $transition-speed: 600ms;
   .navbar:hover .logo svg {
     transform: rotate(-180deg);
   }
-  
+
   /* Small screens */
   @media only screen and (max-width: 600px) {
     .navbar {
@@ -134,10 +131,6 @@ $transition-speed: 600ms;
     .nav-link {
       justify-content: center;
     }
-  
-    main {
-      margin: 0;
-    }
   }
   
   /* Large screens */
@@ -155,7 +148,6 @@ $transition-speed: 600ms;
     .navbar:hover .link-text {
       display: inline;
     }
-  
     .navbar:hover .logo svg
     {
       margin-left: 11rem;
@@ -166,3 +158,4 @@ $transition-speed: 600ms;
       left: 0px;
     }
   }
+

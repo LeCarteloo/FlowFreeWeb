@@ -15,16 +15,11 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #1e1e24;
+  background: lightgray;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #6649b8;
-}
-
-main {
-  margin-left: 5rem;
-  padding: 1rem;
+  background: #EE2737FF;
 }
 
 .navbar {
@@ -33,6 +28,7 @@ main {
   -webkit-transition: width 600ms ease;
   transition: width 600ms ease;
   overflow: hidden;
+  z-index: 1;
 }
 
 .navbar-nav {
@@ -147,9 +143,6 @@ main {
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
-  }
-  main {
-    margin: 0;
   }
 }
 
