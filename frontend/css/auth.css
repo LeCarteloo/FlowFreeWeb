@@ -1,0 +1,127 @@
+:root {
+    font-size: 16px;
+    font-family: 'Open Sans';
+    --transition-speed: 600ms;
+    --text-primary: #b6b6b6;
+    --text-secondary: #ececec;
+    --bg-primary: #23232e;
+    --bg-secondary: #141418;
+    --hover-color: #EE2737FF;
+  }
+
+* { 
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+    /* background: url("/images/Login.png"); */
+}
+
+circle {
+    position: absolute;
+    background: rgb(238,39,55);
+    background: linear-gradient(90deg, rgba(238,39,55,1) 0%, rgba(224,2,20,1) 81%);
+    width: 2500px;
+    height: 2500px;
+    border-bottom-right-radius: 56%;
+    right: 48%;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.login-panel {
+    float: right;
+}
+
+.register-prompt {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    gap: 20px;
+    width: 40%;
+    height: 50vh;;
+    z-index: 1;
+}
+
+.reg-title, .reg-paragph, #btn-register {
+    color: white;
+    align-self: center;
+    text-align: center;
+}
+
+.reg-title {
+    text-transform: uppercase;
+    letter-spacing: 0.3ch;
+}
+
+.reg-paragph {
+    font-size: 17px;
+}
+
+#btn-register {
+    font-size: 16px;
+    background: transparent;
+    border: none;
+    border-bottom: #fff solid 1px;
+    align-self: center;
+    width: 150px;
+    height: 35px;
+    transition: .5s;
+}
+
+#btn-register:hover {
+    transition: .5s;
+    width: 250px;
+}
+
+.login-panel {
+    display: flex;
+    width: 50%;
+    height: 80vh;;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 50px;
+    margin-right: 30px;
+}
+
+.login-panel h1 {
+    letter-spacing: 0.3ch;
+}
+
+#inputbox {
+    width: 300px;
+    font-size: 20px;
+    outline: none;
+    align-self: center;
+    border: none;
+    border-bottom: solid 2px var(--hover-color);
+    color: var(--hover-color);
+    margin-left: 10px;
+}
+
+.inputs p {
+    display: inline-block;
+    font-size: 20px;
+}
+
+/* Small Screens */
+@media only screen and (max-width: 650px) {
+    #btn-register {
+        width: 62%;
+        transition: 0.5s;
+    }
+    #btn-register:hover {
+        transition: .5s;
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    body {
+        background-color: blue;
+    }
+}
