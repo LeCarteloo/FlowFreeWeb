@@ -8,6 +8,12 @@ $hover-color: #EE2737FF;
 :root {
     font-size: 16px;
     font-family: 'Open Sans';
+    --transition-speed: 600ms;
+    --text-primary: #b6b6b6;
+    --text-secondary: #ececec;
+    --bg-primary: #23232e;
+    --bg-secondary: #141418;
+    --hover-color: #EE2737FF;
   }
   
   body {
@@ -35,6 +41,7 @@ $hover-color: #EE2737FF;
     transition: width $transition-speed ease;
     overflow: hidden;
     z-index: 1;
+    border-right: solid $text-primary 1px;
   }
   
   .navbar-nav {
@@ -96,7 +103,6 @@ $hover-color: #EE2737FF;
   }
   
   .logo svg {
-    transform: rotate(0deg);
     transition: $transition-speed;
   }
   

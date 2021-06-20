@@ -1,6 +1,12 @@
 :root {
   font-size: 16px;
   font-family: 'Open Sans';
+  --transition-speed: 600ms;
+  --text-primary: #b6b6b6;
+  --text-secondary: #ececec;
+  --bg-primary: #23232e;
+  --bg-secondary: #141418;
+  --hover-color: #EE2737FF;
 }
 
 body {
@@ -29,6 +35,7 @@ body::-webkit-scrollbar-thumb {
   transition: width 600ms ease;
   overflow: hidden;
   z-index: 1;
+  border-right: solid #b6b6b6 1px;
 }
 
 .navbar-nav {
@@ -104,8 +111,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 .logo svg {
-  -webkit-transform: rotate(0deg);
-          transform: rotate(0deg);
   -webkit-transition: 600ms;
   transition: 600ms;
 }

@@ -14,23 +14,20 @@ main {
     margin-left: 5rem;
     height: 100vh;
     background: lightgray;
+    display: flex;
+    justify-content: center;
 }
 
-.play-settings {
+.sett-panel {
+    align-self: center;
+    width: 60%;
+    height: 75%;
+    background-color: var(--bg-primary);
     display: flex;
-    background: var(--bg-primary);
-    width: 500px;
-    height: 440px;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
     flex-direction: column;
-    justify-content: start;
-    z-index: 0;
-  }
+}
 
-  .title, .sub-title {
+.title, .sub-title {
     text-align: center;
     color: var(--text-primary);
   }
@@ -56,7 +53,7 @@ main {
     border: none;
   }
 
-  .btn-start {
+  .btn-save {
     transition: 0.4s;
     margin-top: 40px;
     align-self: center;
@@ -69,25 +66,49 @@ main {
     cursor: pointer;
   }
 
-  .btn-start:hover {
+  .btn-save:hover {
     transition: 0.4s;
     background: var(--hover-color);
     color: var(--text-secondary);
   }
-/* Small screens */
-@media only screen and (max-width: 600px) {
-    .play-settings {
-      width: 92%;
-      height: 440px;
-    }
-    main {
-      margin: 0;
-    }
+
+  .sett-item {
+      display: flex;
+      float: right;
+      margin-left: 10%;
+      justify-content: space-between;
+      flex-wrap: wrap;
   }
 
-/* Large screens */
-@media only screen and (min-width: 600px) {
-    .navbar-nav:hover + main{
-        background-color: red;
-    }
-}
+  .inputbox {
+      align-self: center;
+      background: transparent;
+      border: none;
+      border-bottom: solid 1px var(--hover-color);
+      font-size: 20px;
+      float: right;
+      outline: none;
+      margin-right: 10%;
+      color: var(--text-primary)
+  }
+
+  @media only screen and (max-width: 600px) {
+      main {
+          margin-left: 0;
+      }
+      .sub-title, .inputbox {
+          margin-left: 0;
+          margin-right: 0;
+          font-size: 16px;
+      }
+      .sett-item {
+          margin-left: 0;
+          flex-direction: column;
+          align-self: center;
+      }
+      .sett-panel {
+          width: 90%;
+          margin-bottom: 30%;
+      }
+
+  }
