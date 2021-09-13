@@ -1,8 +1,9 @@
-//! Comments with exlamation mark are for test purposes (they will be deleted later)
-// TODO: After completing level, drawing a pipes, connecting them to the points and win condition
+//! Comments with exlamation mark are for test purposes (they will be removed later)
+// TODO: Add effects to clicking and connecting points + maybe rendering animation
 // TODO: Code needs to be cleaned up IMPORTANT
 // TODO: Code needs to have less n^2 'FOR' loops
-// TODO: Do a faster searching by gameMap quickSort or other algorithm
+// TODO: Do a faster searching by quickSort or other algorithm of gameMap object
+// TODO: Some code should be moved to separate functions to make code more readable
 var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
@@ -89,7 +90,7 @@ function drawGame(event) {
             context.strokeStyle = "#FFF";
             context.strokeRect(x * tileW, y * tileH, tileW, tileH);
 
-            // Switch statement for colors of the points 
+            // 'SWITCH' statement for colors of the points and pipes
             // TODO: Move switch statment into the enum with colors later
             switch(gameMap[y][x]) {
                 case 1:
@@ -156,11 +157,8 @@ function drawGame(event) {
                     }
                 }
             }
-
-            // Clearing the board if points ain't connected (wiping the pipes)
-            // console.log(endX + " " + endY + " " + mouseX + " " + mouseY);
-            
-            if(!(endX == mouseX && endY == mouseY)) {
+            // Clearing the board if points ain't connected (removing the specific pipes)
+            if(!(endX == mouseX && endY == mouseY) || (gameMap[mouseY][mouseX] != 0  && gameMap[mouseY][mouseX] != gameMap[endY][endX])) {
                 for(var y = 0; y < mapLength; y++) {
                     for (var x = 0; x < mapLength; x++) {
                         if(gameMap[y][x] == gameMap[startY][startX] + 100) {
@@ -180,65 +178,55 @@ function drawGame(event) {
             currentX = startX;
             currentY = startY;
 
-            // If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
+            /* If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
+            0 is a blank space and numbers above 100 are pipes*/ 
             if(gameMap[startY][startX] > 0 && gameMap[startY][startX] < 100) {
                 selected = true;
-                // Adding the mousemove event after pressing the button (For test purposes) // it should help to draw a pipe
-                // TODO: make this function public and write it apart from MouseDown function
-                canvas.onmousemove = function(moveEvent) {
-                    if(moveEvent.offsetX > 0 && moveEvent.offsetX <= canvas.width - 3 && moveEvent.offsetY > 0 
-                        && moveEvent.offsetY <= canvas.height - 3) { // Canvas height and width are reduced by 3 to avoid moving on border of Map
-                            
-                            var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / 100;
-                            var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / 100;
-
-                            //! Mouse div showing current position of mouse when button is hold
-                            mouse.innerHTML = "Mouse(X, Y): " + moveEvent.offsetX + ", " + moveEvent.offsetY;
-                            
-                            //  Drawing a lines
-                            if(gameMap[mouseMoveY][mouseMoveX] == 0) {
-                                gameMap[mouseMoveY][mouseMoveX] = gameMap[mouseY][mouseX] + 100;
-                            
-                            // drawPipe("red", gameMap)
-
-                            // Clearing and redrawing a gameMap to avoid drawing points top of each other.
-                            // TODO: Check how this impact performance
-                            drawGame(event);
-                            console.log("draw game");
-                        }
-                        //! Trying to disable moving through other points
-                        // if(!(gameMap[mouseMoveY][mouseMoveX] == gameMap[startY][startX] 
-                        // && gameMap[mouseMoveY][mouseMoveX] == 0)) {
-                        //     canvas.onmousemove = null;
-                        //     handleMouseUp(event);
-                        // }
-                    }
-                    else {
-                        canvas.onmousemove = null;
-                        drawGame(event);
-                    }
-                }
+                drawGame(event);
             }
         }
         else {
-            var x = mouseX;
-            var y = mouseY;
-            console.log(y + " " + x);
-            if(x >= 0 && y >= 0 && y < gameMap.length && x < gameMap.length && gameMap[y][x] == 0) {
-                if( (x == currentX + 1 && y == currentY) || (x == currentX - 1 && y == currentY) 
-                || (x == currentX && y == currentY + 1) || (x == currentX + 1 && y == currentY - 1)) {
-                    gameMap[y][x] = gameMap[startY][startX] + 100;
-                    currentX = x;
-                    currentY = y; 
-                    drawGame(event);          
+            // Adding the mousemove event after pressing the button (For test purposes) // it should help to draw a pipe
+            // TODO: make this function public and write it apart from MouseDown function
+            canvas.onmousemove = function(moveEvent) {
+                // Canvas height and width are reduced by 3 to avoid moving on border of Map
+                if(moveEvent.offsetX > 0 && moveEvent.offsetX <= canvas.width - 3 && moveEvent.offsetY > 0 
+                    && moveEvent.offsetY <= canvas.height - 3) {
+                        
+                        var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / 100;
+                        var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / 100;
+
+                        //! Mouse div showing current position of mouse when button is hold
+                        mouse.innerHTML = "Mouse(X, Y): " + moveEvent.offsetX + ", " + moveEvent.offsetY;
+                        
+                        //  Drawing a lines
+                        if(gameMap[mouseMoveY][mouseMoveX] == 0) {
+                            // 'IF' does not allow diagonal moves
+                            if((mouseMoveX == currentX + 1 && mouseMoveY == currentY) || (mouseMoveX == currentX - 1 && mouseMoveY == currentY) 
+                            || (mouseMoveX == currentX && mouseMoveY == currentY + 1) || (mouseMoveX == currentX && mouseMoveY == currentY - 1)) {
+                                gameMap[mouseMoveY][mouseMoveX] = gameMap[startY][startX] + 100;
+                                currentX = mouseMoveX;
+                                currentY = mouseMoveY;
+                                // Clearing and redrawing a gameMap to avoid drawing points top of each other.
+                                // TODO: Check how this impact performance
+                                drawGame(event);
+                            }
+                        }
+                        //! If users make 'back' move pipe should be removed and abbreviated 
+                        // if(gameMap[mouseMoveY][mouseMoveX] ==) {
+                        //     gameMap[mouseMoveY][mouseMoveX] = 0;
+                        //     drawGame(event);
+                        // }
                 }
-            
+                else {
+                    handleMouseUp(event);
+                }
             }
         }
     }
 
     //! Information for debugging
-    //! Position of clicked rectangle and positon of triangle with the point (same color)
+    //! Position of clicked rectangle and positon of square with the point (same color)
     end.innerHTML = "StartX, StartY: " + startX + " " + startY + "<br />EndX, EndY: " + endX + " " + endY;  
     
     //! Information for debugging
@@ -259,7 +247,6 @@ function drawGame(event) {
 }
 
 function drawPipe(color, from, to) {
-    console.log(from.x);
 }
 
 // Drawing a line
