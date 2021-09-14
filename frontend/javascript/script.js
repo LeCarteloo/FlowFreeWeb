@@ -8,16 +8,49 @@ var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
 
-var currentX, currentY, startX, startY;
+let currentPosition = {
+    X: 0,
+    Y: 0
+}
+
+let startPosition = {
+    X: 0,
+    Y: 0
+}
+
+let previousPosition = {
+    X: 0,
+    Y: 0
+}
+
+// X and Y coordinate of the second tile with a point with this same color
+var endX = null, endY = null;
+
 selected = Boolean(false);
 pressed = Boolean(false);
 win = Boolean(false);
 
-//Test divs variables
+// Test divs variables
 var current = null;
 var end = null;
 var mouse = null;
 var gameMapArray = null;
+
+// Enum with colors
+var Colors = {
+    1: "red",
+    2: "green",
+    3: "blue",
+    4: "yellow",
+    5: "orange",
+    6: "aqua",
+    7: "purple",
+    8: "pink",
+    9: "brown",
+    10: "",
+    11: "",
+    12: "",
+};
 
 // GAME MAP (for test purposes)
 var gameMap = [
@@ -85,38 +118,18 @@ function drawGame(event) {
     // Loops drawing map with points and pipes from gameMap object.
     for(var y = 0; y < mapLength; y++) { 
         for(var x = 0; x < mapLength; x++){
-
+            context.lineWidth = 2;
             // Drawing a border of map
             context.strokeStyle = "#FFF";
             context.strokeRect(x * tileW, y * tileH, tileW, tileH);
 
-            // 'SWITCH' statement for colors of the points and pipes
-            // TODO: Move switch statment into the enum with colors later
-            switch(gameMap[y][x]) {
-                case 1:
-                case 101:
-                    context.fillStyle = "red";
-                    break;
-                case 2:
-                case 102:
-                    context.fillStyle = "green";
-                    break;
-                case 3:
-                case 103:
-                    context.fillStyle = "blue";
-                    break;
-                case 4:
-                case 104:
-                    context.fillStyle = "yellow";
-                    break;
-                case 5:
-                case 105:
-                    context.fillStyle = "orange";
-            }
+            // Using the enum with colors to draw points and pipes (If point is higher than 100 then it's getting lovered by 100)
+            // context.fillStyle = Colors[(gameMap[y][x] > 100) ? gameMap[y][x] - 100 : gameMap[y][x]];
+            context.fillStyle = Colors[gameMap[y][x]];
 
             // Drawing points (points are numbers above 0 and less than 100)
             if(gameMap[y][x] > 0 && gameMap[y][x] < 100) {
-                // context.fillRect(x*titleW, y*titleH, titleW, titleH) <- drawing colors of tiles
+                // context.fillRect(x*titleW, y*titleH, titleW, titleH) <- drawing the background of tiles
                 var circle = new Path2D();
                 circle.moveTo(x * tileW, y * tileH);
                 circle.arc(x * tileW + tileW / 2, y * tileH + tileH / 2 , tileW * .45 , tileH * .45, 0, 360);
@@ -124,9 +137,10 @@ function drawGame(event) {
             }
             // Drawing pipes (every pipe at the moment have number equals - point number plus one hundred)
             if(gameMap[y][x] > 100) {
-                context.strokeStyle = "#FFF";
-                context.fillRect(x * tileW, y * tileH, tileW - 20, tileH - 20);
-            }
+                console.log("inside");
+                drawPipe(Colors[gameMap[y][x] - 100], previousPosition, currentPosition)
+                // context.fillRect(x * tileW, y * tileH, tileW - 20, tileH - 20);
+            } 
 
             //! Printing a position of every tile
             context.fillStyle = "#FFF";
@@ -136,32 +150,30 @@ function drawGame(event) {
     }
 
     // Coordinates of a mouse when mouse is pressed
-    var mouseX = (Math.floor(event.offsetX / tileW) * tileW) / 100;
-    var mouseY = (Math.floor(event.offsetY / tileW) * tileW) / 100;
+    var mouseX = (Math.floor(event.offsetX / tileW) * tileW) / tileW;
+    var mouseY = (Math.floor(event.offsetY / tileW) * tileW) / tileH;
 
     if(!pressed) {       
         // If tile with point is pressed then 'IF' statement is executed
         if(selected) {
             selected = false;
 
-            // X and Y coordinate of the second tile with a point with this same color
-            var endX = 0, endY = 0;
-
             // 'FOR' loops search for a tile with same color
             for(var y = 0; y < mapLength; y++) {
                 for (var x = 0; x < mapLength; x++) {
-                    // console.log(gameMap[y][x] + ", " + gameMap[startY][startX]);
-                    if(!(x == startX && y == startY) && gameMap[y][x] == gameMap[startY][startX]) {
+                    // console.log(gameMap[y][x] + ", " + gameMap[startPosition.Y][startPosition.X]);
+                    if(!(x == startPosition.X && y == startPosition.Y) && gameMap[y][x] == gameMap[startPosition.Y][startPosition.X]) {
                         endX = x;
                         endY = y;
                     }
                 }
             }
             // Clearing the board if points ain't connected (removing the specific pipes)
-            if(!(endX == mouseX && endY == mouseY) || (gameMap[mouseY][mouseX] != 0  && gameMap[mouseY][mouseX] != gameMap[endY][endX])) {
+            //!  || (gameMap[mouseY][mouseX] != 0  && gameMap[mouseY][mouseX] != gameMap[endY][endX]) <- just testing
+            if(!(endX == mouseX && endY == mouseY)) {
                 for(var y = 0; y < mapLength; y++) {
                     for (var x = 0; x < mapLength; x++) {
-                        if(gameMap[y][x] == gameMap[startY][startX] + 100) {
+                        if(gameMap[y][x] == gameMap[startPosition.Y][startPosition.X] + 100) {
                             gameMap[y][x] = 0;
                         }
                     }
@@ -173,14 +185,17 @@ function drawGame(event) {
     else {
         // If no tile is selected then 'IF' statement is executed
         if(!selected) {
-            startX = mouseX;
-            startY = mouseY;
-            currentX = startX;
-            currentY = startY;
+            startPosition.X = mouseX;
+            startPosition.Y = mouseY;
+            previousPosition.X = startPosition.X;
+            previousPosition.Y = startPosition.Y;
+            currentPosition.X = startPosition.X;
+            currentPosition.Y = startPosition.Y;
 
             /* If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
             0 is a blank space and numbers above 100 are pipes*/ 
-            if(gameMap[startY][startX] > 0 && gameMap[startY][startX] < 100) {
+            console.log(startPosition)
+            if(gameMap[startPosition.Y][startPosition.X] > 0 && gameMap[startPosition.Y][startPosition.X] < 100) {
                 selected = true;
                 drawGame(event);
             }
@@ -193,8 +208,8 @@ function drawGame(event) {
                 if(moveEvent.offsetX > 0 && moveEvent.offsetX <= canvas.width - 3 && moveEvent.offsetY > 0 
                     && moveEvent.offsetY <= canvas.height - 3) {
                         
-                        var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / 100;
-                        var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / 100;
+                        var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / tileW;
+                        var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / tileH;
 
                         //! Mouse div showing current position of mouse when button is hold
                         mouse.innerHTML = "Mouse(X, Y): " + moveEvent.offsetX + ", " + moveEvent.offsetY;
@@ -202,14 +217,19 @@ function drawGame(event) {
                         //  Drawing a lines
                         if(gameMap[mouseMoveY][mouseMoveX] == 0) {
                             // 'IF' does not allow diagonal moves
-                            if((mouseMoveX == currentX + 1 && mouseMoveY == currentY) || (mouseMoveX == currentX - 1 && mouseMoveY == currentY) 
-                            || (mouseMoveX == currentX && mouseMoveY == currentY + 1) || (mouseMoveX == currentX && mouseMoveY == currentY - 1)) {
-                                gameMap[mouseMoveY][mouseMoveX] = gameMap[startY][startX] + 100;
-                                currentX = mouseMoveX;
-                                currentY = mouseMoveY;
+                            if((mouseMoveX == currentPosition.X + 1 && mouseMoveY == currentPosition.Y) || (mouseMoveX == currentPosition.X - 1 && mouseMoveY == currentPosition.Y) 
+                            || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
+                                gameMap[mouseMoveY][mouseMoveX] = gameMap[startPosition.Y][startPosition.X] + 100;
+                                // Saving the previous position for drawing the Pipe
+                                previousPosition.X = currentPosition.X;
+                                previousPosition.Y = currentPosition.Y;
+
+                                currentPosition.X = mouseMoveX;
+                                currentPosition.Y = mouseMoveY;
                                 // Clearing and redrawing a gameMap to avoid drawing points top of each other.
                                 // TODO: Check how this impact performance
-                                drawGame(event);
+                                drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition)
+                                // drawGame(event);
                             }
                         }
                         //! If users make 'back' move pipe should be removed and abbreviated 
@@ -227,7 +247,7 @@ function drawGame(event) {
 
     //! Information for debugging
     //! Position of clicked rectangle and positon of square with the point (same color)
-    end.innerHTML = "StartX, StartY: " + startX + " " + startY + "<br />EndX, EndY: " + endX + " " + endY;  
+    end.innerHTML = "startPosition.X, startPosition.Y: " + startPosition.X + " " + startPosition.Y + "<br />EndX, EndY: " + endX + " " + endY;  
     
     //! Information for debugging
     //! Position of clicked rectangle, offset of the mouse (x, y) and full array of the current game map
@@ -246,14 +266,22 @@ function drawGame(event) {
 
 }
 
-function drawPipe(color, from, to) {
-}
+function drawPipe(color, positionFrom, positionTo) {
+    console.log("Previous position (X,Y): " + positionFrom.X + positionFrom.Y)
+    console.log("Current position (X,Y): " + positionTo.X + positionTo.Y)
 
-// Drawing a line
-/* context.beginPath();
-context.moveTo(mouseX*tileH + 50, mouseY*tileW + 50);
-context.lineTo(50,150);
-context.lineWidth = 20;
-context.strokeStyle = "red";
-context.stroke();
-gameMap[mouseY][mouseX] = 3; */
+    console.log("Color: " + color)
+
+    context.beginPath();
+    context.moveTo(positionFrom.X * 100 + 50, positionFrom.Y * 100 + 50); // X, Y
+    context.lineTo(positionTo.X * 100 + 50, positionTo.Y * 100 + 50);
+    
+    // context.fillRect(positionTo.X * tileW, positionTo.Y * tileH, tileW - 20, tileH - 20);
+
+    context.strokeStyle = color;
+    context.lineCap = "round";
+    context.lineWidth = tileW * 0.4;
+
+    context.stroke();
+    context.closePath();
+}
