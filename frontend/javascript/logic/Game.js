@@ -1,9 +1,6 @@
 //! Comments with exlamation mark are for test purposes (they will be removed later)
-// TODO: Add effects to clicking and connecting points + maybe rendering animation
-// TODO: Code needs to be cleaned up IMPORTANT
+// TODO: Add effects to clicking and connecting points + maybe rendering animation (if got time)
 // TODO: Code needs to have less n^2 'FOR' loops
-// TODO: Do a faster searching by quickSort or other algorithm of gameMap object
-// TODO: Some code should be moved to separate functions to make code more readable
 var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
@@ -18,9 +15,16 @@ let startPosition = {
     Y: 0
 }
 
+let previousPosition = {
+    X: 0,
+    Y: 0
+}
 
 // X and Y coordinate of the second tile with a point with this same color
-var endX = null, endY = null;
+let endPosition = {
+    X: 0,
+    Y: 0
+}
 
 var selected = false;
 var pressed = false;
@@ -46,15 +50,15 @@ var Colors = {
     a: "aqua",
     p: "purple",
     l: "lime",
-    9: "brown",
-    10: "lime",
-    11: "",
-    12: "",
+    n: "brown",
+    w: "white",
+    d: "darkblue",
+    e: "grey",
 };
 
 // GAME MAP (for test purposes)
 var gameMap = [
-    ['g0', '0', '0', 'y0', '0', 'y0', 'a0', '0'],
+    ['g0', '0', 'g4', 'y0', '0', 'y0', 'a0', '0'],
     ['0', '0', '0', '0', 'g0', 'r0', '0', '0'],
     ['0', '0', 'o0', '0', '0', 'r0', '0', '0'],
     ['0', '0', '0', 'l0', '0', '0', '0', '0'],
@@ -63,12 +67,6 @@ var gameMap = [
     ['p0', '0', 'b0', 'a0', '0', '0', '0', '0'],
     ['0', '0', '0', '0', '0', '0', 'b0', '0'],
 ];
-
-//     [1, 0, 2, 0, 4],
-//     [0, 0, 3, 0, 5],
-//     [0, 0, 0, 0, 0],
-//     [0, 2, 0, 4, 0],
-//     [0, 1, 3, 5, 0],
 
 window.onload = function () {
     // Getting the canvas and context from the HTML file
@@ -92,6 +90,7 @@ window.onload = function () {
     end = document.getElementById('end');
     mouse = document.getElementById('mouseMoved');
     gameMapArray = document.getElementById('gameMapArray');
+    bugWithPipes = document.getElementById('bugWithPipes');
 
 };
 
@@ -101,6 +100,8 @@ function handleMouseUp(event) {
     pressed = false;
 
     console.log("Mouse unpressed");
+
+    
 
     // Redrawing a game when button is unpressed (to remove unlinked pipes)
     drawGame(event);
@@ -112,90 +113,95 @@ function handleMouseUp(event) {
 function handleMouseDown(event) {
     pressed = true;
 
-    console.log("Mouse pressed");
+    var mouseX = (Math.floor(event.offsetX / tileW) * tileW) / tileW;
+    var mouseY = (Math.floor(event.offsetY / tileW) * tileW) / tileH;
 
+    // If mouse is pressed on point all pipes with this color are removed
+    if(gameMap[mouseY][mouseX].substr(1, 3) == '0'){
+        for (var y = 0; y < mapLength; y++) {
+            for (var x = 0; x < mapLength; x++) {
+
+                // Clearing pipes
+                if (gameMap[y][x].substr(0, 1) == gameMap[mouseY][mouseX].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 3)) > 0) {
+                    gameMap[y][x] = '0';
+
+                    context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
+                   
+                    drawSquares(x, y);
+                }
+
+                // Clearing points
+                if(gameMap[y][x].substr(0, 1) == gameMap[mouseY][mouseX].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 2)) == 0) {
+                    context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
+                    // TODO: Should be written better
+                    // Redrawing squares and points (clearing the pipes from game map)
+                    drawSquares(x, y);
+                    drawPoint(x, y);
+                }
+            }
+        }
+    }
+
+    console.log("Mouse pressed");
     // Drawing game when mouse is pressed
     drawGame(event);
 }
 
 function clearNotConntectedPipes(mouseX, mouseY) {
-    if (!(endX == mouseX && endY == mouseY)) {
+
+    if (!(endPosition.X == mouseX && endPosition.Y == mouseY) || !((currentPosition.X == endPosition.X - 1 && currentPosition.Y == endPosition.Y) 
+    || (currentPosition.X == endPosition.X + 1 && currentPosition.Y == endPosition.Y) || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y - 1)
+    || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y + 1))) {
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
                 if (gameMap[y][x].substr(0, 1) == gameMap[startPosition.Y][startPosition.X].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 3)) > 0) {
                     gameMap[y][x] = '0';
                     context.clearRect(startPosition.X * tileH, startPosition.Y*tileW, tileW - 1, tileH - 1);
-                    context.clearRect(endX * tileH, endY*tileW, tileW - 1, tileH - 1);
+                    context.clearRect(endPosition.X * tileH, endPosition.Y*tileW, tileW - 1, tileH - 1);
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
-
+                    
                     // TODO: Should be written better
                     // Redrawing squares and points (clearing the pipes from game map)
                     drawSquares(startPosition.X, startPosition.Y);
-                    drawSquares(endX, endY);
+                    drawSquares(endPosition.X, endPosition.Y);
                     drawSquares(x, y);
                     drawPoint(startPosition.X, startPosition.Y);
-                    drawPoint(endX, endY);
-                    // drawMap(x, y)
+                    drawPoint(endPosition.X, endPosition.Y);
                 }
             }
         }
     }
-}
-
-function drawPipe(x, y) {
-
-    // Drawing pipes (every point has a value of an color plus 0 (e.g r0 - stands for red point).
-    // Pipes has a value of color and a number of a pipe (e.g r5 - stand for red fifth pipe that
-    // only connecting with r4 and r6 it allows to draw pipes close to each other without weird renedring)
-    // TODO: Try to simplify logic behind drawing a pipe
-    if (parseInt(gameMap[y][x].substr(1, 3)) > 0) {
-        context.beginPath();
-
-        if ((y > 0 && (parseInt(gameMap[y - 1][x].substr(1, 3)) == parseInt(gameMap[y][x].substr(1, 3)) - 1) && gameMap[y - 1][x] != '0')
-            && gameMap[y - 1][x].substr(0, 1) == gameMap[y][x].substr(0, 1)) {
-            console.log("Down")
-
-            context.moveTo(x * tileW + tileW / 2, (y - 1) * tileW + tileW / 2);
-            context.lineTo(x * tileW + tileW / 2, y * tileW + tileW / 2);
+    // TODO: Should be changed 
+    // Drawing pipe to end point
+    else {
+        if(mouseX == endPosition.X && mouseY == endPosition.Y){
+            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], currentPosition, endPosition);
         }
-        else if ((y < gameMap.length - 1 && (parseInt(gameMap[y + 1][x].substr(1, 3)) == parseInt(gameMap[y][x].substr(1, 3)) - 1) && gameMap[y + 1][x] != '0'
-            && gameMap[y + 1][x].substr(0, 1) == gameMap[y][x].substr(0, 1))) {
-            console.log("Up")
-
-            context.moveTo(x * tileW + tileW / 2, (y + 1) * tileW + tileW / 2);
-            context.lineTo(x * tileW + tileW / 2, y * tileW + tileW / 2);
-        }
-        else if (x > 0 && (parseInt(gameMap[y][x - 1].substr(1, 3)) == parseInt(gameMap[y][x].substr(1, 3)) - 1
-            || (gameMap[y][x - 1] == gameMap[y][x - 1].substr(0, 3) && gameMap[y][x] == gameMap[y][x].substring(0, 1) - 1) && gameMap[x - 1][x] != '0')
-            && gameMap[y][x - 1].substr(0, 1) == gameMap[y][x].substr(0, 1)) {
-            console.log("Right")
-            context.moveTo((x - 1) * tileW + tileW / 2, y * tileW + tileW / 2);
-            context.lineTo(x * tileW + tileW / 2, y * tileW + tileW / 2);
-        }
-        else if (x < gameMap.length - 1 && (parseInt(gameMap[y][x + 1].substr(1, 3)) == parseInt(gameMap[y][x].substr(1, 3)) - 1
-            || (gameMap[y][x + 1] == gameMap[y][x + 1].substr(0, 3) && gameMap[y][x] == gameMap[y][x].substring(0, 1) - 1) && gameMap[y][x + 1] != '0')
-            && gameMap[y][x + 1].substr(0, 1) == gameMap[y][x].substr(0, 1)) {
-            console.log("Left")
-            context.moveTo((x + 1) * tileW + tileW / 2, y * tileW + tileW / 2);
-            context.lineTo(x * tileW + tileW / 2, y * tileW + tileW / 2);
-        }
-
-        context.strokeStyle = Colors[gameMap[y][x].substr(0, 1)];
-        context.lineCap = "round";
-        context.lineWidth = tileW * 0.4;
-        context.stroke();
-        context.closePath();
     }
 }
 
+// Drawing pipes from mouse movement
+function drawPipe(color, positionFrom, positionTo) {
+    context.beginPath();
+    context.moveTo(positionFrom.X * tileW + tileW / 2, positionFrom.Y * tileW + tileW / 2); // X, Y
+    context.lineTo(positionTo.X  * tileW + tileW / 2, positionTo.Y  * tileW + tileW / 2);
 
-// Drawing a squares
+    context.strokeStyle = color;
+    context.lineCap = "round";
+    context.lineWidth = tileW * 0.4;
+
+    context.stroke();
+    context.closePath();
+}
+
 function drawSquares(x, y) {
+    context.beginPath();
     context.lineWidth = 2;
     context.strokeStyle = "#FFF";
     context.fillStyle = "#121212";
+    // Fill react needs to be commented if map is read from an array
     context.fillRect(x * tileW, y * tileH, tileW, tileH);
-    context.strokeRect(x * tileW, y * tileH, tileW, tileH);
+    context.strokeRect(x * tileW, y * tileH, tileW, tileH);    
 }
 
 // Drawing a point
@@ -206,32 +212,13 @@ function drawPoint(x, y) {
 
         var circle = new Path2D();
         circle.moveTo(x * tileW, y * tileH);
-        circle.arc(x * tileW + tileW / 2, y * tileH + tileH / 2, tileW * .45, tileH * .45, 0, 360);
+        circle.arc(x * tileW + tileW / 2, y * tileH + tileH / 2, tileW * .47, tileH * .47, 0, 360);
         context.fill(circle);
     }
 }
 
-// Drawing a map
-// TODO: Think if this function is even needed
-function drawMap(x, y) {
-
-
-    // Drawing a border around map and around squares
-    drawSquares(x, y)
-
-    // Drawing points
-    drawPoint(x, y);
-
-    //! Drawing a position of every tile
-    context.fillStyle = "#FFF";
-    context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
-}
-
 
 function drawGame(event) {
-
-    // Clearing the canvas
-    // context.clearRect(0, 0, canvas.width, canvas.height);
 
     // Checking if canvas exists
     if (context == null) {
@@ -243,12 +230,19 @@ function drawGame(event) {
         for (var x = 0; x < mapLength; x++) {
             // Full map with points is drawn only once (at startup)
             if (!isMapDrawn) {
-                drawMap(x, y);
-                // TODO: Draw pipe below helps to draw a pipes automaticaly from gameMap array
-                // TODO: it may help with multiplayer version (worth to check)
-                //drawPipe(x, y);
+                drawSquares(x, y)
+
+                drawPoint(x, y);
+
+                // Drawing map from game map array
+                // drawPipe(x, y);
+
+                //! Drawing a position of every tile
+                context.fillStyle = "#FFF";
+                context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
             }
         }
+       
     }
 
     //Border is drawn only once
@@ -268,29 +262,13 @@ function drawGame(event) {
             for (var y = 0; y < mapLength; y++) {
                 for (var x = 0; x < mapLength; x++) {
                     if (!(x == startPosition.X && y == startPosition.Y) && gameMap[y][x] == gameMap[startPosition.Y][startPosition.X]) {
-                        endX = x;
-                        endY = y;
+                        endPosition.X = x;
+                        endPosition.Y = y;
                     }
                 }
             }
 
-            if ((endX == currentPosition.X + 1 && endY == currentPosition.Y) || (endX == currentPosition.X - 1 && endY == currentPosition.Y)
-            || (endX == currentPosition.X && endY == currentPosition.Y + 1) || (endX == currentPosition.X && endY == currentPosition.Y - 1)) {
-                console.log("im in")
-                if(parseInt(gameMap[currentPosition.Y + 1][currentPosition.X].substr(1, 3)) == 0 ) {
-                    context.beginPath();
-                    context.moveTo(currentPosition.X * tileW + tileW / 2, currentPosition.Y * tileW + tileW / 2);
-                    context.lineTo(endX * tileW + tileW / 2, endY * tileW + tileW / 2);
-                    context.strokeStyle = Colors[gameMap[endY][endX].substr(0, 1)];
-                    context.lineCap = "round";
-                    context.lineWidth = tileW * 0.4;
-                    context.stroke();
-                    context.closePath();
-                }
-
-        }
-
-            // Clearing the points and squares where pipe is drawn
+            // Clearing the points and squares if the points are not connected
             clearNotConntectedPipes(mouseX, mouseY);
         }
     }
@@ -299,6 +277,8 @@ function drawGame(event) {
         if (!selected) {
             startPosition.X = mouseX;
             startPosition.Y = mouseY;
+            previousPosition.X = startPosition.X;
+            previousPosition.Y = startPosition.Y;
             currentPosition.X = startPosition.X;
             currentPosition.Y = startPosition.Y;
 
@@ -330,12 +310,16 @@ function drawGame(event) {
                             || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
                             i++;
                             gameMap[mouseMoveY][mouseMoveX] = gameMap[startPosition.Y][startPosition.X].substr(0, 1) + i;
-
+                            previousPosition.X = currentPosition.X;
+                            previousPosition.Y = currentPosition.Y;
                             currentPosition.X = mouseMoveX;
                             currentPosition.Y = mouseMoveY;
 
-                            // Drawing the pipe
-                            drawPipe(mouseMoveX, mouseMoveY);
+                            // Drawing the pipe     
+                            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], previousPosition, currentPosition)
+
+
+                            // drawPipe(mouseMoveX, mouseMoveY);
                         }
                     }
                     //! If users make 'back' move pipe should be removed and abbreviated 
@@ -344,24 +328,19 @@ function drawGame(event) {
                     //     drawGame(event);
                     // }
                 }
-                else {
-                    // Mouse went outside of game map so drawing is canceled
-                    // TODO: Think if this is needed
-                    handleMouseUp(event);
-                }
             }
         }
     }
-    developerMode(true, event);
+    debugMode(true, event);
 }
 
 // Developer tools
 // TODO: make separate class with this kind of things
-function developerMode(isModeOn, event) {
+function debugMode(isModeOn, event) {
     if(isModeOn) {
         //! Information for debugging
         //! Position of clicked rectangle and positon of square with the point (same color)
-        end.innerHTML = "startPosition.X, startPosition.Y: " + startPosition.X + " " + startPosition.Y + "<br />EndX, EndY: " + endX + " " + endY;
+        end.innerHTML = "startPosition.X, startPosition.Y: " + startPosition.X + " " + startPosition.Y + "<br />endPosition.X, endPosition.Y: " + endPosition.X + " " + endPosition.Y;
 
         //! Information for debugging
         //! Position of clicked rectangle, offset of the mouse (x, y) and full array of the current game map
@@ -380,4 +359,3 @@ function developerMode(isModeOn, event) {
     }
 
 }
-
