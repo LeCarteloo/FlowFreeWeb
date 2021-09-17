@@ -38,7 +38,7 @@ function drawPipe(x, y) {
             context.moveTo((x - 1) * tileW + tileW / 2, y * tileW + tileW / 2);
             context.lineTo(x * tileW + tileW / 2, y * tileW + tileW / 2);
         }
-                context.strokeStyle = Colors[gameMap[y][x].substr(0, 1)];
+        context.strokeStyle = Colors[gameMap[y][x].substr(0, 1)];
         context.lineCap = "round";
         context.fillStyle = "red";
         context.lineWidth = tileW * 0.4;

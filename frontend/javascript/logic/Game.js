@@ -1,6 +1,7 @@
 //! Comments with exlamation mark are for test purposes (they will be removed later)
 // TODO: Add effects to clicking and connecting points + maybe rendering animation (if got time)
 // TODO: Code needs to have less n^2 'FOR' loops
+// TODO: Rewrite thing with end point pipes
 var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
@@ -28,7 +29,6 @@ let endPosition = {
 
 var selected = false;
 var pressed = false;
-var vwin = false;
 var isMapDrawn = false;
 
 
@@ -128,6 +128,9 @@ function handleMouseDown(event) {
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
                    
                     drawSquares(x, y);
+
+                    //! Developer tool
+                   drawPosOfSquares(x, y);
                 }
 
                 // Clearing points
@@ -137,6 +140,9 @@ function handleMouseDown(event) {
                     // Redrawing squares and points (clearing the pipes from game map)
                     drawSquares(x, y);
                     drawPoint(x, y);
+
+                    //! Developer tool
+                    drawPosOfSquares(x, y);
                 }
             }
         }
@@ -176,9 +182,26 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     else {
         if(mouseX == endPosition.X && mouseY == endPosition.Y){
             drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], currentPosition, endPosition);
+            // Drawing transparent tile when points are connected
+            drawTransparent(gameMap[startPosition.Y][startPosition.X].substr(0, 1));
         }
     }
 }
+
+// TODO: Think about better option without 2x 'FOR' loops
+function drawTransparent(point) {
+    for (var y = 0; y < mapLength; y++) {
+        for (var x = 0; x < mapLength; x++) {
+            if(gameMap[y][x].substr(0,1) == point) {
+                context.globalAlpha = 0.2;
+                context.fillStyle = Colors[point];
+                context.fillRect(x * tileW, y * tileW, tileW, tileH);
+                context.globalAlpha = 1.0;
+            }
+        }
+    }
+}
+
 
 // Drawing pipes from mouse movement
 function drawPipe(color, positionFrom, positionTo) {
@@ -237,9 +260,7 @@ function drawGame(event) {
                 // Drawing map from game map array
                 // drawPipe(x, y);
 
-                //! Drawing a position of every tile
-                context.fillStyle = "#FFF";
-                context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
+                drawPosOfSquares(x, y);
             }
         }
        
@@ -300,8 +321,7 @@ function drawGame(event) {
                     var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / tileW;
                     var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / tileH;
 
-                    //! Mouse div showing current position of mouse when button is hold
-                    mouse.innerHTML = "Mouse(X, Y): " + moveEvent.offsetX + ", " + moveEvent.offsetY;
+                    mouseOffset(moveEvent);
 
                     //  Drawing a lines
                     if (gameMap[mouseMoveY][mouseMoveX] == '0') {
@@ -317,9 +337,6 @@ function drawGame(event) {
 
                             // Drawing the pipe     
                             drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], previousPosition, currentPosition)
-
-
-                            // drawPipe(mouseMoveX, mouseMoveY);
                         }
                     }
                     //! If users make 'back' move pipe should be removed and abbreviated 
@@ -331,31 +348,6 @@ function drawGame(event) {
             }
         }
     }
-    debugMode(true, event);
-}
-
-// Developer tools
-// TODO: make separate class with this kind of things
-function debugMode(isModeOn, event) {
-    if(isModeOn) {
-        //! Information for debugging
-        //! Position of clicked rectangle and positon of square with the point (same color)
-        end.innerHTML = "startPosition.X, startPosition.Y: " + startPosition.X + " " + startPosition.Y + "<br />endPosition.X, endPosition.Y: " + endPosition.X + " " + endPosition.Y;
-
-        //! Information for debugging
-        //! Position of clicked rectangle, offset of the mouse (x, y) and full array of the current game map
-        current.innerHTML = "Rect(X,Y): " + Math.floor(event.offsetX / tileW) * tileW +
-            ", " + Math.floor(event.offsetY / tileW) * tileW + "<br />Offset: " + event.offsetX + ", " + event.offsetY
-            + "<br />Array: ";
-
-        //! Priting out gameMap array to HTML div
-        gameMapArray.innerHTML = "";
-        for (var y = 0; y < mapLength; y++) {
-            for (var x = 0; x < mapLength; x++) {
-                gameMapArray.innerHTML += gameMap[y][x] + " ";
-            }
-            gameMapArray.innerHTML += "<br />";
-        }
-    }
-
+    //! Developer tool
+    gameDebugInfo(event);
 }
