@@ -1,14 +1,16 @@
 class Node {
-    constructor(x, y, g, h, parent, inside){
-        // this.parent = parent;
+    constructor(x, y, g, h, parent, value, state){
         this.position = {
             x: x,
             y: y,
         }
         this.g = g;
         this.h = h;
-        this.inside = inside;
         this.parent = parent;
+        
+        //! For future work
+        this.value = value;
+        this.state = state;
     }
 
     toString() {

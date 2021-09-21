@@ -6,6 +6,8 @@ var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
 
+
+// Enums with localization of tiles
 let currentPosition = {
     X: 0,
     Y: 0
@@ -21,7 +23,6 @@ let previousPosition = {
     Y: 0
 }
 
-// X and Y coordinate of the second tile with a point with this same color
 let endPosition = {
     X: 0,
     Y: 0
@@ -30,14 +31,13 @@ let endPosition = {
 var selected = false;
 var pressed = false;
 var isMapDrawn = false;
-
+var i = 0;
 
 // Test divs variables
 var current = null;
 var end = null;
 var mouse = null;
 var gameMapArray = null;
-var i = 0;
 
 
 // Enum with colors
