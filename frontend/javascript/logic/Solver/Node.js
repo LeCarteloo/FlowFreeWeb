@@ -1,5 +1,5 @@
 class Node {
-    constructor(x, y, g, h, parent, value, state){
+    constructor(x, y, g, h, parent, value, move){
         this.position = {
             x: x,
             y: y,
@@ -10,7 +10,7 @@ class Node {
         
         //! For future work
         this.value = value;
-        this.state = state;
+        this.move = move;
     }
 
     toString() {
