@@ -1,15 +1,18 @@
 // ############ Game debug functions ############ //
 
-function gameDebugInfo(event) {
+function gameDebugInfo(event, isOn) {
+    if(!isOn) {
+        return;
+    }
+
     // Position of clicked rectangle and positon of square with the point (same color)
-    end.innerHTML = "startPosition.X, startPosition.Y: " + startPosition.X + " " 
-    + startPosition.Y + "<br />endPosition.X, endPosition.Y: " 
+    end.innerHTML = "Clicked point position (X, Y):" + startPosition.X + " " 
+    + startPosition.Y + "<br />End point position (X, Y): " 
     + endPosition.X + " " + endPosition.Y;
 
-    // Position of clicked rectangle, offset of the mouse (x, y) and full array of the current game map
-    current.innerHTML = "Rect(X,Y): " + Math.floor(event.offsetX / tileW) * tileW +
-    ", " + Math.floor(event.offsetY / tileW) * tileW + "<br />Offset: " + event.offsetX + ", " + event.offsetY
-    + "<br />Array: ";
+    // True position of clicked rectangle, offset of the mouse (x, y) and full array of the current game map
+    current.innerHTML = "True position of tile (X, Y): " + Math.floor(event.offsetX / tileW) * tileW +
+    ", " + Math.floor(event.offsetY / tileW) * tileW + "<br />Game map Array: ";
 
     // Priting out gameMap array to HTML div
     gameMapArray.innerHTML = "";
@@ -21,12 +24,20 @@ function gameDebugInfo(event) {
     }
 }
 
-function mouseOffset(moveEvent) {
+function mouseOffset(moveEvent, isOn) {
+    if(!isOn) {
+        return;
+    }
+
     // Mouse div showing current position of mouse when button is hold
-    mouse.innerHTML = "Mouse(X, Y): " + moveEvent.offsetX + ", " + moveEvent.offsetY;
+    mouse.innerHTML = "Mouse position (X, Y):" + moveEvent.offsetX + ", " + moveEvent.offsetY;
 }
 
-function drawPosOfSquares(x, y) {
+function drawPosOfSquares(x, y, isOn) {
+    if(!isOn) {
+        return;
+    }
+
     context.fillStyle = "#FFF";
     context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
 }

@@ -33,11 +33,14 @@ var pressed = false;
 var isMapDrawn = false;
 var i = 0;
 
-// Test divs variables
+// Debug divs from DOM
 var current = null;
 var end = null;
 var mouse = null;
 var gameMapArray = null;
+var checkBox = null;
+var debugMode = true;
+
 
 
 // Enum with colors
@@ -56,16 +59,14 @@ var Colors = {
     e: "grey",
 };
 
-// GAME MAP (for test purposes)
+//! GAME MAP (for test purposes)
 var gameMap = [
-    ['g0', '0', '0', 'y0', '0', 'y0', 'a0', '0'],
-    ['0', '0', '0', '0', 'g0', 'r0', '0', '0'],
-    ['0', '0', 'o0', '0', '0', 'r0', '0', '0'],
-    ['0', '0', '0', 'l0', '0', '0', '0', '0'],
-    ['0', 'p0', '0', '0', 'o0', '0', '0', '0'],
-    ['0', '0', 'l0', '0', '0', '0', '0', '0'],
-    ['p0', '0', 'b0', 'a0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0', 'b0', '0'],
+    ['r0', 'g0', 'b0', '0', 'y0', 'l0'],
+    ['0', '0', '0', '0', 'n0', '0'],
+    ['0', '0', 'b0', '0', '0', '0'],
+    ['0', '0', 'y0', '0', '0', '0'],
+    ['r0', '0', 'n0', '0', '0', '0'],
+    ['g0', '0', 'l0', '0', '0', '0'],
 ];
 
 window.onload = function () {
@@ -91,7 +92,22 @@ window.onload = function () {
     mouse = document.getElementById('mouseMoved');
     gameMapArray = document.getElementById('gameMapArray');
     bugWithPipes = document.getElementById('bugWithPipes');
+    checkBox = document.getElementById('debugCheckBox');
+    var gameInfo = document.querySelector('.game-info');
+    var solverInfo = document.querySelector('.solver-info');
 
+    checkBox.addEventListener('change', function() {
+        if (this.checked) {
+            debugMode = true;
+            gameInfo.style.display = 'block';
+            solverInfo.style.display = 'block';
+        } else {
+            debugMode = false;
+            gameInfo.style.display = 'none';
+            solverInfo.style.display = 'none';
+            drawGame(event)
+        }
+      });
 };
 
 function handleMouseUp(event) {
@@ -100,8 +116,6 @@ function handleMouseUp(event) {
     pressed = false;
 
     console.log("Mouse unpressed");
-
-    
 
     // Redrawing a game when button is unpressed (to remove unlinked pipes)
     drawGame(event);
@@ -130,7 +144,7 @@ function handleMouseDown(event) {
                     drawSquares(x, y);
 
                     //! Developer tool
-                   drawPosOfSquares(x, y);
+                   drawPosOfSquares(x, y, debugMode);
                 }
 
                 // Clearing points
@@ -142,7 +156,7 @@ function handleMouseDown(event) {
                     drawPoint(x, y);
 
                     //! Developer tool
-                    drawPosOfSquares(x, y);
+                    drawPosOfSquares(x, y, debugMode);
                 }
             }
         }
@@ -260,7 +274,8 @@ function drawGame(event) {
                 // Drawing map from game map array
                 // drawPipe(x, y);
 
-                drawPosOfSquares(x, y);
+                //! Developer tool
+                drawPosOfSquares(x, y, debugMode);
             }
         }
        
@@ -321,7 +336,8 @@ function drawGame(event) {
                     var mouseMoveX = (Math.floor(moveEvent.offsetX / tileW) * tileW) / tileW;
                     var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / tileH;
 
-                    mouseOffset(moveEvent);
+                    //! Developer tool
+                    mouseOffset(moveEvent, debugMode);
 
                     //  Drawing a lines
                     if (gameMap[mouseMoveY][mouseMoveX] == '0') {
@@ -349,5 +365,5 @@ function drawGame(event) {
         }
     }
     //! Developer tool
-    gameDebugInfo(event);
+    gameDebugInfo(event, debugMode);
 }

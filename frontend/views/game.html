@@ -6,17 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../javascript/logic/Debug.js"></script>
     <script src="../javascript/logic/Game.js"></script>
-    <link rel="stylesheet" href="../css/test.css">
+    <link rel="stylesheet" href="../css/game.css">
     <title>Tests</title>
 </head>
-<body style="background: #121212; padding: 0; margin: 0;">
-
-    <div id="debug-mode" style="position: absolute; float: right; pointer-events:none; user-select: none;" >
-        <div id="end" style="color: #FFF;">Start, End</div>
-        <div id="status" style="color: #FFF;">Rect, Offset </div>
-        <div id="gameMapArray" style="color: #FFF;">Array</div>
-        <div id="mouseMoved" style="color: #FFF;">Mouse</div>
-        <div id="bugWithPipes" style="color: #FFF;"></div>
+<body>
+    <div id="debug-mode">
+        <input id="debugCheckBox" type="checkbox" checked> Debug Mode</input>
+        <div class="game-info">
+            <p class="header">Game informations</p>
+            <div id="end"></div>
+            <div id="status"></div>
+            <div id="gameMapArray">Game map array:</div>
+            <div id="mouseMoved">Mouse position (X, Y):</div>
+            <div id="bugWithPipes"></div>
+        </div>
+        <div class="solver-info">
+            <p class="header">Solver informations</p>
+            <div id="solveTime">Solved in: </div>
+            <div id="solverComplexity">Nodes/Variables/Clausules: </div>
+            <div id="reducedToSat">Clauses that have been created:
+                <div id="satLog">
+                </div>
+            </div>
+            <div id="completedMap">Solved game map Array:</div>
+            <br>
+        </div>
     </div>
 
     <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
