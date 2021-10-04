@@ -39,6 +39,7 @@ var end = null;
 var mouse = null;
 var gameMapArray = null;
 var checkBox = null;
+var reducedToSat = null;
 var debugMode = true;
 
 
@@ -61,12 +62,11 @@ var Colors = {
 
 //! GAME MAP (for test purposes)
 var gameMap = [
-    ['r0', 'g0', 'b0', '0', 'y0', 'l0'],
-    ['0', '0', '0', '0', 'n0', '0'],
-    ['0', '0', 'b0', '0', '0', '0'],
-    ['0', '0', 'y0', '0', '0', '0'],
-    ['r0', '0', 'n0', '0', '0', '0'],
-    ['g0', '0', 'l0', '0', '0', '0'],
+    ['r0', '0', 'g0', '0', 'a0'],
+    ['0', '0', 'l0', '0', 'y0'],
+    ['0', '0', '0', '0', '0'],
+    ['0', 'g0', '0', 'a0', '0'],
+    ['0', 'r0', 'l0', 'y0', '0'],
 ];
 
 window.onload = function () {
@@ -95,6 +95,7 @@ window.onload = function () {
     checkBox = document.getElementById('debugCheckBox');
     var gameInfo = document.querySelector('.game-info');
     var solverInfo = document.querySelector('.solver-info');
+    reducedToSat = document.getElementById('reducedToSat');
 
     checkBox.addEventListener('change', function() {
         if (this.checked) {
@@ -367,3 +368,7 @@ function drawGame(event) {
     //! Developer tool
     gameDebugInfo(event, debugMode);
 }
+//!#######################################################!//
+                //! Testing the SAT ALGORITHM !//
+var satClass = new SAT();
+satClass.main();
