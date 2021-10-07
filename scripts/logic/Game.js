@@ -39,7 +39,7 @@ var end = null;
 var mouse = null;
 var gameMapArray = null;
 var checkBox = null;
-var reducedToSat = null;
+var satLog = null;
 var debugMode = true;
 
 
@@ -69,6 +69,7 @@ var gameMap = [
     ['0', 'r0', 'l0', 'y0', '0'],
 ];
 
+
 window.onload = function () {
     // Getting the canvas and context from the HTML file
     canvas = document.getElementById('game');
@@ -95,7 +96,7 @@ window.onload = function () {
     checkBox = document.getElementById('debugCheckBox');
     var gameInfo = document.querySelector('.game-info');
     var solverInfo = document.querySelector('.solver-info');
-    reducedToSat = document.getElementById('reducedToSat');
+    satLog = document.getElementById('satLog');
 
     checkBox.addEventListener('change', function() {
         if (this.checked) {
@@ -109,6 +110,38 @@ window.onload = function () {
             drawGame(event)
         }
       });
+
+
+    //!#######################################################!//
+                //! Testing the SAT ALGORITHM !//
+
+    // Global game map variable for test puropses
+    const satMap = [
+        [1, 0, 2, 0, 3],
+        [0, 0, 4, 0, 5],
+        [0, 0, 0, 0, 0],
+        [0, 2, 0, 3, 0],
+        [0, 1, 4, 5, 0]
+    ];
+    // Enum with colors for test purposes
+    const satColors = {
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        // '6': 6
+    }
+    const satNumberColors = 5;
+    var satClass = new SAT(satMap, satColors, satNumberColors);
+    satClass.main();
+    var debugClauses = satClass.debugArray;
+    satLog.value = "";
+    for(let i = 0; i < debugClauses.length; i++) {
+        satLog.value += debugClauses[i] + "\n"
+    }
+
+    //!#######################################################!// 
 };
 
 function handleMouseUp(event) {
@@ -357,9 +390,10 @@ function drawGame(event) {
                         }
                     }
                     //! If users make 'back' move pipe should be removed and abbreviated 
-                    // if(gameMap[mouseMoveY][mouseMoveX] ==) {
-                    //     gameMap[mouseMoveY][mouseMoveX] = 0;
-                    //     drawGame(event);
+                    // if(gameMap[mouseMoveY][mouseMoveX].substr(0, 1) == gameMap[startPosition.Y][startPosition.X].substr(0, 1) && parseInt(gameMap[mouseMoveY][mouseMoveX].substr(1, 3)) != 0 && ) {
+                    // console.log(gameMap[mouseMoveY][mouseMoveX])
+                    // gameMap[mouseMoveY][mouseMoveX] = 0;
+                    // drawGame(event);
                     // }
                 }
             }
@@ -368,7 +402,3 @@ function drawGame(event) {
     //! Developer tool
     gameDebugInfo(event, debugMode);
 }
-//!#######################################################!//
-                //! Testing the SAT ALGORITHM !//
-var satClass = new SAT();
-satClass.main();
