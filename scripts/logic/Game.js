@@ -39,7 +39,6 @@ var end = null;
 var mouse = null;
 var gameMapArray = null;
 var checkBox = null;
-var satLog = null;
 var debugMode = true;
 
 
@@ -96,7 +95,10 @@ window.onload = function () {
     checkBox = document.getElementById('debugCheckBox');
     var gameInfo = document.querySelector('.game-info');
     var solverInfo = document.querySelector('.solver-info');
-    satLog = document.getElementById('satLog');
+    var satLog = document.getElementById('satLog');
+    var solveTime = document.getElementById('solveTime');
+    var solverComplexity = document.getElementById('solverComplexity');
+
 
     checkBox.addEventListener('change', function() {
         if (this.checked) {
@@ -137,9 +139,13 @@ window.onload = function () {
     satClass.main();
     var debugClauses = satClass.debugArray;
     satLog.value = "";
+
     for(let i = 0; i < debugClauses.length; i++) {
-        satLog.value += debugClauses[i] + "\n"
+        satLog.value += (debugClauses[i].toString()).replaceAll(",", " ") + " 0\n";
     }
+
+    solveTime.innerHTML = `Solved in: ${satClass.time}`
+    solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
 
     //!#######################################################!// 
 };
