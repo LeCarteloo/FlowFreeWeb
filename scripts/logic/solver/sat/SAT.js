@@ -27,7 +27,8 @@ class SAT {
     }
 
     //! dev tool
-    debugArray = [];
+    colorArray = [];
+    solvedMap = [];
     time = 0;
 
     // Main function
@@ -38,8 +39,11 @@ class SAT {
         this.printGroup("Neighbours of point (0, 0)", this.neighbours(0, 0))
         this.printGroup("All possible pairs of array [7,8,9,10,11]", this.pairs([7,8,9,10,11]))
         this.printGroup("Negated neighbours", this.notBothNeighbours([7,8,9,10,11],[1, 2]))
-        this.debugArray = this.colorSAT(this.GameMap, this.Colors);
-        this.printGroup("Colors reduced to SAT", this.debugArray)
+        
+        this.colorArray = this.colorSAT(this.GameMap, this.Colors);
+        this.solvedMap = this.decodeSAT(this.GameMap, solved, this.Colors);
+
+        this.printGroup("Colors reduced to SAT", this.colorArray)
         this.printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
 
         var end = performance.now();

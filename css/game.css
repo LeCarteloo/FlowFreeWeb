@@ -49,3 +49,21 @@ div {
     margin-left: 15px;
     margin-top: 5px
 }
+
+#solve {
+    background-color: transparent;
+    border: solid 2px orangered;
+    width: 100%;
+    color: orangered;
+    font-weight: bold;
+}
+
+#solve:hover {
+    background-color: orangered;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    border: solid 2px transparent;
+    color: black;
+}
+

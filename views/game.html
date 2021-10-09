@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../scripts/logic/Debug.js"></script>
+    <script src="../scripts/logic/DrawSolved.js"></script>
     <script src="../scripts/logic/solver/sat/SAT.js"></script>
     <script src="../scripts/logic/Game.js"></script>
     <script src="../scripts/logic/solver/sat/SolvedTests.js"></script>
@@ -26,6 +27,7 @@
         </div>
         <div class="solver-info">
             <p class="header">Solver informations</p>
+            <button id="solve">SOLVE FULL MAP</button>
             <div id="solveTime">Solved in: </div>
             <div id="solverComplexity">Nodes/Variables/Clausules: </div>
             <div id="reducedToSat">Clauses that have been created:

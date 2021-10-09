@@ -45,29 +45,29 @@ var debugMode = true;
 
 // Enum with colors
 var Colors = {
-    r: "red",
-    g: "green",
-    b: "blue",
-    y: "yellow",
-    o: "orange",
-    a: "aqua",
-    p: "purple",
-    l: "lime",
-    n: "brown",
-    w: "white",
-    d: "darkblue",
-    e: "grey",
+    R: "red",
+    G: "green",
+    B: "blue",
+    Y: "yellow",
+    O: "orange",
+    A: "aqua",
+    P: "purple",
+    L: "lime",
+    M: "magenta",
+    10: "white",
+    11: "darkblue",
+    12: "grey",
 };
 
 //! GAME MAP (for test purposes)
 var gameMap = [
-    ['r0', '0', 'g0', '0', 'a0'],
-    ['0', '0', 'l0', '0', 'y0'],
-    ['0', '0', '0', '0', '0'],
-    ['0', 'g0', '0', 'a0', '0'],
-    ['0', 'r0', 'l0', 'y0', '0'],
+    ['R', '0', 'G', 'g', 'A'],
+    ['0', '0', 'L', 'g', 'Y'],
+    ['0', 'g', 'g', 'g', '0'],
+    ['0', 'G', '0', 'A', '0'],
+    ['0', 'R', 'L', 'Y', '0'],
 ];
-
+var solvedColors = ['r'];
 
 window.onload = function () {
     // Getting the canvas and context from the HTML file
@@ -93,12 +93,14 @@ window.onload = function () {
     gameMapArray = document.getElementById('gameMapArray');
     bugWithPipes = document.getElementById('bugWithPipes');
     checkBox = document.getElementById('debugCheckBox');
+
     var gameInfo = document.querySelector('.game-info');
     var solverInfo = document.querySelector('.solver-info');
     var satLog = document.getElementById('satLog');
     var solveTime = document.getElementById('solveTime');
     var solverComplexity = document.getElementById('solverComplexity');
-
+    var completedMap = document.getElementById('completedMap');
+    var solve = document.getElementById('solver');
 
     checkBox.addEventListener('change', function() {
         if (this.checked) {
@@ -137,7 +139,7 @@ window.onload = function () {
     const satNumberColors = 5;
     var satClass = new SAT(satMap, satColors, satNumberColors);
     satClass.main();
-    var debugClauses = satClass.debugArray;
+    var debugClauses = satClass.colorArray;
     satLog.value = "";
 
     for(let i = 0; i < debugClauses.length; i++) {
@@ -146,8 +148,28 @@ window.onload = function () {
 
     solveTime.innerHTML = `Solved in: ${satClass.time}`
     solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
-
     //!#######################################################!// 
+
+    //!#######################################################!//
+                //! Testing the drawing comple map !//
+    // var drawMap = [
+    //     ['R', '0', 'G', '0', 'A'],
+    //     ['r', '0', 'L', '0', 'Y'],
+    //     ['r', '0', '0', '0', '0'],
+    //     ['r', 'G', '0', 'A', '0'],
+    //     ['r', 'R', 'L', 'Y', '0'],
+    // ];
+    // var drawSolved = new DrawSolved();
+
+    // for (let y = 0; y < drawMap.length; y++) {
+    //     for(let x = 0; x < drawMap.length; x++) {
+    //         if(!isUpper(drawMap[y][x]) && drawMap[y][x] > '0') {
+    //             console.log(drawMap[y][x])
+    //             drawSolved.drawPipeFromMap(y, x, drawMap)
+    //         }
+    //     }        
+    // }
+    //!#######################################################!//             
 };
 
 function handleMouseUp(event) {
@@ -171,12 +193,12 @@ function handleMouseDown(event) {
     var mouseY = (Math.floor(event.offsetY / tileW) * tileW) / tileH;
 
     // If mouse is pressed on point all pipes with this color are removed
-    if(gameMap[mouseY][mouseX].substr(1, 3) == '0'){
+    if(isUpper(gameMap[mouseY][mouseX])){
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
 
                 // Clearing pipes
-                if (gameMap[y][x].substr(0, 1) == gameMap[mouseY][mouseX].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 3)) > 0) {
+                if (gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && !isUpper(gameMap[y][x])) {
                     gameMap[y][x] = '0';
 
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
@@ -188,7 +210,7 @@ function handleMouseDown(event) {
                 }
 
                 // Clearing points
-                if(gameMap[y][x].substr(0, 1) == gameMap[mouseY][mouseX].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 2)) == 0) {
+                if(gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && isUpper(gameMap[y][x])) {
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
                     // TODO: Should be written better
                     // Redrawing squares and points (clearing the pipes from game map)
@@ -214,12 +236,12 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y + 1))) {
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
-                if (gameMap[y][x].substr(0, 1) == gameMap[startPosition.Y][startPosition.X].substr(0, 1) && parseInt(gameMap[y][x].substr(1, 3)) > 0) {
+                if (gameMap[y][x].toUpperCase() == gameMap[startPosition.Y][startPosition.X] && !isUpper(gameMap[y][x])) {
                     gameMap[y][x] = '0';
                     context.clearRect(startPosition.X * tileH, startPosition.Y*tileW, tileW - 1, tileH - 1);
                     context.clearRect(endPosition.X * tileH, endPosition.Y*tileW, tileW - 1, tileH - 1);
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
-                    
+
                     // TODO: Should be written better
                     // Redrawing squares and points (clearing the pipes from game map)
                     drawSquares(startPosition.X, startPosition.Y);
@@ -235,9 +257,9 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     // Drawing pipe to end point
     else {
         if(mouseX == endPosition.X && mouseY == endPosition.Y){
-            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], currentPosition, endPosition);
+            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], currentPosition, endPosition);
             // Drawing transparent tile when points are connected
-            drawTransparent(gameMap[startPosition.Y][startPosition.X].substr(0, 1));
+            drawTransparent(gameMap[startPosition.Y][startPosition.X]);
         }
     }
 }
@@ -246,7 +268,7 @@ function clearNotConntectedPipes(mouseX, mouseY) {
 function drawTransparent(point) {
     for (var y = 0; y < mapLength; y++) {
         for (var x = 0; x < mapLength; x++) {
-            if(gameMap[y][x].substr(0,1) == point) {
+            if(gameMap[y][x].toUpperCase() == point) {
                 context.globalAlpha = 0.2;
                 context.fillStyle = Colors[point];
                 context.fillRect(x * tileW, y * tileW, tileW, tileH);
@@ -283,9 +305,9 @@ function drawSquares(x, y) {
 
 // Drawing a point
 function drawPoint(x, y) {
-    if (gameMap[y][x] > '0' && gameMap[y][x].substr(1, 3) == '0') {
+    if (gameMap[y][x] > '0') {
 
-        context.fillStyle = Colors[gameMap[y][x].substr(0, 1)];
+        context.fillStyle = Colors[gameMap[y][x]];
 
         var circle = new Path2D();
         circle.moveTo(x * tileW, y * tileH);
@@ -294,6 +316,9 @@ function drawPoint(x, y) {
     }
 }
 
+function isUpper(string) {
+    return /^[A-Z]*$/.test(string);
+}
 
 function drawGame(event) {
 
@@ -359,8 +384,8 @@ function drawGame(event) {
             currentPosition.Y = startPosition.Y;
 
             /* If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
-            '0' is a blank space and substr(1, 3) == '0' tells that this is a point*/
-            if (gameMap[startPosition.Y][startPosition.X] > '0' && gameMap[startPosition.Y][startPosition.X].substr(1, 3) == '0') {
+            If a value is upper case that tells that this is the point*/
+            if (isUpper(gameMap[startPosition.Y][startPosition.X])) {
                 selected = true;
                 drawGame(event);
             }
@@ -385,14 +410,14 @@ function drawGame(event) {
                         if ((mouseMoveX == currentPosition.X + 1 && mouseMoveY == currentPosition.Y) || (mouseMoveX == currentPosition.X - 1 && mouseMoveY == currentPosition.Y)
                             || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
                             i++;
-                            gameMap[mouseMoveY][mouseMoveX] = gameMap[startPosition.Y][startPosition.X].substr(0, 1) + i;
+                            gameMap[mouseMoveY][mouseMoveX] = gameMap[startPosition.Y][startPosition.X].toLowerCase();
                             previousPosition.X = currentPosition.X;
                             previousPosition.Y = currentPosition.Y;
                             currentPosition.X = mouseMoveX;
                             currentPosition.Y = mouseMoveY;
 
                             // Drawing the pipe     
-                            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X].substr(0, 1)], previousPosition, currentPosition)
+                            drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition)
                         }
                     }
                     //! If users make 'back' move pipe should be removed and abbreviated 
@@ -405,6 +430,19 @@ function drawGame(event) {
             }
         }
     }
+    var  drawSolved = new DrawSolved();
+    var test = drawSolved.drawPipeFromMap(gameMap, solvedColors);
+
+    console.log(test);
+    console.log(test.length)
+
+    for (let i = 0; i < test.length; i++) {
+        drawSolved.animate(test[i][0],test[i][1],test[i][2],test[i][3]);     
+    }
+
+    solvedColors = [];
+    drawTransparent(gameMap[0][0])
+
     //! Developer tool
     gameDebugInfo(event, debugMode);
 }

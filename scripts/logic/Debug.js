@@ -39,7 +39,8 @@ function drawPosOfSquares(x, y, isOn) {
     }
 
     context.fillStyle = "#FFF";
-    context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
+    context.fillText(`(Y: ${y}, X: ${x})`, x * tileW, y * tileH + 10)
+    // context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
 }
 
 // ############ Algorithm debug functions ############ //
