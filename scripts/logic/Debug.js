@@ -30,7 +30,7 @@ function mouseOffset(moveEvent, isOn) {
     }
 
     // Mouse div showing current position of mouse when button is hold
-    mouse.innerHTML = "Mouse position (X, Y):" + moveEvent.offsetX + ", " + moveEvent.offsetY;
+    mouse.innerHTML = `Mouse position (Y: ${moveEvent.offsetY}, X: ${moveEvent.offsetX})` ;
 }
 
 function drawPosOfSquares(x, y, isOn) {
@@ -39,7 +39,7 @@ function drawPosOfSquares(x, y, isOn) {
     }
 
     context.fillStyle = "#FFF";
-    context.fillText(`(Y: ${y}, X: ${x})`, x * tileW, y * tileH + 10)
+    context.fillText(`(Y: ${y}, X: ${x} | Y:${y * tileW}, X: ${x * tileH})`, x * tileW, y * tileH + 10)
     // context.fillText("(X:" + x * tileW + ", Y:" + y * tileH + ")", x * tileW, y * tileH + 10);
 }
 

@@ -41,8 +41,6 @@ var gameMapArray = null;
 var checkBox = null;
 var debugMode = true;
 
-
-
 // Enum with colors
 var Colors = {
     R: "red",
@@ -54,9 +52,9 @@ var Colors = {
     P: "purple",
     L: "lime",
     M: "magenta",
-    10: "white",
-    11: "darkblue",
-    12: "grey",
+    W: "white",
+    D: "darkblue",
+    S: "silver",
 };
 
 //! GAME MAP (for test purposes)
@@ -68,6 +66,9 @@ var gameMap = [
     ['0', 'R', 'L', 'Y', '0'],
 ];
 var solvedColors = ['r'];
+
+var counter = 1;
+var arrayToDraw;
 
 window.onload = function () {
     // Getting the canvas and context from the HTML file
@@ -169,6 +170,8 @@ window.onload = function () {
     //         }
     //     }        
     // }
+
+
     //!#######################################################!//             
 };
 
@@ -430,19 +433,37 @@ function drawGame(event) {
             }
         }
     }
-    var  drawSolved = new DrawSolved();
-    var test = drawSolved.drawPipeFromMap(gameMap, solvedColors);
+    var test = Path.getCoordinates(gameMap, solvedColors);
+    var teee = Path.removeExtra(test);
+    var tee = Path.sortCoordinates(teee);
+    arrayToDraw = Path.createPath(tee);
 
-    console.log(test);
-    console.log(test.length)
-
-    for (let i = 0; i < test.length; i++) {
-        drawSolved.animate(test[i][0],test[i][1],test[i][2],test[i][3]);     
-    }
+    // console.log(kekw[0][0])
+    // var y = arrayToDraw[0].X
+    // console.log(y)
+    // context.strokeStyle = Colors[arrayToDraw[0][0]];
+    // console.log(arrayToDraw)
+    Path.animatePath(arrayToDraw);
 
     solvedColors = [];
-    drawTransparent(gameMap[0][0])
 
     //! Developer tool
     gameDebugInfo(event, debugMode);
 }
+
+// animate path from array
+// function animatePath(arrayToDraw){
+//     if (counter < arrayToDraw.length - 1) {
+//         requestAnimationFrame(fn => {
+//             animatePath(arrayToDraw);
+//         });
+//     }
+//     context.beginPath();
+//     context.lineCap = "round";
+//     context.lineWidth = tileW * 0.4;
+//     context.moveTo(arrayToDraw[counter - 1].Y, arrayToDraw[counter - 1].X);
+//     context.lineTo(arrayToDraw[counter].Y, arrayToDraw[counter].X);
+//     context.stroke();
+//     context.closePath();
+//     counter++;
+// }
