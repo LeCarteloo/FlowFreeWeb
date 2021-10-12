@@ -47,10 +47,11 @@ div {
 
 #debugCheckBox {
     margin-left: 15px;
-    margin-top: 5px
+    margin-top: 5px;
 }
 
-#solve {
+#solveAll, #solveOne {
+    margin-bottom: 5px;
     background-color: transparent;
     border: solid 2px orangered;
     width: 100%;
@@ -58,12 +59,16 @@ div {
     font-weight: bold;
 }
 
-#solve:hover {
+#solveAll:hover, #solveOne:hover {
     background-color: orangered;
     font-weight: bold;
     font-size: 13px;
     cursor: pointer;
-    border: solid 2px transparent;
+    border: solid 2px orangered;
     color: black;
+}
+
+.hide {
+    display: none;
 }
 

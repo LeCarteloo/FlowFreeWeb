@@ -4,12 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../scripts/logic/Path.js"></script>
-    <script src="../scripts/logic/Debug.js"></script>
-    <script src="../scripts/logic/solver/sat/SAT.js"></script>
-    <script src="../scripts/logic/Game.js"></script>
-    <script src="../scripts/logic/solver/sat/SolvedTests.js"></script>
 
+    <!--//! Imports will be moved to js in future  !\\-->
+    <!-- ### Utility ### -->
+    <script src="../scripts/logic/Utility.js"></script>
+    <!-- ### Path drawing ### -->
+    <script src="../scripts/logic/Path.js"></script>
+    <!-- ### Debug ### -->
+    <script src="../scripts/logic/Debug.js"></script>
+    <!-- ### Solver ### -->
+    <script src="../scripts/logic/solver/sat/SAT.js"></script>
+    <script src="../scripts/logic/solver/sat/SolvedTests.js"></script>
+    <!-- ### Enums ### -->
+    <script src="../scripts/logic/enums/Colors.js"></script>
+    <script src="../scripts/logic/enums/Positions.js"></script>
+    <!-- ### Game ### -->
+    <script src="../scripts/logic/Game.js"></script>
 
     <link rel="stylesheet" href="../css/game.css">
     <title>Tests</title>
@@ -22,12 +32,13 @@
             <div id="end"></div>
             <div id="status"></div>
             <div id="gameMapArray">Game map array:</div>
-            <div id="mouseMoved">Mouse position (X, Y):</div>
+            <div id="mouseMoved">Mouse position (Y, X):</div>
             <div id="bugWithPipes"></div>
         </div>
         <div class="solver-info">
             <p class="header">Solver informations</p>
-            <button id="solve">SOLVE FULL MAP</button>
+            <button id="solveAll" onclick="solveAll()">SOLVE FULL MAP</button>
+            <button id="solveOne" onclick="solveOne()">SOLVE ONE COLOR</button>
             <div id="solveTime">Solved in: </div>
             <div id="solverComplexity">Nodes/Variables/Clausules: </div>
             <div id="reducedToSat">Clauses that have been created:

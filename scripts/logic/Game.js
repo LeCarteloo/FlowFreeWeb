@@ -1,37 +1,14 @@
 //! Comments with exlamation mark are for test purposes (they will be removed later)
-// TODO: Add effects to clicking and connecting points + maybe rendering animation (if got time)
-// TODO: Code needs to have less n^2 'FOR' loops
-// TODO: Rewrite thing with end point pipes
+// TODO: Rewrite thing with end point pipes !IMPORTANT!
+
+var SPEED = 70;
+
 var context = null;
 var tileW, tileH, mapLength;
 var canvas = null;
-
-
-// Enums with localization of tiles
-let currentPosition = {
-    X: 0,
-    Y: 0
-}
-
-let startPosition = {
-    X: 0,
-    Y: 0
-}
-
-let previousPosition = {
-    X: 0,
-    Y: 0
-}
-
-let endPosition = {
-    X: 0,
-    Y: 0
-}
-
 var selected = false;
 var pressed = false;
 var isMapDrawn = false;
-var i = 0;
 
 // Debug divs from DOM
 var current = null;
@@ -41,34 +18,29 @@ var gameMapArray = null;
 var checkBox = null;
 var debugMode = true;
 
-// Enum with colors
-var Colors = {
-    R: "red",
-    G: "green",
-    B: "blue",
-    Y: "yellow",
-    O: "orange",
-    A: "aqua",
-    P: "purple",
-    L: "lime",
-    M: "magenta",
-    W: "white",
-    D: "darkblue",
-    S: "silver",
-};
-
 //! GAME MAP (for test purposes)
 var gameMap = [
-    ['R', '0', 'G', 'g', 'A'],
-    ['0', '0', 'L', 'g', 'Y'],
-    ['0', 'g', 'g', 'g', '0'],
-    ['0', 'G', '0', 'A', '0'],
-    ['0', 'R', 'L', 'Y', '0'],
+    ['R', '0', 'G', '0', 'O'],
+    ['0', '0', 'B', '0', 'Y'],
+    ['0', '0', '0', '0', '0'],
+    ['0', 'G', '0', 'O', '0'],
+    ['0', 'R', 'B', 'Y', '0'],
 ];
-var solvedColors = ['r'];
 
-var counter = 1;
-var arrayToDraw;
+var solvedGameMap = [
+    ['R', 'g', 'G', 'o', 'O'],
+    ['r', 'g', 'B', 'o', 'Y'],
+    ['r', 'g', 'b', 'o', 'y'],
+    ['r', 'G', 'b', 'O', 'y'],
+    ['r', 'R', 'B', 'Y', 'y'],
+];
+
+var numberOfColors = 5;
+
+var solvedColors = ['r'];
+var blockedColors = ['l'];
+
+
 
 window.onload = function () {
     // Getting the canvas and context from the HTML file
@@ -116,7 +88,6 @@ window.onload = function () {
         }
       });
 
-
     //!#######################################################!//
                 //! Testing the SAT ALGORITHM !//
 
@@ -149,31 +120,30 @@ window.onload = function () {
 
     solveTime.innerHTML = `Solved in: ${satClass.time}`
     solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
-    //!#######################################################!// 
-
-    //!#######################################################!//
-                //! Testing the drawing comple map !//
-    // var drawMap = [
-    //     ['R', '0', 'G', '0', 'A'],
-    //     ['r', '0', 'L', '0', 'Y'],
-    //     ['r', '0', '0', '0', '0'],
-    //     ['r', 'G', '0', 'A', '0'],
-    //     ['r', 'R', 'L', 'Y', '0'],
-    // ];
-    // var drawSolved = new DrawSolved();
-
-    // for (let y = 0; y < drawMap.length; y++) {
-    //     for(let x = 0; x < drawMap.length; x++) {
-    //         if(!isUpper(drawMap[y][x]) && drawMap[y][x] > '0') {
-    //             console.log(drawMap[y][x])
-    //             drawSolved.drawPipeFromMap(y, x, drawMap)
-    //         }
-    //     }        
-    // }
-
 
     //!#######################################################!//             
 };
+
+function solveAll() {
+    console.log("SOLVED ALL POINTS");
+
+    for (let index = 0; index < numberOfColors; index++) {
+        Path.drawPath(solvedGameMap, Object.keys(Colors)[index], solvedColors, 70);
+    }
+
+    document.getElementById('solveAll').classList.add('hide');
+    document.getElementById('solveOne').classList.add('hide');
+
+    // var test = Path.getCoordinates(gameMap);
+    // var teee = Path.removeExtra(test);
+    // var tee = Path.sortCoordinates(teee);
+    // arrayToDraw = Path.createPath(tee, 20);
+}
+
+function solveOne() {
+    console.log("SOLVED ONE POINT")
+}
+
 
 function handleMouseUp(event) {
     // Removing the onmousemove event when mouse button is unpressed
@@ -185,8 +155,6 @@ function handleMouseUp(event) {
     // Redrawing a game when button is unpressed (to remove unlinked pipes)
     drawGame(event);
     // clearNotConntectedPipes(event.offsetX, event.offsetY);
-
-    i = 0;
 }
 
 function handleMouseDown(event) {
@@ -197,6 +165,7 @@ function handleMouseDown(event) {
 
     // If mouse is pressed on point all pipes with this color are removed
     if(isUpper(gameMap[mouseY][mouseX])){
+        console.log("???")
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
 
@@ -226,7 +195,7 @@ function handleMouseDown(event) {
             }
         }
     }
-
+ 
     console.log("Mouse pressed");
     // Drawing game when mouse is pressed
     drawGame(event);
@@ -412,7 +381,6 @@ function drawGame(event) {
                         // 'IF' does not allow diagonal moves
                         if ((mouseMoveX == currentPosition.X + 1 && mouseMoveY == currentPosition.Y) || (mouseMoveX == currentPosition.X - 1 && mouseMoveY == currentPosition.Y)
                             || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
-                            i++;
                             gameMap[mouseMoveY][mouseMoveX] = gameMap[startPosition.Y][startPosition.X].toLowerCase();
                             previousPosition.X = currentPosition.X;
                             previousPosition.Y = currentPosition.Y;
@@ -433,37 +401,7 @@ function drawGame(event) {
             }
         }
     }
-    var test = Path.getCoordinates(gameMap, solvedColors);
-    var teee = Path.removeExtra(test);
-    var tee = Path.sortCoordinates(teee);
-    arrayToDraw = Path.createPath(tee);
-
-    // console.log(kekw[0][0])
-    // var y = arrayToDraw[0].X
-    // console.log(y)
-    // context.strokeStyle = Colors[arrayToDraw[0][0]];
-    // console.log(arrayToDraw)
-    Path.animatePath(arrayToDraw);
-
-    solvedColors = [];
 
     //! Developer tool
     gameDebugInfo(event, debugMode);
 }
-
-// animate path from array
-// function animatePath(arrayToDraw){
-//     if (counter < arrayToDraw.length - 1) {
-//         requestAnimationFrame(fn => {
-//             animatePath(arrayToDraw);
-//         });
-//     }
-//     context.beginPath();
-//     context.lineCap = "round";
-//     context.lineWidth = tileW * 0.4;
-//     context.moveTo(arrayToDraw[counter - 1].Y, arrayToDraw[counter - 1].X);
-//     context.lineTo(arrayToDraw[counter].Y, arrayToDraw[counter].X);
-//     context.stroke();
-//     context.closePath();
-//     counter++;
-// }
