@@ -37,8 +37,9 @@ var solvedGameMap = [
 
 var numberOfColors = 5;
 
-var solvedColors = ['r'];
-var blockedColors = ['l'];
+var colors;
+var solvedColors = [];
+var blockedColors = [];
 
 
 
@@ -121,27 +122,62 @@ window.onload = function () {
     solveTime.innerHTML = `Solved in: ${satClass.time}`
     solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
 
-    //!#######################################################!//             
+    //!#######################################################!//  
+    
+    // MapGenerator.placePoints();
+
 };
 
 function solveAll() {
     console.log("SOLVED ALL POINTS");
-
+    var color;
     for (let index = 0; index < numberOfColors; index++) {
-        Path.drawPath(solvedGameMap, Object.keys(Colors)[index], solvedColors, 70);
+        color = Object.keys(Colors)[index];
+        if(!solvedColors.includes(color)) {
+            solvedColors.push(color);
+            blockedColors.push(color);
+            Path.drawPath(solvedGameMap, Object.keys(Colors)[index], SPEED);
+
+            for (let y = 0; y < gameMap.length; y++) {
+                for (let x = 0; x < gameMap.length; x++) {
+                    if(solvedGameMap[y][x] == color.toLowerCase()) {
+                        gameMap[y][x] = solvedGameMap[y][x];
+                    }
+                }
+            }
+
+        }
     }
+
+    
 
     document.getElementById('solveAll').classList.add('hide');
     document.getElementById('solveOne').classList.add('hide');
 
-    // var test = Path.getCoordinates(gameMap);
-    // var teee = Path.removeExtra(test);
-    // var tee = Path.sortCoordinates(teee);
-    // arrayToDraw = Path.createPath(tee, 20);
 }
 
+// Solving one random color when it is not yet solved
 function solveOne() {
-    console.log("SOLVED ONE POINT")
+    if(solvedColors.length != 5) {
+        do {
+            var randomColor = Object.keys(Colors)[Math.floor(Math.random() * numberOfColors)];
+        } while(solvedColors.includes(randomColor))
+    
+        solvedColors.push(randomColor);
+        blockedColors.push(randomColor);
+    
+        for (let y = 0; y < gameMap.length; y++) {
+            for (let x = 0; x < gameMap.length; x++) {
+                if(solvedGameMap[y][x] == randomColor.toLowerCase()) {
+                    gameMap[y][x] = solvedGameMap[y][x];
+                }
+            }
+        }
+    
+        console.log(`SOLVED ONE POINT - ${randomColor}`);
+        Path.drawPath(solvedGameMap, randomColor, SPEED, blockedColors);
+    }
+
 }
 
 
@@ -159,18 +195,16 @@ function handleMouseUp(event) {
 
 function handleMouseDown(event) {
     pressed = true;
-
     var mouseX = (Math.floor(event.offsetX / tileW) * tileW) / tileW;
     var mouseY = (Math.floor(event.offsetY / tileW) * tileW) / tileH;
 
     // If mouse is pressed on point all pipes with this color are removed
-    if(isUpper(gameMap[mouseY][mouseX])){
-        console.log("???")
+    if(Utility.isUpper(gameMap[mouseY][mouseX]) && !blockedColors.includes(gameMap[mouseY][mouseX])){
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
 
                 // Clearing pipes
-                if (gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && !isUpper(gameMap[y][x])) {
+                if (gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && !Utility.isUpper(gameMap[y][x])) {
                     gameMap[y][x] = '0';
 
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
@@ -178,11 +212,11 @@ function handleMouseDown(event) {
                     drawSquares(x, y);
 
                     //! Developer tool
-                   drawPosOfSquares(x, y, debugMode);
+                   Debug.drawPosOfSquares(x, y, debugMode);
                 }
 
                 // Clearing points
-                if(gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && isUpper(gameMap[y][x])) {
+                if(gameMap[y][x].toUpperCase() == gameMap[mouseY][mouseX] && Utility.isUpper(gameMap[y][x])) {
                     context.clearRect(x * tileH, y*tileW, tileW - 1, tileH - 1);
                     // TODO: Should be written better
                     // Redrawing squares and points (clearing the pipes from game map)
@@ -190,7 +224,7 @@ function handleMouseDown(event) {
                     drawPoint(x, y);
 
                     //! Developer tool
-                    drawPosOfSquares(x, y, debugMode);
+                    Debug.drawPosOfSquares(x, y, debugMode);
                 }
             }
         }
@@ -208,7 +242,7 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y + 1))) {
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
-                if (gameMap[y][x].toUpperCase() == gameMap[startPosition.Y][startPosition.X] && !isUpper(gameMap[y][x])) {
+                if (gameMap[y][x].toUpperCase() == gameMap[startPosition.Y][startPosition.X] && !Utility.isUpper(gameMap[y][x])) {
                     gameMap[y][x] = '0';
                     context.clearRect(startPosition.X * tileH, startPosition.Y*tileW, tileW - 1, tileH - 1);
                     context.clearRect(endPosition.X * tileH, endPosition.Y*tileW, tileW - 1, tileH - 1);
@@ -230,14 +264,15 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     else {
         if(mouseX == endPosition.X && mouseY == endPosition.Y){
             drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], currentPosition, endPosition);
-            // Drawing transparent tile when points are connected
-            drawTransparent(gameMap[startPosition.Y][startPosition.X]);
+            // Drawing the after glow of every pipe and point with that color
+            drawAfterGlow(gameMap[startPosition.Y][startPosition.X]);
+            solvedColors.push(gameMap[startPosition.Y][startPosition.X]);
         }
     }
 }
 
 // TODO: Think about better option without 2x 'FOR' loops
-function drawTransparent(point) {
+function drawAfterGlow(point) {
     for (var y = 0; y < mapLength; y++) {
         for (var x = 0; x < mapLength; x++) {
             if(gameMap[y][x].toUpperCase() == point) {
@@ -277,7 +312,7 @@ function drawSquares(x, y) {
 
 // Drawing a point
 function drawPoint(x, y) {
-    if (gameMap[y][x] > '0') {
+    if (gameMap[y][x] != '0') {
 
         context.fillStyle = Colors[gameMap[y][x]];
 
@@ -286,10 +321,6 @@ function drawPoint(x, y) {
         circle.arc(x * tileW + tileW / 2, y * tileH + tileH / 2, tileW * .47, tileH * .47, 0, 360);
         context.fill(circle);
     }
-}
-
-function isUpper(string) {
-    return /^[A-Z]*$/.test(string);
 }
 
 function drawGame(event) {
@@ -312,7 +343,7 @@ function drawGame(event) {
                 // drawPipe(x, y);
 
                 //! Developer tool
-                drawPosOfSquares(x, y, debugMode);
+                Debug.drawPosOfSquares(x, y, debugMode);
             }
         }
        
@@ -357,7 +388,7 @@ function drawGame(event) {
 
             /* If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
             If a value is upper case that tells that this is the point*/
-            if (isUpper(gameMap[startPosition.Y][startPosition.X])) {
+            if (Utility.isUpper(gameMap[startPosition.Y][startPosition.X]) && !blockedColors.includes(gameMap[startPosition.Y][startPosition.X])) {
                 selected = true;
                 drawGame(event);
             }
@@ -374,10 +405,11 @@ function drawGame(event) {
                     var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / tileH;
 
                     //! Developer tool
-                    mouseOffset(moveEvent, debugMode);
+                    Debug.mouseOffset(moveEvent, debugMode);
 
                     //  Drawing a lines
                     if (gameMap[mouseMoveY][mouseMoveX] == '0') {
+                        console.log("x")
                         // 'IF' does not allow diagonal moves
                         if ((mouseMoveX == currentPosition.X + 1 && mouseMoveY == currentPosition.Y) || (mouseMoveX == currentPosition.X - 1 && mouseMoveY == currentPosition.Y)
                             || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
@@ -391,17 +423,30 @@ function drawGame(event) {
                             drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition)
                         }
                     }
+
+                    // WYK.2 base64-url
                     //! If users make 'back' move pipe should be removed and abbreviated 
-                    // if(gameMap[mouseMoveY][mouseMoveX].substr(0, 1) == gameMap[startPosition.Y][startPosition.X].substr(0, 1) && parseInt(gameMap[mouseMoveY][mouseMoveX].substr(1, 3)) != 0 && ) {
-                    // console.log(gameMap[mouseMoveY][mouseMoveX])
+                    if(gameMap[mouseMoveY][mouseMoveX] == gameMap[startPosition.Y][startPosition.X].toLowerCase()
+                    && mouseMoveY == previousPosition.Y && mouseMoveX == previousPosition.X) {
+                    
+                    gameMap[currentPosition.Y][currentPosition.X] = 0;
+                    drawSquares(currentPosition.X, currentPosition.Y);
+                    currentPosition.X = mouseMoveX;
+                    currentPosition.Y = mouseMoveY;
+
+                    previousPosition.X = mouseMoveX; 
+                    previousPosition.Y = mouseMoveY + 1;
+                    
+                    console.log(`Previous: ${previousPosition.Y}, ${previousPosition.X}`)
+                    console.log(`Current: ${currentPosition.Y}, ${currentPosition.X} `)
                     // gameMap[mouseMoveY][mouseMoveX] = 0;
                     // drawGame(event);
-                    // }
+                    }
                 }
             }
         }
     }
 
     //! Developer tool
-    gameDebugInfo(event, debugMode);
+    Debug.gameDebugInfo(event, debugMode);
 }

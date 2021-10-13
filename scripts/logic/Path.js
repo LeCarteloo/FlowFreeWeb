@@ -2,9 +2,11 @@ class Path {
 
     arrayWithTiles = [];
     counter;
+    blockedColors = [];
     // Generate everything
-    static drawPath(map, color, colors, speed) {
+    static drawPath(map, color, speed, blockedColors) {
         this.counter = 1;
+        this.blockedColors = blockedColors;
         this.arrayWithTiles = this.getCoordinates(map, color);
         this.arrayWithTiles = this.removeExtra(this.arrayWithTiles);
         this.arrayWithTiles = this.sortCoordinates(this.arrayWithTiles);
@@ -16,7 +18,7 @@ class Path {
         };
 
         this.arrayWithTiles = this.createPath(this.arrayWithTiles, speed);
-        this.animatePath(this.arrayWithTiles, Colors[color], startPosition);
+        this.animatePath(this.arrayWithTiles, Colors[color], startPosition, blockedColors);
     }
 
     // Function return an array with removed extra pipe coordinates
@@ -74,7 +76,9 @@ class Path {
             });
         }
         else {
-            drawTransparent(gameMap[startPosition.Y][startPosition.X]);
+            // Drawing the after glow of every pipe and point with that color
+            drawAfterGlow(gameMap[startPosition.Y][startPosition.X]);
+            blockedColors.splice(blockedColors.indexOf(gameMap[startPosition.Y][startPosition.X]), 1)
             return;
         }
         context.beginPath();
@@ -95,7 +99,7 @@ class Path {
         console.groupCollapsed("%c Rendering pipes from map", "color: red")
         for (let y = 0; y < gameMap.length; y++) {
             for(let x = 0; x < gameMap.length; x++) {
-                if(!isUpper(gameMap[y][x]) && gameMap[y][x] > '0') {
+                if(!Utility.isUpper(gameMap[y][x]) && gameMap[y][x] > '0') {
                     const upperCasedMap = gameMap.map(row => row.map(column => column.toUpperCase()));
                     if (y > 0 && upperCasedMap[y - 1][x] == upperCasedMap[y][x] && upperCasedMap[y - 1][x] == value) {
                         console.log(`%c From: (${y}, ${x}) To: (${y - 1}, ${x}) Move: Down`, `color: ${Colors[upperCasedMap[y][x]]}`)
