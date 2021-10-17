@@ -50,7 +50,7 @@ div {
     margin-top: 5px;
 }
 
-#solveAll, #solveOne {
+#solveAll, #solveOne, #astar, #sat {
     margin-bottom: 5px;
     background-color: transparent;
     border: solid 2px orangered;
@@ -59,7 +59,20 @@ div {
     font-weight: bold;
 }
 
-#solveAll:hover, #solveOne:hover {
+#astar, #sat {
+    width: 49%;
+}
+
+#astar {
+    margin-right: 2%;
+}
+
+.btns {
+    display: flex;
+    width: 100%;
+}
+
+#solveAll:hover, #solveOne:hover, #astar:hover, #sat:hover {
     background-color: orangered;
     font-weight: bold;
     font-size: 13px;

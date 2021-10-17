@@ -35,34 +35,34 @@ class SAT {
     main() {
         var start = performance.now();
         // Tests
-        this.printGroup("Map", this.GameMap)
-        this.printGroup("Neighbours of point (0, 0)", this.neighbours(0, 0))
-        this.printGroup("All possible pairs of array [7,8,9,10,11]", this.pairs([7,8,9,10,11]))
-        this.printGroup("Negated neighbours", this.notBothNeighbours([7,8,9,10,11],[1, 2]))
+        this.#printGroup("Map", this.GameMap)
+        this.#printGroup("Neighbours of point (0, 0)", this.#neighbours(0, 0))
+        this.#printGroup("All possible #pairs of array [7,8,9,10,11]", this.#pairs([7,8,9,10,11]))
+        this.#printGroup("Negated neighbours", this.#notBothNeighbours([7,8,9,10,11],[1, 2]))
         
         this.colorArray = this.colorSAT(this.GameMap, this.Colors);
         this.solvedMap = this.decodeSAT(this.GameMap, solved, this.Colors);
-        this.printGroup("Colors reduced to SAT", this.colorArray)
-        this.printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
+        this.#printGroup("Colors reduced to SAT", this.colorArray)
+        this.#printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
 
         var end = performance.now();
         this.time = `${end - start} ms`;
         console.log(`Solved in: ${this.time}`);
     }
 
-    printGroup(name, value) {
+    #printGroup(name, value) {
         console.groupCollapsed(`%c ${name}`, 'color:red; text-transform: uppercase;');
         console.log(value);
         console.groupEnd();
     }
 
     // Color variables (needed for reducing colors to SAT)
-    genColorVariable(y, x, point) {
+    #genColorVariable(y, x, point) {
         return (y * gameMap.length + x) * this.NumberOfColors + point + 1;
     }
 
     // All possible pairs of given array [1, 2, 3] = [1, 2] [1, 3] [2, 3]
-    pairs(array) {
+    #pairs(array) {
         var result = [];
         for (let i = 0; i < array.length - 1; i++) {
             for (let j = i; j < array.length - 1; j++) {
@@ -73,9 +73,9 @@ class SAT {
     }
 
     // No two neighbours of the point can share color with other
-    notBothNeighbours(array, satArray) {
+    #notBothNeighbours(array, satArray) {
         var result = [];
-        for (let pair of this.pairs(array)) {
+        for (let pair of this.#pairs(array)) {
             result.push(-pair[0], -pair[1]);
             satArray.push(result);
             result = [];
@@ -83,7 +83,7 @@ class SAT {
     }
 
     // Returns positon of all neighbours that are within game map borders
-    neighbours(y, x) {
+    #neighbours(y, x) {
         var neighbours = [];
         if(y > 0) {
             neighbours.push([SAT.#POSITION.UP.Y + y, SAT.#POSITION.UP.X + x]);
@@ -113,34 +113,35 @@ class SAT {
                     satArray.push(['c ------', y, x])
                     var point = colors[map[y][x]];
                     // Color variable is true (tile has exactly this color)
-                    satArray.push(this.genColorVariable(y, x, point));
+                    satArray.push(this.#genColorVariable(y, x, point));
 
                     // All other colors values are negated 
-                    for(let i = firstColor; i < this.NumberOfColors + firstColor; i++) {
+                    for(let i = 0; i < this.NumberOfColors; i++) {
                         if(i != point) {
-                            satArray.push(-this.genColorVariable(y, x, i))
+                            satArray.push(-this.#genColorVariable(y, x, i))
                         }
                     }
 
                     var tempNeighbours = [];
                     
                     // One tile can have only one neighbour with the same color
-                    for(let position of this.neighbours(y, x).entries()) {
-                        tempNeighbours.push(this.genColorVariable(...position[1], point))
+                    for(let position of this.#neighbours(y, x).entries()) {
+                        tempNeighbours.push(this.#genColorVariable(...position[1], point))
                     }
 
                     satArray.push(tempNeighbours);
-                    this.notBothNeighbours(tempNeighbours, satArray);
+                    this.#notBothNeighbours(tempNeighbours, satArray);
                 }
                 else {
+                    satArray.push(['c ------', y, x])
                     var tempFreeTile = [];
                     // All free tiles can have every color inside BUT two colors cannot be true
                     // So that means only one color can be true
-                    for (let i = firstColor; i < this.NumberOfColors + firstColor; i++) {
-                        tempFreeTile.push(this.genColorVariable(y, x, i))
+                    for (let i = 0; i < this.NumberOfColors; i++) {
+                        tempFreeTile.push(this.#genColorVariable(y, x, i))
                     }
                     satArray.push(tempFreeTile);
-                    this.notBothNeighbours(tempFreeTile, satArray)
+                    this.#notBothNeighbours(tempFreeTile, satArray)
                 }
             }
         }
@@ -170,7 +171,7 @@ class SAT {
           for (let x = 0; x < map.length; x++) {
 
             for (let i = firstColor; i < this.NumberOfColors + firstColor; i++) {
-                if(solvedArray.includes(this.genColorVariable(y, x, i))) {
+                if(solvedArray.includes(this.#genColorVariable(y, x, i))) {
                     map[y][x] = i;
                 }
             }

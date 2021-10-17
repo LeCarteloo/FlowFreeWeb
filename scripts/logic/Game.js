@@ -128,7 +128,7 @@ window.onload = function () {
     // MapGenerator.placePoints();
 
     //! Responsive canvas
-    //TODO: Need to be done
+    //TODO: make canvas responsive
     // window.addEventListener('resize', function() {
     //     canvas.width = window.innerWidth;
     //     canvas.height = window.innerHeight;
@@ -458,6 +458,11 @@ function drawGame(event) {
                     // console.log(`Current: ${currentPosition.Y}, ${currentPosition.X} `)
                     // }
 
+                }  
+                else {
+                    // If the mouse is out of bounds then restart everything
+                    //TODO: Check it later
+                    handleMouseUp(event);
                 }
             }
         }
