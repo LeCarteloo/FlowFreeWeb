@@ -1,15 +1,18 @@
 class Path {
 
-    arrayWithTiles = [];
-    counter;
-    blockedColors = [];
+    constructor(arrayWithTiles, counter, blockedColors) {
+        this.arrayWithTiles = arrayWithTiles;
+        this.counter = counter
+        this.blockedColors = blockedColors;
+    }
+
     // Generate everything
-    static drawPath(map, color, speed, blockedColors) {
+    drawPath(map, color, speed, blockedColors) {
         this.counter = 1;
         this.blockedColors = blockedColors;
-        this.arrayWithTiles = this.getCoordinates(map, color);
-        this.arrayWithTiles = this.removeExtra(this.arrayWithTiles);
-        this.arrayWithTiles = this.sortCoordinates(this.arrayWithTiles);
+        this.arrayWithTiles = this.#getCoordinates(map, color);
+        this.arrayWithTiles = this.#removeExtra(this.arrayWithTiles);
+        this.arrayWithTiles = this.#sortCoordinates(this.arrayWithTiles);
 
         // Start position is needed to draw a low opacity color when points are conected
         var startPosition = {
@@ -17,12 +20,12 @@ class Path {
             X: this.arrayWithTiles[0][1]
         };
 
-        this.arrayWithTiles = this.createPath(this.arrayWithTiles, speed);
-        this.animatePath(this.arrayWithTiles, Colors[color], startPosition, blockedColors);
+        this.arrayWithTiles = this.#createPath(this.arrayWithTiles, speed);
+        this.#animatePath(this.arrayWithTiles, Colors[color], startPosition, blockedColors);
     }
 
     // Function return an array with removed extra pipe coordinates
-    static removeExtra(array) {
+    #removeExtra(array) {
         for (let i = 0; i < array.length; i++) {
             var temp = array[i];
             for (let j = i + 1; j < array.length; j++) {
@@ -35,7 +38,7 @@ class Path {
     }
 
     // Function returns sorted array with coordinates
-    static sortCoordinates(array) {
+    #sortCoordinates(array) {
         var temp = 0;
         for (let i = 0; i < array.length; i++) {
             for (let j = i; j > 0; j--) {
@@ -46,11 +49,12 @@ class Path {
                 }
             }
         }
+        console.log(array)
         return array;
     }
 
     // Create array with points placed in right order
-    static createPath(array, speed) {
+    #createPath(array, speed) {
         var points = [];
         for (let i = 1; i < array.length; i++) {
                 var startPoint = [array[i - 1][0] * tileW + tileW / 2, array[i - 1][1] * tileW + tileW / 2];
@@ -69,10 +73,10 @@ class Path {
     }
     
     // Function draw path from given array
-    static animatePath(arrayToDraw, color, startPosition){
+    #animatePath(arrayToDraw, color, startPosition){
         if (this.counter < arrayToDraw.length - 1) {
             requestAnimationFrame(fn => {
-                this.animatePath(arrayToDraw, color, startPosition);
+                this.#animatePath(arrayToDraw, color, startPosition);
             });
         }
         else {
@@ -93,7 +97,7 @@ class Path {
     }
 
     // Returning the coordinates of tiles where path will be drawn
-    static getCoordinates(gameMap, value) {
+    #getCoordinates(gameMap, value) {
         // Coordinates of pipes (every pipe has a value of an point (but lower cased).
         var point = [];
         console.groupCollapsed("%c Rendering pipes from map", "color: red")

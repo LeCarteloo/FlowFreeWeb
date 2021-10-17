@@ -18,7 +18,8 @@ class Debug {
         gameMapArray.innerHTML = "";
         for (var y = 0; y < mapLength; y++) {
             for (var x = 0; x < mapLength; x++) {
-                gameMapArray.innerHTML += gameMap[y][x] + "&nbsp &nbsp &nbsp";
+                gameMapArray.innerHTML += `<p style="display: inline-block; font-weight: bold; color:${Colors[gameMap[y][x].toUpperCase()]}">
+                 ${gameMap[y][x]} </p>`;
             }
             gameMapArray.innerHTML += "<br />";
         }

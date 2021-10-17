@@ -1,7 +1,7 @@
 //! Comments with exlamation mark are for test purposes (they will be removed later)
 // TODO: Rewrite thing with end point pipes !IMPORTANT!
 
-var SPEED = 70;
+var SPEED = 30;
 
 var context = null;
 var tileW, tileH, mapLength;
@@ -17,6 +17,7 @@ var mouse = null;
 var gameMapArray = null;
 var checkBox = null;
 var debugMode = true;
+let satMap = [];
 
 //! GAME MAP (for test purposes)
 var gameMap = [
@@ -40,7 +41,6 @@ var numberOfColors = 5;
 var colors;
 var solvedColors = [];
 var blockedColors = [];
-
 
 
 window.onload = function () {
@@ -93,7 +93,7 @@ window.onload = function () {
                 //! Testing the SAT ALGORITHM !//
 
     // Global game map variable for test puropses
-    const satMap = [
+    satMap = [
         [1, 0, 2, 0, 3],
         [0, 0, 4, 0, 5],
         [0, 0, 0, 0, 0],
@@ -102,11 +102,11 @@ window.onload = function () {
     ];
     // Enum with colors for test purposes
     const satColors = {
-        '1': 1,
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
+        '1': 0,
+        '2': 1,
+        '3': 2,
+        '4': 3,
+        '5': 4,
         // '6': 6
     }
     const satNumberColors = 5;
@@ -115,17 +115,35 @@ window.onload = function () {
     var debugClauses = satClass.colorArray;
     satLog.value = "";
 
+    satLog.value += `p cnf 126 ${debugClauses.length}\n`
+
     for(let i = 0; i < debugClauses.length; i++) {
         satLog.value += (debugClauses[i].toString()).replaceAll(",", " ") + " 0\n";
     }
 
     solveTime.innerHTML = `Solved in: ${satClass.time}`
     solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
-
     //!#######################################################!//  
     
     // MapGenerator.placePoints();
 
+    //! Responsive canvas
+    //TODO: Need to be done
+    // window.addEventListener('resize', function() {
+    //     canvas.width = window.innerWidth;
+    //     canvas.height = window.innerHeight;
+    //     tileW = canvas.width / gameMap.length;
+    //     tileH = canvas.height / gameMap.length;
+    //     isMapDrawn = false;
+    //     drawGame(event);
+    // });
+
+    //! Timer test
+    window.setTimeout(function() {
+        var win = new Win();
+        console.log(`Time is up - Points: ${win.checkWin(gameMap, solvedColors)}`);
+
+    }, 30000);
 };
 
 function solveAll() {
@@ -136,7 +154,8 @@ function solveAll() {
         if(!solvedColors.includes(color)) {
             solvedColors.push(color);
             blockedColors.push(color);
-            Path.drawPath(solvedGameMap, Object.keys(Colors)[index], SPEED);
+            var path = new Path()
+            path.drawPath(solvedGameMap, Object.keys(Colors)[index], SPEED);
 
             for (let y = 0; y < gameMap.length; y++) {
                 for (let x = 0; x < gameMap.length; x++) {
@@ -148,8 +167,6 @@ function solveAll() {
 
         }
     }
-
-    
 
     document.getElementById('solveAll').classList.add('hide');
     document.getElementById('solveOne').classList.add('hide');
@@ -174,12 +191,12 @@ function solveOne() {
             }
         }
     
+        var path = new Path();
         console.log(`SOLVED ONE POINT - ${randomColor}`);
-        Path.drawPath(solvedGameMap, randomColor, SPEED, blockedColors);
+        path.drawPath(solvedGameMap, randomColor, SPEED, blockedColors);
     }
 
 }
-
 
 function handleMouseUp(event) {
     // Removing the onmousemove event when mouse button is unpressed
@@ -263,6 +280,8 @@ function clearNotConntectedPipes(mouseX, mouseY) {
     // Drawing pipe to end point
     else {
         if(mouseX == endPosition.X && mouseY == endPosition.Y){
+
+
             drawPipe(Colors[gameMap[startPosition.Y][startPosition.X]], currentPosition, endPosition);
             // Drawing the after glow of every pipe and point with that color
             drawAfterGlow(gameMap[startPosition.Y][startPosition.X]);
@@ -409,7 +428,6 @@ function drawGame(event) {
 
                     //  Drawing a lines
                     if (gameMap[mouseMoveY][mouseMoveX] == '0') {
-                        console.log("x")
                         // 'IF' does not allow diagonal moves
                         if ((mouseMoveX == currentPosition.X + 1 && mouseMoveY == currentPosition.Y) || (mouseMoveX == currentPosition.X - 1 && mouseMoveY == currentPosition.Y)
                             || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y + 1) || (mouseMoveX == currentPosition.X && mouseMoveY == currentPosition.Y - 1)) {
@@ -424,24 +442,22 @@ function drawGame(event) {
                         }
                     }
 
-                    // WYK.2 base64-url
                     //! If users make 'back' move pipe should be removed and abbreviated 
-                    if(gameMap[mouseMoveY][mouseMoveX] == gameMap[startPosition.Y][startPosition.X].toLowerCase()
-                    && mouseMoveY == previousPosition.Y && mouseMoveX == previousPosition.X) {
+                    // if(gameMap[mouseMoveY][mouseMoveX] == gameMap[startPosition.Y][startPosition.X].toLowerCase()
+                    // && mouseMoveY == previousPosition.Y && mouseMoveX == previousPosition.X) {
                     
-                    gameMap[currentPosition.Y][currentPosition.X] = 0;
-                    drawSquares(currentPosition.X, currentPosition.Y);
-                    currentPosition.X = mouseMoveX;
-                    currentPosition.Y = mouseMoveY;
+                    // gameMap[currentPosition.Y][currentPosition.X] = 0;
+                    // drawSquares(currentPosition.X, currentPosition.Y);
+                    // currentPosition.X = mouseMoveX;
+                    // currentPosition.Y = mouseMoveY;
 
-                    previousPosition.X = mouseMoveX; 
-                    previousPosition.Y = mouseMoveY + 1;
+                    // previousPosition.X = mouseMoveX; 
+                    // previousPosition.Y = mouseMoveY + 1;
                     
-                    console.log(`Previous: ${previousPosition.Y}, ${previousPosition.X}`)
-                    console.log(`Current: ${currentPosition.Y}, ${currentPosition.X} `)
-                    // gameMap[mouseMoveY][mouseMoveX] = 0;
-                    // drawGame(event);
-                    }
+                    // console.log(`Previous: ${previousPosition.Y}, ${previousPosition.X}`)
+                    // console.log(`Current: ${currentPosition.Y}, ${currentPosition.X} `)
+                    // }
+
                 }
             }
         }

@@ -42,7 +42,6 @@ class SAT {
         
         this.colorArray = this.colorSAT(this.GameMap, this.Colors);
         this.solvedMap = this.decodeSAT(this.GameMap, solved, this.Colors);
-
         this.printGroup("Colors reduced to SAT", this.colorArray)
         this.printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
 
@@ -111,6 +110,7 @@ class SAT {
             for(let x = 0; x < map.length; x++) {
                 // If tile is not empty
                 if(map[y][x] != 0) {
+                    satArray.push(['c ------', y, x])
                     var point = colors[map[y][x]];
                     // Color variable is true (tile has exactly this color)
                     satArray.push(this.genColorVariable(y, x, point));
@@ -126,7 +126,7 @@ class SAT {
                     
                     // One tile can have only one neighbour with the same color
                     for(let position of this.neighbours(y, x).entries()) {
-                        tempNeighbours.push(this.genColorVariable(position[1][0], position[1][1], point))
+                        tempNeighbours.push(this.genColorVariable(...position[1], point))
                     }
 
                     satArray.push(tempNeighbours);
@@ -144,9 +144,23 @@ class SAT {
                 }
             }
         }
-        
+
         return satArray;
     }
+
+    // Pipes must be connected
+    twoPipesConnected(map) {
+        for (let y = 0; y < map.length; y++) {
+            for (let x = 0; x < map.length; x++) {
+                if(map[y][x] != 0) {
+                    continue;
+                }
+
+                
+            }
+        }
+    }
+
 
     // Decode SAT solution from given array (atm. from MiniSat)
     // Returns a solved map array
