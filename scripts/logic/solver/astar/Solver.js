@@ -1,10 +1,15 @@
 var gameMap = [
-    [1, 0, 2, 0, 3],
-    [0, 0, 4, 0, 5],
-    [0, 0, 0, 0, 0],
-    [0, 2, 0, 3, 0],
-    [0, 1, 4, 5, 0]
+    [1, 0, 0, 0],
+    [2, 0, 3, 0],
+    [0, 3, 2, 0],
+    [0, 0, 0, 1],
 ];
+
+// [1, 0, 2, 0, 3],
+// [0, 0, 4, 0, 5],
+// [0, 0, 0, 0, 0],
+// [0, 2, 0, 3, 0],
+// [0, 1, 4, 5, 0]
 
 // [0, 1, 2, 5, 0],
 // [0, 0, 0, 3, 0],
@@ -34,16 +39,43 @@ const astarColor = {
 //! Testing the Astar algorithm
 // Every element in array now has position variables, g and h cost, 
 // parent node (set to null), value and state
-for(var y = 0; y < size; y++) {
-    var row = [];
-    for(var x = 0; x < size; x++) {
+for(let y = 0; y < size; y++) {
+    let row = [];
+    for(let x = 0; x < size; x++) {
         row.push(new Node(x, y, 0, 0, null, gameMap[y][x]));
     }
     graph.push(row);
 }
 
-var manhattanDistance = astar.heuristic(graph[0][0], graph[4][1])
-console.log("Distance: " + manhattanDistance);
+
+for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+        if(graph[y][x].value != 0) {
+            // Utility.addStartingHCost(graph, graph[y][x])
+            graph[y][x].setHCost(10);
+        }
+    }
+}
+
+var graphInto1D = [].concat(...graph);
+var sortedNodes = Utility.sortNodes(graphInto1D);
+console.log(sortedNodes)
+
+var moves = new Moves();
+
+for (let i = 0; i < sortedNodes.length; i++) {
+    let forcedPos = moves.forcedMoves(graph, sortedNodes[i]);
+    console.log(forcedPos)
+    // graph[forcedPos.y][forcedPos.x] = moves.makeMove(sortedNodes[i], forcedPos, 0); 
+    sortedNodes[i] = moves.makeMove(sortedNodes[i], forcedPos, 0)
+}
+
+
+console.log(sortedNodes)
+
+// var manhattanDistance = astar.heuristic(graph[0][0], graph[4][1])
+// console.log("Distance: " + manhattanDistance);
+
 // astar.search(graph, graph[0][0], graph[1][4]);
 // console.log(astar.findAllNeighbours(graph, graph[1][1]))
 
@@ -60,10 +92,24 @@ window.onload = function () {
 var set = []
 
 var moves = new Moves();
-console.log(moves.possibleMoves(graph, graph[0][0]))
-console.log(moves.forcedMoves(graph, graph[0][0]))
+// console.log(moves.possibleMoves(graph, graph[0][4]))
+// console.log(moves.forcedMoves(graph, graph[0][4]))
+// console.log(graph[0][4].position.x)
+// console.log(moves.makeMove(graph[0][4], moves.forcedMoves(graph, graph[0][4]), 0))
 
-astarTest();
+console.log(graph)
+
+var setNodes = [];
+
+for (let y = 0; y < graph.length; y++) {
+    for (let x = 0; x < graph.length; x++) {
+        // moves.makes
+    }
+}
+
+// astarTest();
+
+
 
 //!
 

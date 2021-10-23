@@ -15,7 +15,6 @@ class Moves {
     // Forced moves of the given node
     forcedMoves(map, node) {
         var possibleMoves = this.possibleMoves(map, node);
-
         if(possibleMoves.length == 1) {
             // Move is forced when point has only one neighbour (one possible move)
             return possibleMoves[0].position;
@@ -33,10 +32,9 @@ class Moves {
     }
     // Make move from the given node to the given direction (returning updated Node)
     makeMove(node, moveTo, cost) {
-        
         node.parent = node;
-        node.positon.x = moveTo.position.x;
-        node.position.y = moveTo.position.y;
+        node.position.x = moveTo.x;
+        node.position.y = moveTo.y;
         node.g = node.g + cost;
 
         return node;

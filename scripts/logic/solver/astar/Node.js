@@ -20,4 +20,8 @@ class Node {
     getFCost() {
         return this.g + this.h;
     }
+
+    setHCost(value) {
+        this.h = value;
+    }
 }
