@@ -1,5 +1,5 @@
 class Node {
-    constructor(x, y, g, h, parent, value, move){
+    constructor(x, y, g, h, parent, value, mapState){
         this.position = {
             x: x,
             y: y,
@@ -7,10 +7,14 @@ class Node {
         this.g = g;
         this.h = h;
         this.parent = parent;
-        
-        //! For future work
         this.value = value;
-        this.move = move;
+
+        // Map state and current position of every point (or pipe)
+        this.mapState = new MapState();
+    }
+
+    manhattan() {
+        return;
     }
 
     toString() {

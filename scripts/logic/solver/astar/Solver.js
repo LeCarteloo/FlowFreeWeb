@@ -1,21 +1,10 @@
 var gameMap = [
-    [1, 0, 0, 0],
-    [2, 0, 3, 0],
-    [0, 3, 2, 0],
-    [0, 0, 0, 1],
+    ['R', '0', 'G', '0', 'O'],
+    ['0', '0', 'B', '0', 'Y'],
+    ['0', '0', '0', '0', '0'],
+    ['0', 'G', '0', 'O', '0'],
+    ['0', 'R', 'B', 'Y', '0']
 ];
-
-// [1, 0, 2, 0, 3],
-// [0, 0, 4, 0, 5],
-// [0, 0, 0, 0, 0],
-// [0, 2, 0, 3, 0],
-// [0, 1, 4, 5, 0]
-
-// [0, 1, 2, 5, 0],
-// [0, 0, 0, 3, 0],
-// [0, 0, 3, 0, 0],
-// [1, 0, 0, 4, 0],
-// [2, 0, 4, 0, 5],
 
 var astar = new Astar();
 var graph = [];
@@ -28,12 +17,11 @@ console.log("Colors: " + size);
 // console.log(gameMap);
 
 const astarColor = {
-    '1': "red",
-    '2': "green",
-    '3': "orange",
-    '4': "blue",
-    '5': "yellow",
-    // '6': 6
+    'R': "red",
+    'G': "green",
+    'O': "orange",
+    'B': "blue",
+    'Y': "yellow",
 }
 
 //! Testing the Astar algorithm
@@ -65,7 +53,7 @@ var moves = new Moves();
 
 for (let i = 0; i < sortedNodes.length; i++) {
     let forcedPos = moves.forcedMoves(graph, sortedNodes[i]);
-    console.log(forcedPos)
+    // console.log(forcedPos)
     // graph[forcedPos.y][forcedPos.x] = moves.makeMove(sortedNodes[i], forcedPos, 0); 
     sortedNodes[i] = moves.makeMove(sortedNodes[i], forcedPos, 0)
 }
@@ -73,13 +61,6 @@ for (let i = 0; i < sortedNodes.length; i++) {
 
 console.log(sortedNodes)
 
-// var manhattanDistance = astar.heuristic(graph[0][0], graph[4][1])
-// console.log("Distance: " + manhattanDistance);
-
-// astar.search(graph, graph[0][0], graph[1][4]);
-// console.log(astar.findAllNeighbours(graph, graph[1][1]))
-
-var before;
 
 window.onload = function () {
     //! Debug divs
@@ -88,27 +69,6 @@ window.onload = function () {
 
     printMap(gameMap, before)
 };
-
-var set = []
-
-var moves = new Moves();
-// console.log(moves.possibleMoves(graph, graph[0][4]))
-// console.log(moves.forcedMoves(graph, graph[0][4]))
-// console.log(graph[0][4].position.x)
-// console.log(moves.makeMove(graph[0][4], moves.forcedMoves(graph, graph[0][4]), 0))
-
-console.log(graph)
-
-var setNodes = [];
-
-for (let y = 0; y < graph.length; y++) {
-    for (let x = 0; x < graph.length; x++) {
-        // moves.makes
-    }
-}
-
-// astarTest();
-
 
 
 //!
@@ -123,29 +83,22 @@ function printMap(map, div) {
     }
 }
 
-function astarTest() {
-    for(var y = 0; y < size; y++) {
-        for(var x = 0; x < size; x++) {
-            if(graph[y][x].value > 0 && !set.includes(graph[y][x].value)) {
-                for(var yy = 0; yy < size; yy++) {
-                    for(var xx = 0; xx < size; xx++) {
-                        if(graph[yy][xx].value == graph[y][x].value && graph[yy][xx].position !== graph[y][x].position) {
-                            set.push(graph[y][x].value) 
-                            var result = astar.search(graph, graph[y][x], graph[yy][xx]);
-                            if(result != 'No solution') {
-                                result.forEach(res => {
-                                    gameMap[res.position.y][res.position.x] = graph[y][x].value;
-                                    graph[res.position.y][res.position.x].value = graph[y][x].value;
-                                });
-                            }      
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+//? #################### ASTAR #################### ?//
 
+// Initializing map
+// Gathering informations (where is the start point,
+// endpoint and how many colors)
 
+console.log('%c ######### INIT MAP ###########', 'color: aqua;')
+
+let map = new Map();
+map.initializeMap(gameMap);
+console.log(`Number of colors: ${map.numberOfColors}`)
+console.log(map.startPoint[0]);
+console.log(map.endPoint[0]);
+console.log(map.foundColors);
+
+let mapState = new MapState();
+console.log(mapState.map);
 
 
