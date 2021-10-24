@@ -77,9 +77,8 @@ class Astar {
     // Searching for neighbours on map around specific node (no diagonal moves)
     findAllNeighbours(map, node) {
         var neighbours = [];
-
-        var x = node.position.x;
-        var y = node.position.y;		    
+        var x = node.position.X;
+        var y = node.position.Y;		    
 
         if (y > 0) {
             // console.log("Down neighbour");

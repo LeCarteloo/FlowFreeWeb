@@ -7,12 +7,13 @@ class Map {
     static endPoint;
 
     // Find size of the map, colors, positions for start and endpoint.
-    initializeMap(gameMap) {
+    static initializeMap(gameMap) {
         this.size = gameMap.length;
         this.foundColors = [];
         this.numberOfColors = 0;
         this.startPoint = [];
         this.endPoint = [];
+        this.map = gameMap;
         
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {

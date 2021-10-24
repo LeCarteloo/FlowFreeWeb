@@ -20,23 +20,26 @@ class Moves {
             return possibleMoves[0].position;
         }
         else {
-            for (let i = 0; i < possibleMoves.length; i++) {
-                if(this.possibleMoves(map, possibleMoves[i]).length == 1) {
-                    // Move is forced when point has neighbour that has only one neighbour
-                    return possibleMoves[i].position;
-                } 
-            }
-            //Not forced
-            return -1;
+            // for (let i = 0; i < possibleMoves.length; i++) {
+            //     if(this.possibleMoves(map, possibleMoves[i]).length == 1) {
+            //         // Move is forced when point has neighbour that has only one neighbour
+            //         return possibleMoves[i].position;
+            //     } 
+            // }
         }
+        //Not forced
+        return -1;
     }
     // Make move from the given node to the given direction (returning updated Node)
     makeMove(node, moveTo, cost) {
-        node.parent = node;
-        node.position.x = moveTo.x;
-        node.position.y = moveTo.y;
-        node.g = node.g + cost;
+        let newNode = new Node();
+        newNode.position.x = moveTo.x;
+        newNode.position.y = moveTo.y;
+        newNode.g = newNode.g + cost;
+        newNode.parent = newNode;
+        newNode.state = node.state //! WRONG
+        newNode.h = newNode.manhattan();
 
-        return node;
+        return newNode;
     }
 }
