@@ -1,11 +1,12 @@
 class Node {
-    constructor(x, y, g, h, parent, value){
-        this.position = {
-            X: x,
-            Y: y,
-        }
-        this.parent = parent;
-        this.value = value;
+    constructor(){
+        //constructor(x, y, g, h, parent, value)
+        // this.position = {
+        //     X: x,
+        //     Y: y,
+        // }
+        this.parent = null;
+        // this.value = value;
         
         // Map state and number of free tiles
         this.mapState = new MapState();
@@ -16,9 +17,9 @@ class Node {
         for (let i = 0; i < Map.numberOfColors; i++) {
             this.mapState.current[i] = Map.startPoint[i];
         }
-
-        this.g = g;
+        this.g = 0;
         this.h = this.manhattan();
+        this.parent = null;
     }
     // A bit modified manhattan distance - it returns remaining free cells beetwen points.
     manhattan() {
@@ -29,8 +30,12 @@ class Node {
             const end = Map.endPoint[i];
             manhValue += Math.abs(curr.X - end.X) + Math.abs(curr.Y - end.Y);
         }
-
         return manhValue;
+    }
+
+    //Check if point is finished
+    isFinished() {
+        return this.mapState.isFinished();
     }
 
     toString() {
@@ -43,5 +48,17 @@ class Node {
 
     setHCost(value) {
         this.h = value;
+    }
+
+    setCurrent(x, y, color) {
+        this.mapState.current.splice(color, 1, {X: x, Y: y})
+    }
+
+    // Updating map state for given node
+    updateMapState(color, position) {  
+        console.log(position);
+        this.mapState.map[position[0].To.Y][position[0].To.X] = Map.foundColors[color];
+        this.mapState.freeTiles--;
+        this.setCurrent(position[0].To.X, position[0].To.Y, color);
     }
 }

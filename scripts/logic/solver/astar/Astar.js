@@ -1,5 +1,5 @@
 class Astar {
-    search(map, start, end) {
+    search() {
         // List of nodes to be evaluated, list that have been visited, result, neighbours
         // and counter of how much nodes have been created
         var openList = [];
@@ -8,69 +8,74 @@ class Astar {
         var neighbours = [];
         var nodeCounter = 0;
 
+        let node = new Node();
+        
         // Starting node
-        openList.push(start);
+        openList.push(node);
 
-        console.log(start.value)
+        if(node == 'empty') {
+            return 'No solution'
+        }
 
         while(openList.length > 0) {
-            var index = 0;
+            let nextNode = new Node();
             nodeCounter++;
-            // Searching for node with the lowest FCost
-            for(var i = 0; i < openList.length; i++) {
-                if(openList[i].getFCost() < openList[index].getFCost() ||
-                   openList[i].getFCost() == openList[index].getFCost()) {
-                    index = i;
-                }
+            
+
+            if(nodeCounter == 10000) {
+                return 'No solution';
             }
 
-            var currentNode = openList[index];
-            // console.log("f(x): " + currentNode.h + " + " + currentNode.g)
-
-            // Removing from open list the current node and adding it to the closed list
-            openList.splice(index, 1);
-            closedList.push(currentNode);
-
-            // console.log(currentNode.position);
-            // console.log(end.position);
-            // console.log(currentNode.position == end.position)
-
-            // If current node is the target node return the result reversed
-            if(currentNode.position === end.position) {
-                result = [];
-                while(currentNode.parent) {
-                    //! console.log(currentNode.position.x + " | " + currentNode.position.y)
-                    result.push(currentNode);
-                    currentNode = currentNode.parent;
-                }
-                // console.log("Nodes: " + nodeCounter);
-                return result.reverse();
+            if(nextNode.isFinished()){
+                Global.nodeNumber = nodeCounter;
+                return 'Solved';
             }
 
-            // Searching for all neighbours (not diagonal)
-            neighbours = this.findAllNeighbours(map, currentNode);
+            // console.log(nextNode);
+            let nodeList = Moves.makeAllMoves(nextNode);    
+            console.log(nodeList);
 
-            // For every visited neighbour of current node change the costs
-            neighbours.forEach(neighbour => {
-                //! console.log(neighbour);
-                //! console.log(neighbour.value)
-                if(closedList.includes(neighbour) || (neighbour.value != 0 && neighbour.value != start.value)) {
+            nodeList.forEach(nodeElem => {
+                console.log(nodeElem);
+                if(closedList.includes(nodeElem.mapState) || openList.includes(nodeElem)) {
                     return;
                 }
-
-                // Distance between current node and neighbour node
-                //! Changed from currentNode to start node (got some errors idk why)
-                var costToGo = this.heuristic(start, neighbour) + currentNode.g;
-
-                if(costToGo < neighbour.g || !closedList.includes(neighbour)) {
-                    neighbour.g = costToGo;
-                    neighbour.h = this.heuristic(neighbour, end);
-                    neighbour.parent = currentNode;
-                    if(!closedList.includes(neighbour)) {
-                        openList.push(neighbour);
-                    }
-                }
+                openList.push(nodeElem);
             });
+
+            console.count("Astar call")
+
+            // return 'No solution';
+            // openList.splice(index, 1);
+            // closedList.push(nextNode);
+
+            // if(currentNode.position === end.position) {
+            //     result = [];
+            //     while(currentNode.parent) {
+            //         result.push(currentNode);
+            //         currentNode = currentNode.parent;
+            //     }
+            //     return result.reverse();
+            // }
+
+            // neighbours = this.findAllNeighbours(map, currentNode);
+
+            // neighbours.forEach(neighbour => {
+            //     if(closedList.includes(neighbour) || (neighbour.value != 0 && neighbour.value != start.value)) {
+            //         return;
+            //     }
+
+            //     var costToGo = this.heuristic(start, neighbour) + currentNode.g;
+
+            //     if(costToGo < neighbour.g || !closedList.includes(neighbour)) {
+            //         neighbour.g = costToGo;
+            //         neighbour.h = this.heuristic(neighbour, end);
+            //         neighbour.parent = currentNode;
+            //         if(!closedList.includes(neighbour)) {
+            //             openList.push(neighbour);
+            //         }
+            //     }
+            // });
         }
         return 'No solution';
     }
@@ -105,6 +110,7 @@ class Astar {
 
     // Calculate manhattan distance (not allowing diagonal moves)
     heuristic(start, end) {
-        return Math.abs(start.position.x - end.position.x) + Math.abs(start.position.y - end.position.y);
+        return Math.abs(start.position.X - end.position.X) + Math.abs(start.position.Y - end.position.Y);
     }
 }
+
