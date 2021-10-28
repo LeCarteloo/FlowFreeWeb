@@ -18,6 +18,6 @@ class MapState {
 
     // Check if map is solved
     isFinished() {
-        return (this.finished == true) && (this.freeTiles == 0);
+        return this.freeTiles == 0;
     }
 }

@@ -16,10 +16,11 @@ class Astar {
         if(node == 'empty') {
             return 'No solution'
         }
-
         while(openList.length > 0) {
-            let nextNode = new Node();
+            let nextNode = openList[0];
             nodeCounter++;
+
+            closedList.push(nextNode.mapState);
             
 
             if(nodeCounter == 10000) {
@@ -31,51 +32,31 @@ class Astar {
                 return 'Solved';
             }
 
-            // console.log(nextNode);
+            for (let y = 0; y < Map.size; y++) {
+                // console.log(nextNode.mapState.map[y].toString());
+            }
+            for (let y = 0; y < Map.size; y++) {
+                // console.log(nextNode.mapState.current[y]);
+            }
+
+            // console.log(nextNode.g);
+
             let nodeList = Moves.makeAllMoves(nextNode);    
-            console.log(nodeList);
+            
+            // console.log(nodeList);
+            if(nodeList == -1) {
+                return 'Not Solved'
+            }
 
             nodeList.forEach(nodeElem => {
-                console.log(nodeElem);
+                // console.log(nodeElem);
                 if(closedList.includes(nodeElem.mapState) || openList.includes(nodeElem)) {
                     return;
                 }
                 openList.push(nodeElem);
             });
 
-            console.count("Astar call")
-
-            // return 'No solution';
-            // openList.splice(index, 1);
-            // closedList.push(nextNode);
-
-            // if(currentNode.position === end.position) {
-            //     result = [];
-            //     while(currentNode.parent) {
-            //         result.push(currentNode);
-            //         currentNode = currentNode.parent;
-            //     }
-            //     return result.reverse();
-            // }
-
-            // neighbours = this.findAllNeighbours(map, currentNode);
-
-            // neighbours.forEach(neighbour => {
-            //     if(closedList.includes(neighbour) || (neighbour.value != 0 && neighbour.value != start.value)) {
-            //         return;
-            //     }
-
-            //     var costToGo = this.heuristic(start, neighbour) + currentNode.g;
-
-            //     if(costToGo < neighbour.g || !closedList.includes(neighbour)) {
-            //         neighbour.g = costToGo;
-            //         neighbour.h = this.heuristic(neighbour, end);
-            //         neighbour.parent = currentNode;
-            //         if(!closedList.includes(neighbour)) {
-            //             openList.push(neighbour);
-            //         }
-            //     }
-            // });
+            // console.count("Astar call")
         }
         return 'No solution';
     }

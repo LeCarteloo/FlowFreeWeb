@@ -51,13 +51,13 @@ class Node {
     }
 
     setCurrent(x, y, color) {
-        this.mapState.current.splice(color, 1, {X: x, Y: y})
+        this.mapState.current.splice(color, 1, {Y: y, X: x})
     }
 
     // Updating map state for given node
     updateMapState(color, position) {  
-        console.log(position);
         this.mapState.map[position[0].To.Y][position[0].To.X] = Map.foundColors[color];
+        Map.startPoint[color] = {Y: position[0].To.Y, X: position[0].To.X}
         this.mapState.freeTiles--;
         this.setCurrent(position[0].To.X, position[0].To.Y, color);
     }

@@ -27,6 +27,7 @@ class Map {
                     if(this.foundColors.includes(tileValue)) {
                         index = this.foundColors.indexOf(tileValue);
                         this.endPoint.splice(index, 0, {Y: y, X: x})
+                        gameMap[y][x] = 0;
                     }
                     else {
                         index = this.numberOfColors;

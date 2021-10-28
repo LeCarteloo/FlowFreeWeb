@@ -30,8 +30,12 @@ class Moves {
  
     // Forced moves of the all nodes
     static forcedMoves(mapState) {
+        // console.log(mapState);
         for (let i = 0; i < Map.numberOfColors; i++) {
             if(mapState.finished == true) {
+                continue;
+            }
+            if(mapState.current[i].X == Map.endPoint[i].X && mapState.current[i].Y == Map.endPoint[i].Y){
                 continue;
             }
 
@@ -45,24 +49,27 @@ class Moves {
                 continue;
             }
 
-            return moves;
+            return [moves, i];
         }
         return -1;
     }
 
     // Make move from the given node to the given direction (returning updated Node)
-    static makeMove(node, moveTo, cost) {
+    static makeMove(node, moveTo, color, cost) {
         node.parent = node;
         node.g += cost;
-        //! Color is hardcoded
-        node.updateMapState(0, moveTo);
+        node.updateMapState(color, moveTo);
         node.h = node.manhattan();
         return node;
     }
 
     // Make all possible moves (atm. only forced ones)
     static makeAllMoves(node) {
-        return [this.makeMove(node, this.forcedMoves(node.mapState), 0)];
-        // return Moves.forcedMoves(node.mapState)
+        if(this.forcedMoves(node.mapState) != -1) {
+            // console.log(this.forcedMoves(node.mapState));
+         return [this.makeMove(node, this.forcedMoves(node.mapState)[0],this.forcedMoves(node.mapState)[1] , 0)];
+          // return Moves.forcedMoves(node.mapState)
+        }
+        return -1;
     }
 }

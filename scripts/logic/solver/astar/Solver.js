@@ -1,9 +1,12 @@
 var gameMap = [
-    ['R', '0', 'G', '0', 'O'],
-    ['0', '0', 'B', '0', 'Y'],
-    ['0', '0', '0', '0', '0'],
-    ['0', 'G', '0', 'O', '0'],
-    ['0', 'R', 'B', 'Y', '0']
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', 'O', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', 'R', '0', '0'],
+    ['0', '0', '0', 'Y', '0', '0', '0', 'G'],
+    ['0', 'R', '0', '0', 'B', '0', '0', 'O'],
+    ['0', '0', '0', '0', '0', '0', '0', 'G'],
+    ['Y', '0', '0', '0', '0', '0', '0', 'B'],
 ];
 
 var graph = [];
@@ -20,6 +23,7 @@ const astarColor = {
     'O': "orange",
     'B': "blue",
     'Y': "yellow",
+    'A': "aqua",
 }
 
 //! Testing the Astar algorithm
@@ -32,8 +36,8 @@ window.onload = function () {
     before = document.getElementById('before');
     console.log(before.innerHTML)
 
-    for(var y = 0; y < size; y++) {
-        for(var x = 0; x < size; x++) {
+    for(var y = 0; y < Map.size; y++) {
+        for(var x = 0; x < Map.size; x++) {
             before.innerHTML += `<p style="margin:0; padding:0; display: inline-block; font-weight: bold; color:${astarColor[gameMap[y][x]]}"> ${gameMap[y][x]} </p>`;
         }
         before.innerHTML += '</br>';
@@ -45,15 +49,6 @@ window.onload = function () {
 // Initializing map
 // Gathering informations (where is the start point,
 // endpoint and how many colors)
-
-// for(let y = 0; y < size; y++) {
-//     let row = [];
-//     for(let x = 0; x < size; x++) {
-//         row.push(new Node(x, y, gameMap[y][x]));
-//     }
-//     graph.push(row);
-// }
-
 
 console.log('%c ######### INIT MAP ###########', 'color: aqua;')
 
@@ -71,13 +66,13 @@ console.log(Map.size);
 // console.log(moves.makeMove(graph, graph[0][4], smth, 0));
 
 let testNode = new Node();
-console.log(Moves.possibleMoves(testNode.mapState, 0));
-console.log(Moves.forcedMoves(testNode.mapState));
+// console.log(Moves.possibleMoves(testNode.mapState, 0));
+// console.log(Moves.forcedMoves(testNode.mapState));
 
 // console.log(Moves.makeAllMoves(testNode));
 
 let astar = new Astar();
-astar.search();
+console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
 
 // testNode.setCurrent(0, 3, 2)
 // console.log(testNode);
