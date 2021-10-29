@@ -5,7 +5,6 @@ class Node {
         //     X: x,
         //     Y: y,
         // }
-        this.parent = null;
         // this.value = value;
         
         // Map state and number of free tiles
@@ -20,6 +19,7 @@ class Node {
         this.g = 0;
         this.h = this.manhattan();
         this.parent = null;
+        this.movesNumber = [];
     }
     // A bit modified manhattan distance - it returns remaining free cells beetwen points.
     manhattan() {

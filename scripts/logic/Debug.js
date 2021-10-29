@@ -46,4 +46,25 @@ class Debug {
     }
     
     // ############ Algorithm debug statics ############ //
+
+    static printMapState(state) {
+        console.groupCollapsed('%c Map state', 'color: red;');
+        for (let y = 0; y < Map.size; y++) {
+            let map = '';
+            for (let x = 0; x < Map.size; x++) {
+                if(state.map[y][x] == '0') {
+                    map += '.';
+                }
+                else if(Map.endPoint.Y == y && Map.endPoint.X == x) {
+                    map += '?';
+                }
+                else {
+                    map += state.map[y][x];
+                }
+            }
+            console.log(map);
+            console.log();
+        }
+        console.groupEnd();
+    }
 }

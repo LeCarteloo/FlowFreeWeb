@@ -18,32 +18,37 @@ class Astar {
         }
         while(openList.length > 0) {
             let nextNode = openList[0];
+            console.log(nextNode.getFCost());
             nodeCounter++;
 
             closedList.push(nextNode.mapState);
+
+            Debug.printMapState(nextNode.mapState);
             
 
-            if(nodeCounter == 10000) {
+            if(nodeCounter == 3000) {
+                Global.nodeNumber = nodeCounter;
                 return 'No solution';
             }
 
             if(nextNode.isFinished()){
                 Global.nodeNumber = nodeCounter;
+                // console.log(nextNode.mapState.finished);
                 return 'Solved';
             }
 
-            for (let y = 0; y < Map.size; y++) {
-                // console.log(nextNode.mapState.map[y].toString());
-            }
-            for (let y = 0; y < Map.size; y++) {
-                // console.log(nextNode.mapState.current[y]);
-            }
+            // for (let y = 0; y < Map.size; y++) {
+            //     console.log(nextNode.mapState.map[y].toString());
+            // }
+            // for (let y = 0; y < Map.size; y++) {
+            //     console.log(nextNode.mapState.current[y]);
+            // }
 
-            // console.log(nextNode.g);
-
+            // console.log(nextNode);
+    
             let nodeList = Moves.makeAllMoves(nextNode);    
-            
             // console.log(nodeList);
+            
             if(nodeList == -1) {
                 return 'Not Solved'
             }
@@ -55,7 +60,6 @@ class Astar {
                 }
                 openList.push(nodeElem);
             });
-
             // console.count("Astar call")
         }
         return 'No solution';

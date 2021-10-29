@@ -1,12 +1,10 @@
 var gameMap = [
-    ['0', '0', '0', '0', '0', '0', '0', '0'],
-    ['0', 'O', '0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', 'R', '0', '0'],
-    ['0', '0', '0', 'Y', '0', '0', '0', 'G'],
-    ['0', 'R', '0', '0', 'B', '0', '0', 'O'],
-    ['0', '0', '0', '0', '0', '0', '0', 'G'],
-    ['Y', '0', '0', '0', '0', '0', '0', 'B'],
+    ['R', '0', '0', '0', '0', '0'],
+    ['B', '0', '0', '0', 'B', 'R'],
+    ['0', '0', '0', '0', '0', 'Y'],
+    ['0', 'G', 'A', '0', '0', '0'],
+    ['0', '0', '0', '0', 'G', 'A'],
+    ['Y', 'O', '0', '0', '0', 'O'],
 ];
 
 var graph = [];
@@ -59,7 +57,7 @@ console.log(Map.endPoint[0]);
 console.log(Map.foundColors);
 
 // console.log(graph[0][0]);
-console.log(Map.size);
+console.log(`Map size - ${Map.size}`);
 
 // console.log(graph[0][4]);
 // var smth = moves.forcedMoves(graph, graph[0][4]);
@@ -70,9 +68,22 @@ let testNode = new Node();
 // console.log(Moves.forcedMoves(testNode.mapState));
 
 // console.log(Moves.makeAllMoves(testNode));
+let start = performance.now();
 
 let astar = new Astar();
+
 console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
+
+let end = performance.now();
+let time = `${(end - start) / 1000} SECONDS`;
+
+if(Global.nodeNumber == 3000) {
+    console.log('%c WARNING 10000 NODES HAVE BEEN CREATED', 'color: yellow');
+    console.log(`%c PERFORMANCE IS LOW - IT TOOK ${time} TO GENERATE`, 'color: yellow;' );
+    console.log(`%c STOPPED A SEARCH ALGORITHM`, 'color: yellow;' );
+} else {
+    console.log(`%c It took ${time}`, 'color: green;' );
+}
 
 // testNode.setCurrent(0, 3, 2)
 // console.log(testNode);
