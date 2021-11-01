@@ -119,3 +119,6 @@ dist
 
 # VS code
 .vscode
+
+# Libraries
+lodash.js

@@ -1,10 +1,12 @@
 var gameMap = [
-    ['R', '0', '0', '0', '0', '0'],
-    ['B', '0', '0', '0', 'B', 'R'],
-    ['0', '0', '0', '0', '0', 'Y'],
-    ['0', 'G', 'A', '0', '0', '0'],
-    ['0', '0', '0', '0', 'G', 'A'],
-    ['Y', 'O', '0', '0', '0', 'O'],
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', 'O', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', 'R', '0', '0'],
+    ['0', '0', '0', 'Y', '0', '0', '0', 'G'],
+    ['0', 'R', '0', '0', 'B', '0', '0', 'O'],
+    ['0', '0', '0', '0', '0', '0', '0', 'G'],
+    ['Y', '0', '0', '0', '0', '0', '0', 'B'],
 ];
 
 var graph = [];
@@ -24,15 +26,15 @@ const astarColor = {
     'A': "aqua",
 }
 
-//! Testing the Astar algorithm
-// Every element in array now has position variables, g and h cost, 
-// parent node (set to null), value and state
-
-
 window.onload = function () {
     //! Debug divs
     before = document.getElementById('before');
     console.log(before.innerHTML)
+
+    // Initializing map
+    // Gathering informations (where is the start point,
+    // endpoint and how many colors)
+    Map.initializeMap(gameMap);
 
     for(var y = 0; y < Map.size; y++) {
         for(var x = 0; x < Map.size; x++) {
@@ -40,52 +42,29 @@ window.onload = function () {
         }
         before.innerHTML += '</br>';
     }
+
+    
+    //? #################### ASTAR #################### ?//
+
+    console.log('%c ######### INIT MAP ###########', 'color: aqua;')
+
+
+    let start = performance.now();
+
+    let astar = new Astar();
+
+    console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
+
+    let end = performance.now();
+    let time = `${(end - start) / 1000} SECONDS`;
+
+    if(Global.nodeNumber == 3000) {
+        console.log('%c WARNING 10000 NODES HAVE BEEN CREATED', 'color: yellow');
+        console.log(`%c PERFORMANCE IS LOW - IT TOOK ${time} TO GENERATE`, 'color: yellow;' );
+        console.log(`%c STOPPED A SEARCH ALGORITHM`, 'color: yellow;' );
+    } else {
+        console.log(`%c It took ${time}`, 'color: green;' );
+    }
+
+    
 };
-
-//? #################### ASTAR #################### ?//
-
-// Initializing map
-// Gathering informations (where is the start point,
-// endpoint and how many colors)
-
-console.log('%c ######### INIT MAP ###########', 'color: aqua;')
-
-Map.initializeMap(gameMap);
-console.log(`Number of colors: ${Map.numberOfColors}`)
-console.log(Map.startPoint[0]);
-console.log(Map.endPoint[0]);
-console.log(Map.foundColors);
-
-// console.log(graph[0][0]);
-console.log(`Map size - ${Map.size}`);
-
-// console.log(graph[0][4]);
-// var smth = moves.forcedMoves(graph, graph[0][4]);
-// console.log(moves.makeMove(graph, graph[0][4], smth, 0));
-
-let testNode = new Node();
-// console.log(Moves.possibleMoves(testNode.mapState, 0));
-// console.log(Moves.forcedMoves(testNode.mapState));
-
-// console.log(Moves.makeAllMoves(testNode));
-let start = performance.now();
-
-let astar = new Astar();
-
-console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
-
-let end = performance.now();
-let time = `${(end - start) / 1000} SECONDS`;
-
-if(Global.nodeNumber == 3000) {
-    console.log('%c WARNING 10000 NODES HAVE BEEN CREATED', 'color: yellow');
-    console.log(`%c PERFORMANCE IS LOW - IT TOOK ${time} TO GENERATE`, 'color: yellow;' );
-    console.log(`%c STOPPED A SEARCH ALGORITHM`, 'color: yellow;' );
-} else {
-    console.log(`%c It took ${time}`, 'color: green;' );
-}
-
-// testNode.setCurrent(0, 3, 2)
-// console.log(testNode);
-// let mapState = new MapState();
-// console.log(mapState.updateMapState(testNode, 2, {From: {Y: 0, X: 4}, To: {Y: 0, X: 3}}));

@@ -9,6 +9,7 @@ class Moves {
         const x = mapState.current[color].X;
         const map = mapState.map;
         const pt = Map.endPoint[color]
+
         if(y > 0 && y - 1 == pt.Y && x == pt.X) {
             console.log("DOWN");
         }
@@ -94,7 +95,7 @@ class Moves {
                 forced = this.forcedMoves(node.mapState);
                 // return Moves.forcedMoves(node.mapState)
             }
-            moves.push(forcedNode);
+            moves.push(_.cloneDeep(forcedNode));
 
             return moves;
         }
@@ -117,20 +118,19 @@ class Moves {
             
         }
 
-        console.log(node.movesNumber.toString(), colorList.length.toString());
+        // console.log(node.movesNumber.toString(), colorList.length.toString());
 
         if(colorList.length == 0) {
             console.log('%c 0 MOVES', 'color: red;');
             return moves;
         }
 
-        //! ES6 for of loop
         for (const color of colorList) {
             // console.log(color);
 
             let posMoves = Moves.possibleMoves(node.mapState, color);
             for (let i = 0; i < posMoves.length; i++) {
-                console.log(posMoves);
+                // console.log(posMoves);
                 if(!posMoves[i]) {
                     console.log("NO POSSIBLE MOVES");
                     continue;
@@ -142,14 +142,15 @@ class Moves {
                 }
 
                 // console.log(posMoves[i]);
-                let newNode = Moves.makeMove(node, [posMoves[i]], color, cost);
-                // Debug.printMapState(newNode.mapState);
+                let newNode = Moves.makeMove(_.cloneDeep(node), [posMoves[i]], color, cost);
+                // Debug.printMapState(newNode.mapState, "New Node");
                 // console.log(newNode);
 
-                console.log(moves.length);
+                // console.log(moves.length);
 
                 if(newNode != null) {
                     moves.push(newNode);
+                    // console.log(moves);
                 }
             }
             break;

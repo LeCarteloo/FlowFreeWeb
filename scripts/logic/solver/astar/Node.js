@@ -1,15 +1,8 @@
 class Node {
     constructor(){
-        //constructor(x, y, g, h, parent, value)
-        // this.position = {
-        //     X: x,
-        //     Y: y,
-        // }
-        // this.value = value;
-        
         // Map state and number of free tiles
         this.mapState = new MapState();
-        this.mapState.map = Map.map;
+        this.mapState.map = _.cloneDeep(Map.map);
         this.mapState.freeTiles = Map.size ** 2 - Map.numberOfColors;
 
         // Current position of every point (later - of last moved pipe of each point)
@@ -57,7 +50,7 @@ class Node {
     // Updating map state for given node
     updateMapState(color, position) {  
         this.mapState.map[position[0].To.Y][position[0].To.X] = Map.foundColors[color];
-        Map.startPoint[color] = {Y: position[0].To.Y, X: position[0].To.X}
+        // Map.startPoint[color] = {Y: position[0].To.Y, X: position[0].To.X}
         this.mapState.freeTiles--;
         this.setCurrent(position[0].To.X, position[0].To.Y, color);
     }
