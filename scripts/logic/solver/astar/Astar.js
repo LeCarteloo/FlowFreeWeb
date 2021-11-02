@@ -7,7 +7,6 @@ class Astar {
         var result = [];
         var neighbours = [];
         var nodeCounter = 0;
-        var steps = 0;
 
         let node = new Node();
 
@@ -18,34 +17,36 @@ class Astar {
             return 'No solution'
         }
         while(openList.length > 0) {
-            // console.log(openList.length);
-            var best = openList[0];
+            // console.log(_.cloneDeep(openList));
+            Utility.sortNodes(openList);
+            console.log(_.cloneDeep(openList));
+            // console.log(_.cloneDeep(openList));
+
+            var nextNode = openList.shift();
             
+            // for (let index = 0; index < openList.length; index++) {
+            //     console.log(openList[index].getFCost());
+            // }
             //! Debugging
-            for (let index = 0; index < openList.length; index++) {
-                // console.log(openList[index].getFCost());
-                Debug.printMapState(openList[index].mapState, index)
-                if(openList[index].getFCost() <= best.getFCost()) {
-                    best = openList[index];
-                    var whichPicked = index;
-                }
-            }
-            console.log(whichPicked);
+    
+            console.log("Picked node");
+
+            Debug.printMapState(nextNode.mapState, "Best")
+
             // console.log(best);
             //!
-
-            var nextNode = _.cloneDeep(best);
+        
             // nextNode.mapState = _.cloneDeep(best.mapState);
             // console.log(nextNode);
             // console.log(nextNode.mapState);
             nodeCounter++;
 
-            closedList.push(nextNode.mapState);
+            closedList.push(_.cloneDeep(nextNode.mapState));
 
             // Debug.printMapState(nextNode.mapState);
             
 
-            if(nodeCounter == 100) {
+            if(nodeCounter == 300) {
                 Global.nodeNumber = nodeCounter;
                 return 'No solution';
             }
@@ -55,7 +56,7 @@ class Astar {
                 // console.log(nextNode.mapState.finished);
                 return 'Solved';
             }
-            let nodeList = Moves.makeAllMoves(nextNode);    
+            let nodeList = Moves.makeAllMoves(_.cloneDeep(nextNode));    
 
             console.log("Length of move list - " + nodeList.length);
 
@@ -66,13 +67,12 @@ class Astar {
                     return;
                 }
                 console.log("PUSH");
-                openList.push(nodeElem);
+                openList.push(_.cloneDeep(nodeElem));
             });
             console.count("Astar call")
 
-            //! Testing
-            // steps++;
-            // if(steps == 7) {
+            // //! Testing
+            // if(nodeCounter == 7) {
             //     return 'Paused'
             // }
         }

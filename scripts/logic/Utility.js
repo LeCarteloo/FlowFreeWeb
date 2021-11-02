@@ -25,6 +25,8 @@ class Utility {
         var sortedNodes = [];
         var temp = 0;
         for (let i = 0; i < nodes.length; i++) {
+            console.log(`F ${nodes[i].getFCost()}`);
+
             for (let j = i; j > 0; j--) {
                 if(nodes[j].getFCost() < nodes[j - 1].getFCost()) {
                     temp = nodes[j];

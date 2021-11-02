@@ -17,12 +17,27 @@ class Node {
     // A bit modified manhattan distance - it returns remaining free cells beetwen points.
     manhattan() {
         var manhValue = 0; 
-        
+        //TODO: Check this out tomorrow smth is not right here
         for (let i = 0; i < Map.numberOfColors; i++) {
             const curr = this.mapState.current[i];
             const end = Map.endPoint[i];
             manhValue += Math.abs(curr.X - end.X) + Math.abs(curr.Y - end.Y);
         }
+        
+        //! Wrote something just to test it out
+        for (let y = 0; y < Map.size; y++) {
+            for (let x = 0; x < Map.size; x++) {
+                // if(this.mapState.map[y][x] == '0' || this.mapState.map[y][x] == '?') {
+                //     manhValue++;
+                // }    
+
+                // if(Map.map[y][x] == '0' || Map.map[y][x] == '?') {
+                //     manhValue++;
+                //     console.log(_.cloneDeep(Map.map));
+                // }
+            }
+        }
+
         return manhValue;
     }
 

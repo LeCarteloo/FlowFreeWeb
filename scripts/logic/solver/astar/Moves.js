@@ -10,35 +10,36 @@ class Moves {
         const map = mapState.map;
         const pt = Map.endPoint[color]
 
-        if(y > 0 && y - 1 == pt.Y && x == pt.X) {
-            console.log("DOWN");
-        }
-        if(y < Map.size - 1 && y + 1 == pt.Y && x == pt.X) {
-            console.log("UPP");
-        }
-        if(x > 0 && y == pt.Y && x - 1 == pt.X) {
-            console.log("RIGHT");
-        }
-        if(x < Map.size - 1 && y == pt.Y && x + 1 == pt.X) {
-            console.log("LEFT");
-        }
+        // if(y > 0 && y - 1 == pt.Y && x == pt.X) {
+        //     console.log("DOWN");
+        // }
+        // if(y < Map.size - 1 && y + 1 == pt.Y && x == pt.X) {
+        //     console.log("UPP");
+        // }
+        // if(x > 0 && y == pt.Y && x - 1 == pt.X) {
+        //     console.log("RIGHT");
+        // }
+        // if(x < Map.size - 1 && y == pt.Y && x + 1 == pt.X) {
+        //     console.log("LEFT");
+        // }
 
-        if (y > 0 && map[y - 1][x] == '0' || y > 0 && y - 1 == pt.Y && x == pt.X) {
-            // console.log("Down neighbour");
-            result.push({From: {Y: y, X: x}, To: {Y: y - 1, X: x}});
-        }
-        if (y < Map.size - 1 && map[y + 1][x] == '0' || y < Map.size - 1 && y + 1 == pt.Y && x == pt.X) {
-            // console.log("Upp neighbour");
-            result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
+        if (x < Map.size - 1 && map[y][x + 1] == '0' || x < Map.size - 1 && y == pt.Y && x + 1 == pt.X) {
+            // console.log("Left neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y, X: x + 1}});
         }
         if (x > 0 && map[y][x - 1] == '0' || x > 0 && y == pt.Y && x - 1 == pt.X) {
             // console.log("Right neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x - 1}});
         }
-        if (x < Map.size - 1 && map[y][x + 1] == '0' || x < Map.size - 1 && y == pt.Y && x + 1 == pt.X) {
-            // console.log("Left neighbour");
-            result.push({From: {Y: y, X: x}, To: {Y: y, X: x + 1}});
+        if (y < Map.size - 1 && map[y + 1][x] == '0' || y < Map.size - 1 && y + 1 == pt.Y && x == pt.X) {
+            // console.log("Upp neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
         }
+        if (y > 0 && map[y - 1][x] == '0' || y > 0 && y - 1 == pt.Y && x == pt.X) {
+            // console.log("Down neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y - 1, X: x}});
+        }
+
 
         return result;
     }
@@ -50,7 +51,8 @@ class Moves {
             // if(mapState.finished == true) {
             //     continue;
             // }
-            if(mapState.current[i].X == Map.endPoint[i].X && mapState.current[i].Y == Map.endPoint[i].Y){
+            if(mapState.current[i].X == Map.endPoint[i].X 
+                && mapState.current[i].Y == Map.endPoint[i].Y){
                 continue;
             }
 
@@ -61,6 +63,10 @@ class Moves {
             // console.log(moves);
 
             if(moves.length != 1) {
+                // for (let i = 0; i < moves.length; i++) {
+                //     if(this.possibleMoves())
+                    
+                // }
                 continue;
             }
 
@@ -96,7 +102,7 @@ class Moves {
                 // return Moves.forcedMoves(node.mapState)
             }
             moves.push(_.cloneDeep(forcedNode));
-
+            Debug.printMapState(forcedNode.mapState, "Forced Node")
             return moves;
         }
 
@@ -110,6 +116,7 @@ class Moves {
             }
             colorList.push(i);
 
+            //TODO: MERGE THIS WITH
             let numberOfMoves = this.possibleMoves(node.mapState, i).length;
 
             if(numberOfMoves != 0) {
@@ -128,7 +135,9 @@ class Moves {
         for (const color of colorList) {
             // console.log(color);
 
+            //TODO: THIS
             let posMoves = Moves.possibleMoves(node.mapState, color);
+            // console.log(posMoves);
             for (let i = 0; i < posMoves.length; i++) {
                 // console.log(posMoves);
                 if(!posMoves[i]) {
@@ -147,8 +156,8 @@ class Moves {
                 // console.log(newNode);
 
                 // console.log(moves.length);
-
                 if(newNode != null) {
+                    Debug.printMapState(newNode.mapState, "New Node")
                     moves.push(newNode);
                     // console.log(moves);
                 }
