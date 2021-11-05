@@ -25,8 +25,6 @@ class Utility {
         var sortedNodes = [];
         var temp = 0;
         for (let i = 0; i < nodes.length; i++) {
-            console.log(`F ${nodes[i].getFCost()}`);
-
             for (let j = i; j > 0; j--) {
                 if(nodes[j].getFCost() < nodes[j - 1].getFCost()) {
                     temp = nodes[j];
@@ -36,12 +34,26 @@ class Utility {
             }
         }
 
-        for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].getFCost() != 0) {
-                sortedNodes.push(nodes[i]);
-            }
-        }
         return sortedNodes;
+    }
+
+    // Function push node to the list and sort elem by FCost
+    static pushSort(node, list) {
+        let index = 0;
+        if(list.length == 0) {
+            list.splice(index, 0, node);
+            return;
+        }
+
+        if(list[0].getFCost() == node.getFCost()) {
+            index = 1;
+        }  
+
+        list.splice(index, 0, node);
+
+        // for (let i = 0; i < list.length; i++) {
+        //     Debug.printMapState(list[i].mapState, "splice");
+        // }
     }
 
 }

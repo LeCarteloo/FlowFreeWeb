@@ -1,6 +1,6 @@
 // Enum with colors
 const Colors = {
-    'R': "red",
+    R: "red",
     G: "green",
     B: "blue",
     Y: "yellow",

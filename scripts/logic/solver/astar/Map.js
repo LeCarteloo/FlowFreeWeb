@@ -15,8 +15,8 @@ class Map {
         this.endPoint = [];
         this.map = gameMap;
         
-        for (let y = 0; y < size; y++) {
-            for (let x = 0; x < size; x++) {
+        for (let y = 0; y < this.size; y++) {
+            for (let x = 0; x < this.size; x++) {
                 if(gameMap[y][x] == '0') {
                     continue;
                 }
@@ -38,5 +38,13 @@ class Map {
                 }
             }
         }
+        if(!this.#isInitializated(gameMap) || this.endPoint.length != this.startPoint.length) {
+            throw('Something went wrong... Map could not be initalized');
+        }
     }
+
+static #isInitializated(gameMap) {
+    return this.map == gameMap;
+}
+
 }

@@ -35,15 +35,15 @@ class SAT {
     main() {
         var start = performance.now();
         // Tests
-        Utility.printGroup("Map", this.GameMap)
-        Utility.printGroup("Neighbours of point (0, 0)", this.#neighbours(0, 0))
-        Utility.printGroup("All possible #pairs of array [7,8,9,10,11]", this.#pairs([7,8,9,10,11]))
-        Utility.printGroup("Negated neighbours", this.#notBothNeighbours([7,8,9,10,11],[1, 2]))
+        this.#printGroup("Map", this.GameMap)
+        this.#printGroup("Neighbours of point (0, 0)", this.#neighbours(0, 0))
+        this.#printGroup("All possible #pairs of array [7,8,9,10,11]", this.#pairs([7,8,9,10,11]))
+        this.#printGroup("Negated neighbours", this.#notBothNeighbours([7,8,9,10,11],[1, 2]))
         
         this.colorArray = this.colorSAT(this.GameMap, this.Colors);
         this.solvedMap = this.decodeSAT(this.GameMap, solved, this.Colors);
-        Utility.printGroup("Colors reduced to SAT", this.colorArray)
-        Utility.printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
+        this.#printGroup("Colors reduced to SAT", this.colorArray)
+        this.#printGroup("Solved game map", this.decodeSAT(this.GameMap, solved, this.Colors));
 
         var end = performance.now();
         this.time = `${end - start} ms`;
