@@ -3,15 +3,16 @@ class Moves {
 
     }
 
-    static positiveNeighbours(mapState) {
+    static positiveNeighbours(mapState, y, x) {
         let result = [];
         
         const map = mapState.map;
-        if (x < Map.size - 1 && map[y][x + 1] == '0') {
+        // TODO: This is completly opposite needs to be changed
+        if (x < GameMap.size - 1 && map[y][x + 1] == '0') {
             // console.log("Left neighbour");
             result.push({Y: y, X: x + 1});
         }
-        if (y < Map.size - 1 && map[y + 1][x] == '0') {
+        if (y < GameMap.size - 1 && map[y + 1][x] == '0') {
             // console.log("Upp neighbour");
             result.push({Y: y + 1, X: x});
         }
@@ -26,9 +27,9 @@ class Moves {
         const y = mapState.current[color].Y;
         const x = mapState.current[color].X;
         const map = mapState.map;
-        const pt = Map.endPoint[color]
+        const pt = GameMap.endPoint[color]
 
-        if (x < Map.size - 1 && map[y][x + 1] == '0' || x < Map.size - 1 && y == pt.Y && x + 1 == pt.X) {
+        if (x < GameMap.size - 1 && map[y][x + 1] == '0' || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X) {
             // console.log("Left neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x + 1}});
         }
@@ -36,7 +37,7 @@ class Moves {
             // console.log("Right neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x - 1}});
         }
-        if (y < Map.size - 1 && map[y + 1][x] == '0' || y < Map.size - 1 && y + 1 == pt.Y && x == pt.X) {
+        if (y < GameMap.size - 1 && map[y + 1][x] == '0' || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X) {
             // console.log("Upp neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
         }
@@ -51,12 +52,12 @@ class Moves {
  
     // Forced moves of the all nodes
     static forcedMoves(node) {
-        for (let i = 0; i < Map.numberOfColors; i++) {
+        for (let i = 0; i < GameMap.numberOfColors; i++) {
             // if(node.mapState.finished == true) {
             //     continue;
             // }
-            if(node.mapState.current[i].X == Map.endPoint[i].X 
-                && node.mapState.current[i].Y == Map.endPoint[i].Y){
+            if(node.mapState.current[i].X == GameMap.endPoint[i].X 
+                && node.mapState.current[i].Y == GameMap.endPoint[i].Y){
                 continue;
             }
 
@@ -69,7 +70,7 @@ class Moves {
             //     if(possibleMoves.length == 1) {
             //         // console.log(possibleMoves);
             //         let test = 0;
-            //         for (let c = 0; c < Map.numberOfColors; c++) {
+            //         for (let c = 0; c < GameMap.numberOfColors; c++) {
 
             //             if(possibleMoves[0].To.X - 1 == checkNodes.mapState.current[c].X
             //                  && possibleMoves[0].To.Y == checkNodes.mapState.current[c].Y) {
@@ -117,6 +118,7 @@ class Moves {
         node.h = node.manhattan();
 
         Check.checkAll(node.mapState, color);
+        // Check.stranded(node.mapState, color);
 
         return node;
     }
@@ -139,9 +141,9 @@ class Moves {
 
         //If not
         let colorList = [];
-        for (let i = 0; i < Map.numberOfColors; i++) {
-            if(node.mapState.current[i].X == Map.endPoint[i].X &&
-                node.mapState.current[i].Y == Map.endPoint[i].Y) {
+        for (let i = 0; i < GameMap.numberOfColors; i++) {
+            if(node.mapState.current[i].X == GameMap.endPoint[i].X &&
+                node.mapState.current[i].Y == GameMap.endPoint[i].Y) {
                 node.movesNumber[i] = -1;
                 continue;
             }

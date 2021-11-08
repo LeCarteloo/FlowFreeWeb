@@ -1,4 +1,4 @@
-class Map {
+class GameMap {
     static map;
     static size;
     static numberOfColors;

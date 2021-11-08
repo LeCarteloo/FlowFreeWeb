@@ -13,11 +13,12 @@ class Astar {
 
         // Starting node
         openList.push(_.cloneDeep(node));
-        console.log(openList.length());
+       
         if(node == 'empty') {
             return 'No solution'
         }
         while(openList.length() > 0) {
+            console.count("Astar call")
             // Utility.sortNodes(openList);
             
             var nextNode = openList.shift();
@@ -48,7 +49,6 @@ class Astar {
                 }
                 openList.push(_.cloneDeep(nodeElem));
             });
-            console.count("Astar call")
             
             //! Testing
             if(nodeCounter == stop) {
