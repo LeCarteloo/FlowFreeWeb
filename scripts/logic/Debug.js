@@ -49,7 +49,7 @@ class Debug {
 
     static printMapState(elem, name) {
         console.groupCollapsed(`%c ${name}`, 'color: green;');
-        for (let y = 0; y < Map.size ;y++) {
+        for (let y = 0; y < GameMap.size ;y++) {
             console.log(elem.map[y].toString());
         }
         console.groupEnd();

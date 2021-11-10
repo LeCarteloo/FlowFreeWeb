@@ -33,8 +33,11 @@ class Tests {
         let start = performance.now()
 
         let componentLabeling = new ComponentLabeling();
-        componentLabeling.twoPass(gameMap);
-
+        let node = new Node();
+        // console.log(node);
+        // componentLabeling.twoPass(node.mapState.map);
+        // componentLabeling.addCurrentToSector(node.mapState)
+        componentLabeling.check(node.mapState)
         let end = performance.now();
         let time = `${(end - start) / 1000} seconds`;
         console.log(`%c It took ${time}`, 'color: yellow;' );

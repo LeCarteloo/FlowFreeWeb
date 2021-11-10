@@ -1,8 +1,4 @@
 class Moves {
-    static allNeighbours(mapState) {
-
-    }
-
     static positiveNeighbours(mapState, y, x) {
         let result = [];
         
@@ -21,6 +17,8 @@ class Moves {
     }
 
     // All possible moves of the given mapState and color
+    //TODO: Pass only the map array not whole MapState object
+    //? Do i even use FROM?
     static possibleMoves(mapState, color) {
         let result = [];
 

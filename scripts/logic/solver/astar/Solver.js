@@ -23,12 +23,17 @@ window.onload = function () {
 
     GameMap.initializeMap(gameMap);
 
-    Tests.astarPerformance();
+    let astar = new Astar();
 
-    console.log(gameMap);
+    console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
 
-    Tests.comonentLabelingPerformance();
+    // Tests.astarPerformance();
 
+    // console.log(gameMap);
+
+    // Tests.comonentLabelingPerformance();
+
+    
     for(var y = 0; y < GameMap.size; y++) {
         for(var x = 0; x < GameMap.size; x++) {
             before.innerHTML += `<p style="margin:0; padding:0; display: inline-block; font-weight: bold; color:${astarColor[gameMap[y][x]]}"> ${gameMap[y][x]} </p>`;

@@ -30,6 +30,12 @@ class Check {
     stranded(mapState, color) {
         // Variables
         let tempState = new MapState();
+        let zone;
+        let zoneNum;
+        let unstrandedFlows;
+        let zoneId;
+        let adjCur;
+        let adjEnd;
 
         for (let y = 0; y < GameMap.size; y++) {
             for (let x = 0; x < GameMap.size; x++) {
@@ -46,20 +52,38 @@ class Check {
                 if(mapState.map[y][x] == '0') {
                     let neighbours = Moves.positiveNeighbours(mapState, y, x);
                     neighbours.forEach(neigbour => {
-                        test++;
+                        console.log(neigbour.Y, neigbour.X, mapState.map[neigbour.Y][neigbour.X]);
+                        let ancQ = this.#anc(x, y);
+                        let ancP = this.#anc(neigbour.X, neigbour.Y);
+                        if(ancQ != ancP) {
+                            test++;
+                        }
                     });
                 }      
             }
         }
-        console.log("tescik " + test);
+
+        console.log("Ofensywny tescik " + test);
     }
 
+    #anc(x, y) {
+        if(x == this.par[x].X && y == this.par[y].Y) {
+            return {Y: y, X: x}
+        }
+        return this.#anc(this.par[x].X, this.par[y].Y)
+    }
+
+	getPos(x, y) {
+		return y * GameMap.size + x;
+	}
 
     static checkAll(mapState, color) {
 
-        console.log("Checking...");
+        // console.log("Checking...");
         let check = new Check();
-        check.missedTile(mapState, color);
-        check.stranded(mapState, color);
+        // check.missedTile(mapState, color);
+        let componentLabeling = new ComponentLabeling();
+        componentLabeling.check(mapState);
+        // check.stranded(mapState, color);
     }
 }
