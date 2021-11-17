@@ -7,7 +7,7 @@ class Astar {
         //TODO: Change closed list to other type of array
         var closedList = [];
         var nodeCounter = 0;
-        const stop = 6;
+        const stop = 100;
 
         let node = new Node();
 
@@ -43,7 +43,7 @@ class Astar {
             let nodeList = Moves.makeAllMoves(_.cloneDeep(nextNode));    
 
             nodeList.forEach(nodeElem => {
-                 Debug.printMapState(nodeElem.mapState, "Gen Moves")
+                //  Debug.printMapState(nodeElem.mapState, "Gen Moves")
                 if(closedList.includes(nodeElem.mapState) || openList.includes(nodeElem)) {
                     return;
                 }

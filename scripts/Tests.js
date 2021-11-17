@@ -34,10 +34,18 @@ class Tests {
 
         let componentLabeling = new ComponentLabeling();
         let node = new Node();
+        node.mapState.map = [    
+            ['R', 'R', '0', '0', '0', '0'],
+            ['B', 'R', '0', '0', 'B', 'R'],
+            ['B', 'R', 'R', 'R', '0', 'Y'],
+            ['0', 'G', 'A', '0', '0', '0'],
+            ['0', '0', '0', '0', 'G', 'A'],
+            ['Y', 'O', '0', '0', '0', 'O'],
+        ]
         // console.log(node);
         // componentLabeling.twoPass(node.mapState.map);
         // componentLabeling.addCurrentToSector(node.mapState)
-        componentLabeling.check(node.mapState)
+        componentLabeling.isStranded(node.mapState)
         let end = performance.now();
         let time = `${(end - start) / 1000} seconds`;
         console.log(`%c It took ${time}`, 'color: yellow;' );

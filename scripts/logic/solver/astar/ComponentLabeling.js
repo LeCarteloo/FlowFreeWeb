@@ -1,17 +1,16 @@
 class ComponentLabeling {
   constructor() {
-    this.linked = [];
     // Creating empty array 2D with size of the map
     // -1 - Points
     this.labels = Array(GameMap.size)
       .fill()
-      .map(() => Array(GameMap.size).fill(9)); //! To -1 later
-    // HashMap
+      .map(() => Array(GameMap.size).fill(-1)); //! To -1 later
+      // this.equivalent = new Map();
+      this.equivalent = []; // Array(GameMap.size).fill('')
+      this.nextLabel = 0;
+      this.numberOfSectors = []; // = 0
+      // HashMap
     this.union = new Map();
-    this.nextLabel = 0;
-    this.sectorNumber = 0;
-
-    // Tests
     this.currentPoint = [];
     this.endPoint = [];
   }
@@ -31,8 +30,9 @@ class ComponentLabeling {
     return result;
   }
 
-  // Connected-component labeling with Disjoint set
-  // TODO: Something is wrong with Map (union) - looks closly
+  // Connected-component labeling //!with Disjoint set
+  // TODO: Something is wrong with Map (equivalent) - looks closly
+  // TODO: PERFORMANCE
   detectSectors(map) {
     // First run, '0' - is not background
     // Raster scan
@@ -40,52 +40,114 @@ class ComponentLabeling {
       for (let x = 0; x < GameMap.size; x++) {
         if (map[y][x] == "0") {
           let neighbours = this.neighbours(map, y, x);
-
           if (neighbours.length == 0) {
-            this.linked.push(this.nextLabel);
+            this.equivalent[this.nextLabel] = this.nextLabel.toString();
             this.labels[y][x] = this.nextLabel;
+            this.union.set(this.nextLabel, this.nextLabel)
             this.nextLabel++;
           } else {
             let label = [];
-            label.push(this.labels[neighbours[0].Y][neighbours[0].X]);
-
-            if (neighbours.length == 2) {
-              label.push(this.labels[neighbours[1].Y][neighbours[1].X]);
-            }
+            neighbours.forEach(neighbour => {
+              label.push(this.labels[neighbour.Y][neighbour.X]);
+            });
             this.labels[y][x] = Math.min(...label);
             label.forEach((l) => {
-              this.union.set(this.linked[l], Math.min(...label));
+              if(this.labels[y][x] != l) {
+                this.equivalent[l] += this.labels[y][x];
+                this.equivalent[this.labels[y][x]] += l;
+
+              }
             });
           }
         }
+        // console.log(this.equivalent);
       }
     }
-    // console.log(_.cloneDeep(this.labels));
+    // this.printLabels(this.labels)
+
+    //! If got time change it
+    for (let i = 0; i < this.equivalent.length; i++) {
+      for (let j = 0; j < this.equivalent[i].length; j++) {
+        if(this.equivalent[i][j] == i) {
+          continue;
+        }
+        
+        let ts = parseInt(Math.min(...this.equivalent[Math.min(...this.equivalent[i])]));
+        if(ts < parseInt(this.equivalent[i][j]) && ts < this.union.get(parseInt(this.equivalent[i][j]))) {
+          this.union.set(parseInt(this.equivalent[i][j]), ts)
+        }
+      }
+    }
+
+    // console.log(this.union);
 
     // Second run
     for (let y = 0; y < GameMap.size; y++) {
       for (let x = 0; x < GameMap.size; x++) {
         if (map[y][x] == "0") {
-          // TODO: REWRITE IT
-          this.labels[y][x] =
-            typeof this.union.get(this.labels[y][x]) == "undefined"
-              ? this.labels[y][x]
-              : this.union.get(this.labels[y][x]);
-            if(this.union.has(this.labels[y][x])) {
-                this.sectorNumber++;
+            this.labels[y][x] = this.union.get(this.labels[y][x]);
+            // TODO: (NOTE)
+            if (!this.numberOfSectors.includes(this.labels[y][x])) {
+              this.numberOfSectors.push(this.labels[y][x]);
             }
         }
       }
     }
-    console.log(this.sectorNumber);
-    // console.log(this.union);
-    console.log(this.labels);
+
+    // console.log(this.numberOfSectors.length);
+    // console.log('');
+    // console.log(this.equivalent);
+    // console.log('');
+    // this.printLabels(this.labels)
+   
+    // this.printLabels(map)
+    // console.log('');
+    // this.printLabels(this.labels)
+    // this.equivalent[0] = '0';
+    // for (let y = 0; y < GameMap.size; y++) {
+    //   for (let x = 0; x < GameMap.size; x++) {
+    //     if(map[y][x] == 0) {
+    //       var neighbours = this.neighbours(map, y, x);
+    //       if(neighbours.length == 0) {
+    //         this.labels[y][x] = this.nextLabel;
+    //         this.nextLabel++;
+    //       }
+    //       else {
+    //         let temp = [];
+    //         neighbours.forEach(neighbour => {
+    //           temp.push(this.labels[neighbour.Y][neighbour.X])
+    //         });
+    //         this.labels[y][x] = Math.min(...temp);
+
+    //         temp.forEach(tem => {
+    //             console.log(tem);
+    //             // while (this.equivalent[tem] != this.labels[y][x]) {
+    //             //   let m = this.equivalent[tem]
+    //             //   this.equivalent[tem] += this.labels[y][x];
+    //             //   tem = m;
+    //             // }
+    //         });
+
+    //       }
+    //     } 
+    //   }
+    // }
+    // console.log('');
+    // this.printLabels(this.labels)
+
   }
 
+  printLabels(labels) {
+    for (let y = 0; y < labels.length; y++) {
+      console.log(labels[y]);
+    }
+  }
   // Add points to detected sectors
-  addCurrentToSector(mapState) {
+  addPointsToSectors(mapState) {
+    // TODO: IMPORTANT NUMBER OF SECTORS COULD BE LARGER THAN NUMBER OF COLORS
     for (let i = 0; i < GameMap.numberOfColors; i++) {
-      this.currentPoint[i] = this.endPoint[i] = "";
+      this.currentPoint[i] = "";
+      this.endPoint[i] = "";
     }
 
     for (let j = 0; j < GameMap.numberOfColors; j++) {
@@ -96,61 +158,86 @@ class ComponentLabeling {
       }
 
       let neighboursOfCurrent = Moves.possibleMoves(mapState, j);
-      let temp = [];
+      // let temp = [];
       neighboursOfCurrent.forEach((neighbour) => {
         const y = neighbour.To.Y;
         const x = neighbour.To.X;
-        if (this.labels[y][x] != -1) {
-          // this.currentPoint[j] += this.labels[y][x].toString();
-          temp.push(this.labels[y][x]);
+        if (
+          this.labels[y][x] != -1 &&
+          !this.currentPoint[this.labels[y][x]].includes(j)
+        ) {
+          this.currentPoint[this.labels[y][x]] += j.toString();
+          // this.currentPoint.splice(this.labels[y][x], 0, j.toString())
         }
       });
-      this.currentPoint[j] = temp;
 
       let neighboursOfEnd = this.possibleMoves(j);
-      temp = [];
 
       neighboursOfEnd.forEach((neighbour) => {
         const y = neighbour.To.Y;
         const x = neighbour.To.X;
-        if (this.labels[y][x] != -1) {
-          temp.push(this.labels[y][x]);
+        //! PROBLEM HERE V LABELS (-1)
+        // console.log(this.labels[y][x]);
+        // console.log(_.cloneDeep(this.labels));
+        // console.log(this.labels[y][x]);
+        // console.log(this.endPoint[this.labels[y][x]]);
+        if (
+          this.labels[y][x] != -1 &&
+          !this.endPoint[this.labels[y][x]].includes(j)
+        ) {
+          this.endPoint[this.labels[y][x]] += j.toString();
         }
       });
-      this.endPoint[j] = temp;
     }
 
-    // console.log(this.currentPoint);
-    // console.log(this.endPoint);
+    // console.log(this.labels);
+    // console.log("current ", this.currentPoint);
+    // console.log("end ", this.endPoint);
   }
 
-  check(mapState) {
+  isStranded(mapState) {
     // Hardcoded number of generated sectors
     // let sectorNum = 2;
-
     this.detectSectors(mapState.map);
-    this.addCurrentToSector(mapState);
+    this.addPointsToSectors(mapState);
 
-    let counter = GameMap.numberOfColors;
+    //! ?
+    let colorsInSectors = [];
 
-    //TODO: It kinda suck, rewrite it
-    for (let i = 0; i < GameMap.numberOfColors; i++) {
+    // console.log(this.numberOfSectors.length);
+
+    for (let i = 0; i < this.numberOfSectors.length; i++) {
       const curr = this.currentPoint[i];
       const end = this.endPoint[i];
+      console.log(this.currentPoint);
+      console.log(this.endPoint);
+      // console.log(this.currentPoint[i]);
+
+      if (
+        (curr.length > 0 && end.length == 0) ||
+        (end.length > 0 && curr.length == 0)
+      ) {
+        return true;
+      }
+
       for (let c = 0; c < curr.length; c++) {
         for (let e = 0; e < end.length; e++) {
           if (this.currentPoint[i][c] == this.endPoint[i][e]) {
-            counter--;
-            c = this.currentPoint[i].length;
+            if (!colorsInSectors.includes(this.endPoint[i][e])) {
+              colorsInSectors.push(this.endPoint[i][e]);
+            }
             break;
           }
         }
       }
     }
-
-    if (counter != 0) {
-      console.log("Blocked");
+    // console.log(colorsInSectors);
+    if (colorsInSectors.length != GameMap.numberOfColors) {
+      console.log("sad");
+      return true;
     }
+
+    return false;
   }
 
   //TODO: Remove this function and wrote it in Moves.js
