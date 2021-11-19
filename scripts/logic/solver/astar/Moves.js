@@ -16,6 +16,31 @@ class Moves {
         return result;
     }
 
+    static allNeighbours(mapState, y, x) {
+        let result = [];
+        
+        const map = mapState.map;
+        // TODO: This is completly opposite needs to be changed
+        if (x < GameMap.size - 1) {
+            // console.log("Left neighbour");
+            result.push({Y: y, X: x + 1});
+        }
+        if (y < GameMap.size - 1) {
+            // console.log("Upp neighbour");
+            result.push({Y: y + 1, X: x});
+        }
+        if (y > 0) {
+            // console.log("Left neighbour");
+            result.push({Y: y - 1, X: x});
+        }
+        if (x > 0) {
+            // console.log("Upp neighbour");
+            result.push({Y: y, X: x - 1});
+        }
+
+        return result;
+    }
+
     static isValid(mapState, y, x, color) {
         const map = mapState.map;
         if (x < GameMap.size - 1 && map[y][x + 1] == GameMap.foundColors[color]
@@ -41,12 +66,42 @@ class Moves {
         return true;
     }
 
+// All possible moves of the given mapState and color
+    //TODO: Pass only the map array not whole MapState object
+    //? Do i even use FROM?
+    static testMoves(mapState, color) {
+        let result = [];
+        const y = mapState.current[color].Y;
+        const x = mapState.current[color].X;
+        const map = mapState.map;
+        const pt = GameMap.endPoint[color]
+
+        if ((x < GameMap.size - 1 && map[y][x + 1] == '0' || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X)) {
+            // console.log("Left neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y, X: x + 1}});
+        }
+        if ((x > 0 && map[y][x - 1] == '0' || x > 0 && y == pt.Y && x - 1 == pt.X)) {
+            // console.log("Right neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y, X: x - 1}});
+        }
+        if ((y < GameMap.size - 1 && map[y + 1][x] == '0' || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X)) {
+            // console.log("Upp neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
+        }
+        if ((y > 0 && map[y - 1][x] == '0' || y > 0 && y - 1 == pt.Y && x == pt.X)) {
+            // console.log("Down neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y - 1, X: x}});
+        }
+
+
+        return result;
+    }
+
     // All possible moves of the given mapState and color
     //TODO: Pass only the map array not whole MapState object
     //? Do i even use FROM?
     static possibleMoves(mapState, color) {
         let result = [];
-
         const y = mapState.current[color].Y;
         const x = mapState.current[color].X;
         const map = mapState.map;
@@ -62,15 +117,15 @@ class Moves {
             // console.log("Right neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x - 1}});
         }
-        if ((y < GameMap.size - 1 && map[y + 1][x] == '0' || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X)
-        && Moves.isValid(mapState, y + 1, x, color)) {
-            // console.log("Upp neighbour");
-            result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
-        }
         if ((y > 0 && map[y - 1][x] == '0' || y > 0 && y - 1 == pt.Y && x == pt.X)
         && Moves.isValid(mapState, y - 1, x, color)) {
             // console.log("Down neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y - 1, X: x}});
+        }
+        if ((y < GameMap.size - 1 && map[y + 1][x] == '0' || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X)
+        && Moves.isValid(mapState, y + 1, x, color)) {
+            // console.log("Upp neighbour");
+            result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
         }
 
 
@@ -80,58 +135,97 @@ class Moves {
     // Forced moves of the all nodes
     static forcedMoves(node) {
         for (let i = 0; i < GameMap.numberOfColors; i++) {
-            // if(node.mapState.finished == true) {
-            //     continue;
-            // }
-            if(node.mapState.current[i].X == GameMap.endPoint[i].X 
-                && node.mapState.current[i].Y == GameMap.endPoint[i].Y){
+            if(node.isFinished(i)) {
                 continue;
             }
 
             let moves = this.possibleMoves(node.mapState, i);
+            // console.log('');
+            // console.log(moves);
 
-            // for (let j = 0; j < moves.length; j++) {
-            //     let checkNodes = this.makeMove(_.cloneDeep(node), [moves[j]], i, 0);
-            //     let possibleMoves = this.possibleMoves((checkNodes.mapState), i);
+            for (const move of moves) {
+                let tempNode = _.cloneDeep(node);
+                // console.log(move);
+                tempNode.updateMapState(i, [move])
+                // console.log(tempNode.mapState.map);
 
-            //     if(possibleMoves.length == 1) {
-            //         // console.log(possibleMoves);
-            //         let test = 0;
-            //         for (let c = 0; c < GameMap.numberOfColors; c++) {
+                let neighbourMoves = this.testMoves(tempNode.mapState, i);
+                // console.log(neighbourMoves, GameMap.foundColors[i]);
+                if(neighbourMoves.length != 1) {
+                    // console.log("Tu -1 jest");
+                    continue;
+                }
+                let test = 0;
+                // console.log("Neighbour", {Y: neighbourMoves[0].To.Y, X: neighbourMoves[0].To.X});
+                // console.log("Porownanie z", move.To.Y, move.To.X);
 
-            //             if(possibleMoves[0].To.X - 1 == checkNodes.mapState.current[c].X
-            //                  && possibleMoves[0].To.Y == checkNodes.mapState.current[c].Y) {
-            //                 test++;
-            //             }
-            //             if(possibleMoves[0].To.X + 1 == checkNodes.mapState.current[c].X
-            //             && possibleMoves[0].To.Y == checkNodes.mapState.current[c].Y) {
-            //                 test++;
+                // TODO: FIX THOSE IFs (I'm not sure about that EndPoints in IF statements)
+                for (let c = 0; c < GameMap.numberOfColors; c++) {
+                    // console.log("CUR", node.mapState.current[c]);
+                    // console.log("END", GameMap.endPoint[c]);
 
-            //             }
-            //             if(possibleMoves[0].To.X  == checkNodes.mapState.current[c].X
-            //             && possibleMoves[0].To.Y - 1 == checkNodes.mapState.current[c].Y) {
-            //                 test++;
+                    if((move.To.X - 1 == node.mapState.current[c].X
+                    && move.To.Y == node.mapState.current[c].Y)) {
+                        // console.log("Left from " + i);
+                        test++;
+                    }
+                    if((move.To.X + 1 == node.mapState.current[c].X
+                    && move.To.Y == node.mapState.current[c].Y)) {
+                        // console.log("Right from " + i);
+                        test++;
+                    }
+                    if((move.To.X  == node.mapState.current[c].X
+                    && move.To.Y - 1 == node.mapState.current[c].Y)) {
+                        // console.log("Up from " + i);
+                        test++;
 
-            //             }
-            //             if(possibleMoves[0].To.X + 1 == checkNodes.mapState.current[c].X
-            //             && possibleMoves[0].To.Y == checkNodes.mapState.current[c].Y) {
-            //                 test++;
-                            
-            //             }
-            //             if(test == 1) {
-            //                 return [[moves[j]], i];                    
-                             
-            //             }
-                        
-            //         }
-            //     }
-            // }
+                    }
+                    if((move.To.X == node.mapState.current[c].X
+                    && move.To.Y + 1 == node.mapState.current[c].Y)) {
+                        // console.log("Down from" + i);
+                        test++;
+                    }
+
+                    //! Just testing (atm have no idea how to fix Yellow Color move [from (2,5) to (3,5))]
+                    if((move.To.X - 1 == GameMap.endPoint[c].X
+                    && move.To.Y == GameMap.endPoint[c].Y)) {
+                        // console.log("Left from " + i);
+                        test++;
+                    }
+                    if((move.To.X + 1 == GameMap.endPoint[c].X
+                    && move.To.Y == GameMap.endPoint[c].Y)) {
+                        // console.log("Right from " + i);
+                        test++;
+                    }
+                    if((move.To.X == GameMap.endPoint[c].X
+                    && move.To.Y - 1 == GameMap.endPoint[c].Y)) {
+                        // console.log("Up from " + i);
+                        test++;
+                    }
+                    if((move.To.X == GameMap.endPoint[c].X
+                    && move.To.Y + 1 == GameMap.endPoint[c].Y)) {
+                        // console.log("Down from " + i);
+                        test++;
+                    }
+                    // if((move.To.X == tempNode.mapState.current[c].X
+                    // && move.To.Y == tempNode.mapState.current[c].Y)) {
+                    //     test++;
+                    // }
+                }    
+                // console.log("Counter value " + test);
+
+                if(test == 1) {
+                    // console.log("FORCED - " + test);
+                    return [[move], i];
+                }            
+            }
 
             if(moves.length != 1) {
                 continue;
             }
 
             //TODO: Remove array later
+            console.log("FORCED2");
             return [moves, i];
         }
         return -1;
@@ -143,6 +237,20 @@ class Moves {
         node.g += cost;
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
+
+        const y = node.mapState.current[color].Y;
+        const x = node.mapState.current[color].X;
+        const pt = GameMap.endPoint[color]
+
+        if(y - 1 == pt.Y && x == pt.X || y + 1 == pt.Y && x == pt.X
+            || y == pt.Y && x - 1 == pt.X || y == pt.Y && x + 1 == pt.X) {
+            console.log("Dodano kolor - " + color);
+            // node.mapState.finished.push(color)
+            GameMap.finishedPoints.push(color);
+        }
+
+        Debug.printMapState(node.mapState);
+        console.log(GameMap.finishedPoints);
 
         if(Check.checkAll(node.mapState, color)) {
             return null;
@@ -173,8 +281,7 @@ class Moves {
         //If not
         let colorList = [];
         for (let i = 0; i < GameMap.numberOfColors; i++) {
-            if(node.mapState.current[i].X == GameMap.endPoint[i].X &&
-                node.mapState.current[i].Y == GameMap.endPoint[i].Y) {
+            if(node.isFinished(i)) {
                 node.movesNumber[i] = -1;
                 continue;
             }

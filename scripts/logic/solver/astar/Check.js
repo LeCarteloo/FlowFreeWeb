@@ -12,26 +12,39 @@ class Check {
     }
 
     missedTile(mapState, color) {
-        let neighbours = Moves.possibleMoves(mapState, color)
+        //! ONLY TESTING (it will be changed)
+        let neighbours = Moves.testMoves(mapState, color)
+        // console.log(neighbours);
         let tilesFiled = 0;
         
         neighbours.forEach(neighbour => {
+            tilesFiled = 0;
             const y = neighbour.To.Y;
             const x = neighbour.To.X;
-            if(mapState.map[y][x] == GameMap.foundColors[color] 
-                && mapState.finished.includes(color)){
-                tilesFiled++;
-            }
+            let neigh = Moves.allNeighbours(mapState, y, x);
+            // console.log(neigh);
+            neigh.forEach(nei => {
+                // console.log(nei);
+                const y = nei.Y;
+                const x = nei.X;
+                if(mapState.map[y][x] == GameMap.foundColors[color]){
+                    // console.log(mapState.map[y][x]);
+                    tilesFiled++;
+                }
+            });
         });
         return tilesFiled >= 3;
     }
 
     static checkAll(mapState, color) {
-        Debug.printMapState(mapState, "Checking Node")
+        // Debug.printMapState(mapState, "Checking Node")
         // console.log("Checking...");
         let check = new Check();
-        // check.missedTile(mapState, color);
         let componentLabeling = new ComponentLabeling();
+        if(check.missedTile(mapState, color)) {
+            console.log("MISSEDTILE");
+            return true;
+        }
         if(componentLabeling.isStranded(mapState)) {
             console.log("STRANDED");
             // Debug.printMapState(mapState, "Stranded")

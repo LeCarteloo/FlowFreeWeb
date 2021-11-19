@@ -46,8 +46,15 @@ class Node {
     }
 
     //Check if point is finished
-    isFinished() {
-        return this.mapState.isFinished();
+    isSolved() {
+        return this.mapState.isSolved();
+    }
+
+    isFinished(color) {
+        if(GameMap.finishedPoints.includes(color)) {
+            return true;
+        }
+        return false;
     }
 
     toString() {
@@ -72,16 +79,6 @@ class Node {
         // console.log(position);
         this.mapState.map[position[0].To.Y][position[0].To.X] = GameMap.foundColors[color];
         this.mapState.freeTiles--;
-
-        const y = this.mapState.current[color].Y;
-        const x = this.mapState.current[color].X;
-        const pt = GameMap.endPoint[color]
-
-        if(y - 1 == pt.Y && x == pt.X || y + 1 == pt.Y && x == pt.X
-            || y == pt.Y && x - 1 == pt.X || y == pt.Y && x + 1 == pt.X) {
-            this.mapState.finished.push(color)
-        }
-
         this.setCurrent(position[0].To.X, position[0].To.Y, color);
     }
 }

@@ -36,7 +36,7 @@ class Astar {
                 return 'No solution';
             }
 
-            if(nextNode.isFinished()){
+            if(nextNode.isSolved()){
                 Global.nodeNumber = nodeCounter;
                 return 'Solved';
             }

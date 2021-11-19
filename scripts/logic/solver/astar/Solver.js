@@ -31,11 +31,11 @@ window.onload = function () {
 
     // console.log(gameMap);
 
-    // let unionFind = new UnionFind();
-
-    // unionFind.init(gameMap);
-
     // Tests.comonentLabelingPerformance();
+
+    // Tests.missedTileTest();
+
+    // Tests.forcedMoveTest();
 
     for(var y = 0; y < GameMap.size; y++) {
         for(var x = 0; x < GameMap.size; x++) {

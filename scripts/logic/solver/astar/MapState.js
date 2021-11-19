@@ -8,7 +8,7 @@ class MapState {
     }
 
     // Check if map is solved
-    isFinished() {
+    isSolved() {
         return this.freeTiles == 0;
     }
 }

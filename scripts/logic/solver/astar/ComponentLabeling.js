@@ -4,18 +4,19 @@ class ComponentLabeling {
     // -1 - Points
     this.labels = Array(GameMap.size)
       .fill()
-      .map(() => Array(GameMap.size).fill(-1)); //! To -1 later
-      // this.equivalent = new Map();
-      this.equivalent = []; // Array(GameMap.size).fill('')
-      this.nextLabel = 0;
-      this.numberOfSectors = []; // = 0
-      // HashMap
+      .map(() => Array(GameMap.size).fill('-1')); //! To -1 later
+    // this.equivalent = new Map();
+    this.equivalent = []; // Array(GameMap.size).fill('')
+    this.nextLabel = 0;
+    this.numberOfSectors = []; // = 0
+    // HashMap
     this.union = new Map();
     this.currentPoint = [];
     this.endPoint = [];
   }
 
-  neighbours(map, y, x) {
+  //! changed
+  fourConnectivity(map, y, x) {
     let result = [];
 
     if (x > 0 && map[y][x - 1] == "0") {
@@ -31,7 +32,6 @@ class ComponentLabeling {
   }
 
   // Connected-component labeling //!with Disjoint set
-  // TODO: Something is wrong with Map (equivalent) - looks closly
   // TODO: PERFORMANCE
   detectSectors(map) {
     // First run, '0' - is not background
@@ -39,7 +39,7 @@ class ComponentLabeling {
     for (let y = 0; y < GameMap.size; y++) {
       for (let x = 0; x < GameMap.size; x++) {
         if (map[y][x] == "0") {
-          let neighbours = this.neighbours(map, y, x);
+          let neighbours = this.fourConnectivity(map, y, x);
           if (neighbours.length == 0) {
             this.equivalent[this.nextLabel] = this.nextLabel.toString();
             this.labels[y][x] = this.nextLabel;
@@ -93,48 +93,8 @@ class ComponentLabeling {
         }
       }
     }
-
-    // console.log(this.numberOfSectors.length);
-    // console.log('');
-    // console.log(this.equivalent);
     // console.log('');
     // this.printLabels(this.labels)
-   
-    // this.printLabels(map)
-    // console.log('');
-    // this.printLabels(this.labels)
-    // this.equivalent[0] = '0';
-    // for (let y = 0; y < GameMap.size; y++) {
-    //   for (let x = 0; x < GameMap.size; x++) {
-    //     if(map[y][x] == 0) {
-    //       var neighbours = this.neighbours(map, y, x);
-    //       if(neighbours.length == 0) {
-    //         this.labels[y][x] = this.nextLabel;
-    //         this.nextLabel++;
-    //       }
-    //       else {
-    //         let temp = [];
-    //         neighbours.forEach(neighbour => {
-    //           temp.push(this.labels[neighbour.Y][neighbour.X])
-    //         });
-    //         this.labels[y][x] = Math.min(...temp);
-
-    //         temp.forEach(tem => {
-    //             console.log(tem);
-    //             // while (this.equivalent[tem] != this.labels[y][x]) {
-    //             //   let m = this.equivalent[tem]
-    //             //   this.equivalent[tem] += this.labels[y][x];
-    //             //   tem = m;
-    //             // }
-    //         });
-
-    //       }
-    //     } 
-    //   }
-    // }
-    // console.log('');
-    // this.printLabels(this.labels)
-
   }
 
   printLabels(labels) {
@@ -157,7 +117,7 @@ class ComponentLabeling {
         continue;
       }
 
-      let neighboursOfCurrent = Moves.possibleMoves(mapState, j);
+      let neighboursOfCurrent = Moves.testMoves(mapState, j);
       // let temp = [];
       neighboursOfCurrent.forEach((neighbour) => {
         const y = neighbour.To.Y;
@@ -176,11 +136,6 @@ class ComponentLabeling {
       neighboursOfEnd.forEach((neighbour) => {
         const y = neighbour.To.Y;
         const x = neighbour.To.X;
-        //! PROBLEM HERE V LABELS (-1)
-        // console.log(this.labels[y][x]);
-        // console.log(_.cloneDeep(this.labels));
-        // console.log(this.labels[y][x]);
-        // console.log(this.endPoint[this.labels[y][x]]);
         if (
           this.labels[y][x] != -1 &&
           !this.endPoint[this.labels[y][x]].includes(j)
@@ -209,8 +164,8 @@ class ComponentLabeling {
     for (let i = 0; i < this.numberOfSectors.length; i++) {
       const curr = this.currentPoint[i];
       const end = this.endPoint[i];
-      console.log(this.currentPoint);
-      console.log(this.endPoint);
+      // console.log(this.currentPoint);
+      // console.log(this.endPoint);
       // console.log(this.currentPoint[i]);
 
       if (
@@ -233,7 +188,6 @@ class ComponentLabeling {
     }
     // console.log(colorsInSectors);
     if (colorsInSectors.length != GameMap.numberOfColors) {
-      console.log("sad");
       return true;
     }
 
