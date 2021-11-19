@@ -66,7 +66,8 @@ class Moves {
         return true;
     }
 
-// All possible moves of the given mapState and color
+    // All possible moves of the given mapState and color
+
     //TODO: Pass only the map array not whole MapState object
     //? Do i even use FROM?
     static testMoves(mapState, color) {
@@ -140,6 +141,7 @@ class Moves {
             }
 
             let moves = this.possibleMoves(node.mapState, i);
+            // console.log(_.cloneDeep(node.mapState.map));
             // console.log('');
             // console.log(moves);
 
@@ -188,22 +190,22 @@ class Moves {
 
                     //! Just testing (atm have no idea how to fix Yellow Color move [from (2,5) to (3,5))]
                     if((move.To.X - 1 == GameMap.endPoint[c].X
-                    && move.To.Y == GameMap.endPoint[c].Y)) {
+                    && move.To.Y == GameMap.endPoint[c].Y && i != c)) {
                         // console.log("Left from " + i);
                         test++;
                     }
                     if((move.To.X + 1 == GameMap.endPoint[c].X
-                    && move.To.Y == GameMap.endPoint[c].Y)) {
+                    && move.To.Y == GameMap.endPoint[c].Y && i != c)) {
                         // console.log("Right from " + i);
                         test++;
                     }
                     if((move.To.X == GameMap.endPoint[c].X
-                    && move.To.Y - 1 == GameMap.endPoint[c].Y)) {
+                    && move.To.Y - 1 == GameMap.endPoint[c].Y && i != c)) {
                         // console.log("Up from " + i);
                         test++;
                     }
                     if((move.To.X == GameMap.endPoint[c].X
-                    && move.To.Y + 1 == GameMap.endPoint[c].Y)) {
+                    && move.To.Y + 1 == GameMap.endPoint[c].Y && i != c)) {
                         // console.log("Down from " + i);
                         test++;
                     }
@@ -223,7 +225,6 @@ class Moves {
             if(moves.length != 1) {
                 continue;
             }
-
             //TODO: Remove array later
             console.log("FORCED2");
             return [moves, i];
@@ -238,23 +239,32 @@ class Moves {
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
 
-        const y = node.mapState.current[color].Y;
-        const x = node.mapState.current[color].X;
-        const pt = GameMap.endPoint[color]
-
-        if(y - 1 == pt.Y && x == pt.X || y + 1 == pt.Y && x == pt.X
-            || y == pt.Y && x - 1 == pt.X || y == pt.Y && x + 1 == pt.X) {
-            console.log("Dodano kolor - " + color);
-            // node.mapState.finished.push(color)
-            GameMap.finishedPoints.push(color);
+        Debug.printMapState(_.cloneDeep(node.mapState), "MakeMOVE");
+        
+        // Check if current pipe is one tile away from end point
+        //! By this VVV two times make Move is called (check it)
+        let moves = Moves.possibleMoves(node.mapState, color);
+        for (const move of moves) {
+            if(move.To.X == GameMap.endPoint[color].X && move.To.Y == GameMap.endPoint[color].Y) {
+                // console.log("gut?");
+                //! ADDED
+                GameMap.finishedPoints.push(color);
+                if(Check.checkAll(node.mapState, color)) {
+                    let index = GameMap.finishedPoints.indexOf(color);
+                    GameMap.finishedPoints.splice(index, 1);
+                    return null;
+                }
+                this.makeMove(node, [move], color, 0);
+                
+            }
         }
-
-        Debug.printMapState(node.mapState);
-        console.log(GameMap.finishedPoints);
-
+        //! Debug
+        // !node.isFinished(color) && 
         if(Check.checkAll(node.mapState, color)) {
             return null;
         }
+        
+        // console.log(GameMap.finishedPoints);
 
         return node;
     }
@@ -282,6 +292,7 @@ class Moves {
         let colorList = [];
         for (let i = 0; i < GameMap.numberOfColors; i++) {
             if(node.isFinished(i)) {
+                // console.log("SIEMA");
                 node.movesNumber[i] = -1;
                 continue;
             }

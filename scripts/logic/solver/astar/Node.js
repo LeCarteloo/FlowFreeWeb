@@ -50,11 +50,9 @@ class Node {
         return this.mapState.isSolved();
     }
 
+    //! Move To MapState
     isFinished(color) {
-        if(GameMap.finishedPoints.includes(color)) {
-            return true;
-        }
-        return false;
+        return this.mapState.isFinished(color);
     }
 
     toString() {

@@ -113,7 +113,7 @@ class ComponentLabeling {
     for (let j = 0; j < GameMap.numberOfColors; j++) {
       // Finish condition
       //TODO: IMPORTANT ADD TO ARRAY AFTER FINISHING COLOR (in Moves.js)
-      if (mapState.finished.includes(j)) {
+      if (mapState.isFinished(j)) {
         continue;
       }
 
@@ -187,7 +187,7 @@ class ComponentLabeling {
       }
     }
     // console.log(colorsInSectors);
-    if (colorsInSectors.length != GameMap.numberOfColors) {
+    if (colorsInSectors.length != GameMap.numberOfColors - GameMap.finishedPoints.length) {
       return true;
     }
 
