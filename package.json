@@ -1,0 +1,28 @@
+{
+  "name": "flowFreeWeb",
+  "version": "1.0.0",
+  "description": "Flow Free game with AI algorithm to solve and generate maps with multiplayer version.",
+  "main": "start.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./ZApp/App.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeCarteloo/flowFreeWeb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeCarteloo/flowFreeWeb/issues"
+  },
+  "homepage": "https://github.com/LeCarteloo/flowFreeWeb#readme",
+  "devDependencies": {
+    "jest": "^27.3.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}

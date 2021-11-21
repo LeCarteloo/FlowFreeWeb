@@ -77,19 +77,19 @@ class Moves {
         const map = mapState.map;
         const pt = GameMap.endPoint[color]
 
-        if ((x < GameMap.size - 1 && map[y][x + 1] == '0' || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X)) {
+        if ((x < GameMap.size - 1 && map[y][x + 1] == '0')) {
             // console.log("Left neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x + 1}});
         }
-        if ((x > 0 && map[y][x - 1] == '0' || x > 0 && y == pt.Y && x - 1 == pt.X)) {
+        if ((x > 0 && map[y][x - 1] == '0')) {
             // console.log("Right neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y, X: x - 1}});
         }
-        if ((y < GameMap.size - 1 && map[y + 1][x] == '0' || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X)) {
+        if ((y < GameMap.size - 1 && map[y + 1][x] == '0')) {
             // console.log("Upp neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y + 1, X: x}});
         }
-        if ((y > 0 && map[y - 1][x] == '0' || y > 0 && y - 1 == pt.Y && x == pt.X)) {
+        if ((y > 0 && map[y - 1][x] == '0')) {
             // console.log("Down neighbour");
             result.push({From: {Y: y, X: x}, To: {Y: y - 1, X: x}});
         }

@@ -46,6 +46,7 @@ class Tests {
         // node.mapState.current[0] = {Y: 2, X: 3}
         // node.mapState.current[1] = {Y: 2, X: 0}
 
+
         //! Not stranded
         // node.mapState.map = [    
         //     ['R', 'R', 'R', '0', '0', '0'],
@@ -130,142 +131,183 @@ class Tests {
         let start = performance.now()
 
         let node = new Node();
+        let move;
+
         // ! Forced
-        // node.mapState.map = [    
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['R', 'C', '0', '0', 'C', 'R'],
-        //     ['B', '0', '0', '0', '0', 'B'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        // ]
-        // node.mapState.current[0] = {Y: 1, X: 0}
-        // node.mapState.current[1] = {Y: 1, X: 1}
-        // node.mapState.current[2] = {Y: 2, X: 0}
-        // GameMap.numberOfColors = 3;
+        node.mapState.map = [    
+            ['0', '0', '0', '0', '0', '0'],
+            ['R', 'C', '0', '0', 'C', 'R'],
+            ['B', '0', '0', '0', '0', 'B'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+        ]
+        node.mapState.current[0] = {Y: 1, X: 0}
+        node.mapState.current[1] = {Y: 1, X: 1}
+        node.mapState.current[2] = {Y: 2, X: 0}
+        GameMap.numberOfColors = 3;
+
+        move = Moves.forcedMoves(node);
+
+        Tests.checkTest(move, 1, 0, 0, 0, 0);
 
         //! Forced
-        // node.mapState.map = [    
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['R', '0', '0', '0', '0', 'R'],
-        //     ['B', '0', '0', '0', '0', 'B'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        // ]
-        // node.mapState.current[0] = {Y: 1, X: 0}
-        // node.mapState.current[1] = {Y: 2, X: 0}
-        // GameMap.numberOfColors = 2;
+        node.mapState.map = [    
+            ['0', '0', '0', '0', '0', '0'],
+            ['R', '0', '0', '0', '0', 'R'],
+            ['B', '0', '0', '0', '0', 'B'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+        ]
+        node.mapState.current[0] = {Y: 1, X: 0}
+        node.mapState.current[1] = {Y: 2, X: 0}
+        GameMap.numberOfColors = 2;
+
+        move = Moves.forcedMoves(node);
+        
+        Tests.checkTest(move, 1, 0, 0, 0, 0);
 
         //! Not Forced
-        // node.mapState.map = [    
-        //     ['R', 'R', '0', '0', '0', '0'],
-        //     ['B', 'R', '0', '0', '0', 'R'],
-        //     ['B', '0', '0', '0', '0', 'B'],
-        //     ['B', 'C', '0', '0', 'C', '0'],
-        //     ['B', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        // ]
-        // node.mapState.current[0] = {Y: 1, X: 1}
-        // node.mapState.current[1] = {Y: 3, X: 0}
-        // node.mapState.current[2] = {Y: 3, X: 1}
-        // GameMap.numberOfColors = 3;
+        node.mapState.map = [    
+            ['R', 'R', '0', '0', '0', '0'],
+            ['B', 'R', '0', '0', '0', 'R'],
+            ['B', '0', '0', '0', '0', 'B'],
+            ['B', 'C', '0', '0', 'C', '0'],
+            ['B', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+        ]
+        node.mapState.current[0] = {Y: 1, X: 1}
+        node.mapState.current[1] = {Y: 3, X: 0}
+        node.mapState.current[2] = {Y: 3, X: 1}
+        GameMap.numberOfColors = 3;
+
+        move = Moves.forcedMoves(node);
+        
+        Tests.notTest(move);
 
         //! Forced
-        // node.mapState.map = [    
-        //     ['R', 'R', 'R', '0', '0', '0'],
-        //     ['B', '0', 'R', '0', '0', 'R'],
-        //     ['0', '0', 'R', '0', '0', 'B'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        // ]
-        // node.mapState.current[0] = {Y: 2, X: 2}
-        // node.mapState.current[1] = {Y: 1, X: 0}
-        // GameMap.endPoint[0] = {Y: 1, X: 5}
-        // GameMap.endPoint[1] = {Y: 2, X: 5}
-        // GameMap.numberOfColors = 2;
+        node.mapState.map = [    
+            ['R', 'R', 'R', '0', '0', '0'],
+            ['B', '0', 'R', '0', '0', 'R'],
+            ['0', '0', 'R', '0', '0', 'B'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '0', '0'],
+        ]
+        node.mapState.current[0] = {Y: 2, X: 2}
+        node.mapState.current[1] = {Y: 1, X: 0}
+        GameMap.endPoint[0] = {Y: 1, X: 5}
+        GameMap.endPoint[1] = {Y: 2, X: 5}
+        GameMap.numberOfColors = 2;
+
+        move = Moves.forcedMoves(node);
+        
+        Tests.checkTest(move, 1, 0, 1, 1, 1);
 
         //! Not Forced
-        // node.mapState.map = [    
-        //     ['R', 'R', 'R', '0', '0', '0'],
-        //     ['B', '0', 'R', '0', 'B', 'R'],
-        //     ['0', '0', '0', '0', '0', 'Y'],
-        //     ['0', 'G', 'A', '0', '0', '0'],
-        //     ['0', '0', '0', '0', 'G', 'A'],
-        //     ['Y', 'O', '0', '0', '0', 'O'],
-        // ]
-        // node.mapState.current[0] = {Y: 1, X: 2}
-        // node.mapState.current[1] = {Y: 1, X: 0}
-        // node.mapState.current[2] = {Y: 2, X: 5}
-        // node.mapState.current[3] = {Y: 3, X: 1}
-        // node.mapState.current[4] = {Y: 3, X: 2}
-        // GameMap.numberOfColors = 5;
+        node.mapState.map = [    
+            ['R', 'R', 'R', '0', '0', '0'],
+            ['B', '0', 'R', '0', 'B', 'R'],
+            ['0', '0', '0', '0', '0', 'Y'],
+            ['0', 'G', 'A', '0', '0', '0'],
+            ['0', '0', '0', '0', 'G', 'A'],
+            ['Y', 'O', '0', '0', '0', 'O'],
+        ]
+        node.mapState.current[0] = {Y: 1, X: 2}
+        node.mapState.current[1] = {Y: 1, X: 0}
+        node.mapState.current[2] = {Y: 2, X: 5}
+        node.mapState.current[3] = {Y: 3, X: 1}
+        node.mapState.current[4] = {Y: 3, X: 2}
+        GameMap.numberOfColors = 5;
 
+        move = Moves.forcedMoves(node);
+        
+        Tests.notTest(move);
+
+        
         //! Not Forced
-        // node.mapState.map = [    
-        //     ['R', 'R', '0', '0', '0', '0'],
-        //     ['B', '0', '0', '0', 'B', 'R'],
-        //     ['0', '0', '0', '0', '0', 'Y'],
-        //     ['0', 'G', 'A', '0', '0', '0'],
-        //     ['0', '0', '0', '0', 'G', 'A'],
-        //     ['Y', 'O', '0', '0', '0', 'O'],
-        // ]
-        // node.mapState.current[0] = {Y: 0, X: 1}
-        // node.mapState.current[1] = {Y: 1, X: 0}
-        // node.mapState.current[2] = {Y: 2, X: 5}
-        // node.mapState.current[3] = {Y: 3, X: 1}
-        // node.mapState.current[4] = {Y: 3, X: 2}
-        // //TODO: Tutaj endpoint podac do testów
-        // GameMap.numberOfColors = 5;
+        node.mapState.map = [    
+            ['R', 'R', '0', '0', '0', '0'],
+            ['B', '0', '0', '0', 'B', 'R'],
+            ['0', '0', '0', '0', '0', 'Y'],
+            ['0', 'G', 'A', '0', '0', '0'],
+            ['0', '0', '0', '0', 'G', 'A'],
+            ['Y', 'O', '0', '0', '0', 'O'],
+        ]
+        node.mapState.current[0] = {Y: 0, X: 1}
+        node.mapState.current[1] = {Y: 1, X: 0}
+        node.mapState.current[2] = {Y: 2, X: 5}
+        node.mapState.current[3] = {Y: 3, X: 1}
+        node.mapState.current[4] = {Y: 3, X: 2}
+        //TODO: Tutaj endpoint podac do testów
+        GameMap.numberOfColors = 5;
 
-        //! Forced
-        // node.mapState.map = [    
-        //     ['R', 'R', 'R', 'R', 'R', 'R'],
-        //     ['B', 'B', '0', '0', '?', 'R'],
-        //     ['0', 'B', 'B', 'B', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        //     ['0', '0', '0', '0', '0', '0'],
-        // ]
-        // node.mapState.current[0] = {Y: 1, X: 5}
-        // node.mapState.current[1] = {Y: 2, X: 3}
-        // //TODO: Tutaj endpoint podac do testów
-        // GameMap.numberOfColors = 2;
-        // GameMap.finishedPoints.push(0);
+        move = Moves.forcedMoves(node);
+        
+        Tests.notTest(move);
 
         //! Forced
         node.mapState.map = [    
             ['R', 'R', 'R', 'R', 'R', 'R'],
-            ['B', '0', '0', '0', '?', 'R'],
-            ['B', 'B', 'B', '0', '0', 'Y'],
+            ['B', 'B', '0', '0', '?', 'R'],
+            ['0', 'B', 'B', 'B', '0', 'Y'],
             ['0', 'G', 'A', '0', '0', '0'],
-            ['0', '0', '0', '0', '?', '?'],
-            ['?', 'O', '0', '0', '0', '?'],
+            ['0', '0', '0', '0', 'G', 'A'],
+            ['Y', 'O', '0', '0', '0', 'O'],
         ]
         node.mapState.current[0] = {Y: 1, X: 5}
-        node.mapState.current[1] = {Y: 2, X: 2}
+        node.mapState.current[1] = {Y: 2, X: 3}
         node.mapState.current[2] = {Y: 2, X: 5}
         node.mapState.current[3] = {Y: 3, X: 1}
         node.mapState.current[4] = {Y: 3, X: 2}
-
         //TODO: Tutaj endpoint podac do testów
         GameMap.numberOfColors = 5;
         GameMap.finishedPoints.push(0);
 
+        move = Moves.forcedMoves(node);
 
-
-        Debug.printMapState(node.mapState, "Before Forced")
-        // console.log(Moves.possibleMoves(node.mapState, 1));
-        // return;
-        // let move = Moves.makeAllMoves(node);
-        let move = Moves.forcedMoves(node);
-
+        Tests.checkTest(move, 2, 3, 1, 3, 1);
+        
         // console.log(move);
-        if(move != -1) {
-            Moves.makeMove(node, move[0], move[1], 1)
-            Debug.printMapState(node.mapState, "Forced")
-        }
+        // if(move != -1) {
+        //     Moves.makeMove(node, move[0], move[1], 1)
+        //     Debug.printMapState(node.mapState, "Forced")
+        // }
+
+
+        //! Forced
+        // node.mapState.map = [    
+        //     ['R', 'R', 'R', 'R', 'R', 'R'],
+        //     ['B', '0', '0', '0', '?', 'R'],
+        //     ['B', 'B', 'B', '0', '0', 'Y'],
+        //     ['0', 'G', 'A', '0', '0', '0'],
+        //     ['0', '0', '0', '0', '?', '?'],
+        //     ['?', 'O', '0', '0', '0', '?'],
+        // ]
+        // node.mapState.current[0] = {Y: 1, X: 5}
+        // node.mapState.current[1] = {Y: 2, X: 2}
+        // node.mapState.current[2] = {Y: 2, X: 5}
+        // node.mapState.current[3] = {Y: 3, X: 1}
+        // node.mapState.current[4] = {Y: 3, X: 2}
+
+        // //TODO: Tutaj endpoint podac do testów
+        // GameMap.numberOfColors = 5;
+        // GameMap.finishedPoints.push(0);
+
+        // move = Moves.forcedMoves(node);
+        
+        // Tests.checkTest(move, 3, 1, 3, 0, 3);
+
+
+        // Debug.printMapState(node.mapState, "Before Forced")
+        // // console.log(Moves.possibleMoves(node.mapState, 1));
+        // // return;
+        // // let move = Moves.makeAllMoves(node);
+        
+
+        // // console.log(move);
+       
 
 
         let end = performance.now();
@@ -311,14 +353,14 @@ class Tests {
         //! Forced
         node.mapState.map = [    
             ['R', 'R', 'R', 'R', 'R', 'R'],
-            ['B', '0', '0', '0', 'B', 'R'],
-            ['B', '0', '0', '0', '0', 'Y'],
-            ['B', 'G', 'A', '0', '0', '0'],
+            ['B', 'B', '0', '0', 'B', 'R'],
+            ['0', 'B', 'B', 'B', '0', 'Y'],
+            ['0', 'G', 'A', '0', '0', '0'],
             ['0', '0', '0', '0', 'G', 'A'],
             ['Y', 'O', '0', '0', '0', 'O'],
         ]
         node.mapState.current[0] = {Y: 1, X: 5}
-        node.mapState.current[1] = {Y: 3, X: 0}
+        node.mapState.current[1] = {Y: 2, X: 3}
         node.mapState.current[2] = {Y: 2, X: 5}
         node.mapState.current[3] = {Y: 3, X: 1}
         node.mapState.current[4] = {Y: 3, X: 2}
@@ -339,5 +381,29 @@ class Tests {
         let end = performance.now();
         let time = `${(end - start) / 1000} seconds`;
         console.log(`%c It took ${time}`, 'color: yellow;' );
+    }
+
+    static checkTest(move, yF, xF, yT, xT, color) {
+        if(move != -1) {
+            if(
+                JSON.stringify(move[0][0].From) == JSON.stringify({Y: yF, X: xF}) &&
+                JSON.stringify(move[0][0].To) == JSON.stringify({Y: yT, X: xT}) &&
+                move[1] == color
+            ) {
+                console.log('%c V Passed','color: green;');
+            } else {
+                console.log('%c X Not Passed','color: red;');
+            }
+        } else {
+            console.log('%c X Not Passed','color: red;');
+        }
+    }
+
+    static notTest(move) {
+        if(move != -1) {
+            console.log('%c X Not Passed','color: red;');
+        } else {
+            console.log('%c V Passed','color: green;');
+        }
     }
 }

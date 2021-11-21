@@ -120,5 +120,9 @@ dist
 # VS code
 .vscode
 
+# Edit this
 # Libraries
 lodash.js
+
+# Test folder
+/ZApp

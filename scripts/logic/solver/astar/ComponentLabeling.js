@@ -1,45 +1,82 @@
 class ComponentLabeling {
   constructor() {
-    // Creating empty array 2D with size of the map
-    // -1 - Points
+    // Creating empty array 3D with size of the map
+    // Filling map with -1 (later -1 - point)
     this.labels = Array(GameMap.size)
       .fill()
       .map(() => Array(GameMap.size).fill('-1')); //! To -1 later
-    // this.equivalent = new Map();
+
+    // Equivalent table
     this.equivalent = []; // Array(GameMap.size).fill('')
+    this.union = new Map();
+
+    // Counting next labels
     this.nextLabel = 0;
     this.numberOfSectors = []; // = 0
-    // HashMap
-    this.union = new Map();
+
+    // To which sector points belong
     this.currentPoint = [];
     this.endPoint = [];
   }
+  // Printing labels for debug
+  #printLabels(labels) {
+    for (let y = 0; y < labels.length; y++) {
+      console.log(labels[y]);
+    }
+  }
 
-  //! changed
-  fourConnectivity(map, y, x) {
+  //TODO: Remove this function and wrote it in Moves.js
+  #possibleMoves(color) {
+    let result = [];
+    const y = GameMap.endPoint[color].Y;
+    const x = GameMap.endPoint[color].X;
+    const map = GameMap.map;
+
+    if (x < GameMap.size - 1 && map[y][x + 1] == "0") {
+      // console.log("Left neighbour");
+      result.push({ From: { Y: y, X: x }, To: { Y: y, X: x + 1 } });
+    }
+    if (x > 0 && map[y][x - 1] == "0") {
+      // console.log("Right neighbour");
+      result.push({ From: { Y: y, X: x }, To: { Y: y, X: x - 1 } });
+    }
+    if (y < GameMap.size - 1 && map[y + 1][x] == "0") {
+      // console.log("Upp neighbour");
+      result.push({ From: { Y: y, X: x }, To: { Y: y + 1, X: x } });
+    }
+    if (y > 0 && map[y - 1][x] == "0") {
+      // console.log("Down neighbour");
+      result.push({ From: { Y: y, X: x }, To: { Y: y - 1, X: x } });
+    }
+
+    return result;
+  }
+
+  //! Changed
+  // Two neighbours of point (needed for detecting sectors)
+  #fourConnectivity(map, y, x) {
     let result = [];
 
     if (x > 0 && map[y][x - 1] == "0") {
-      // console.log("Left neighbour");
       result.push({ Y: y, X: x - 1 });
     }
     if (y > 0 && map[y - 1][x] == "0") {
-      // console.log("Upp neighbour");
       result.push({ Y: y - 1, X: x });
     }
 
     return result;
   }
 
-  // Connected-component labeling //!with Disjoint set
   // TODO: PERFORMANCE
-  detectSectors(map) {
+  // Connected-component labeling //!with Disjoint set
+  // Detecting sectors and generating equivalent table
+  #detectSectors(map) {
     // First run, '0' - is not background
     // Raster scan
     for (let y = 0; y < GameMap.size; y++) {
       for (let x = 0; x < GameMap.size; x++) {
         if (map[y][x] == "0") {
-          let neighbours = this.fourConnectivity(map, y, x);
+          let neighbours = this.#fourConnectivity(map, y, x);
           if (neighbours.length == 0) {
             this.equivalent[this.nextLabel] = this.nextLabel.toString();
             this.labels[y][x] = this.nextLabel;
@@ -55,7 +92,6 @@ class ComponentLabeling {
               if(this.labels[y][x] != l) {
                 this.equivalent[l] += this.labels[y][x];
                 this.equivalent[this.labels[y][x]] += l;
-
               }
             });
           }
@@ -63,7 +99,7 @@ class ComponentLabeling {
         // console.log(this.equivalent);
       }
     }
-    // this.printLabels(this.labels)
+    // this.#printLabels(this.labels)
 
     //! If got time change it
     for (let i = 0; i < this.equivalent.length; i++) {
@@ -94,16 +130,11 @@ class ComponentLabeling {
       }
     }
     // console.log('');
-    // this.printLabels(this.labels)
+    // this.#printLabels(this.labels)
   }
 
-  printLabels(labels) {
-    for (let y = 0; y < labels.length; y++) {
-      console.log(labels[y]);
-    }
-  }
   // Add points to detected sectors
-  addPointsToSectors(mapState) {
+  #addPointsToSectors(mapState) {
     // TODO: IMPORTANT NUMBER OF SECTORS COULD BE LARGER THAN NUMBER OF COLORS
     for (let i = 0; i < GameMap.numberOfColors; i++) {
       this.currentPoint[i] = "";
@@ -131,7 +162,7 @@ class ComponentLabeling {
         }
       });
 
-      let neighboursOfEnd = this.possibleMoves(j);
+      let neighboursOfEnd = this.#possibleMoves(j);
 
       neighboursOfEnd.forEach((neighbour) => {
         const y = neighbour.To.Y;
@@ -153,10 +184,10 @@ class ComponentLabeling {
   isStranded(mapState) {
     // Hardcoded number of generated sectors
     // let sectorNum = 2;
-    this.detectSectors(mapState.map);
-    this.addPointsToSectors(mapState);
+    this.#detectSectors(mapState.map);
+    this.#addPointsToSectors(mapState);
 
-    //! ?
+    //! Maybe change it
     let colorsInSectors = [];
 
     // console.log(this.numberOfSectors.length);
@@ -193,31 +224,7 @@ class ComponentLabeling {
 
     return false;
   }
-
-  //TODO: Remove this function and wrote it in Moves.js
-  possibleMoves(color) {
-    let result = [];
-    const y = GameMap.endPoint[color].Y;
-    const x = GameMap.endPoint[color].X;
-    const map = GameMap.map;
-
-    if (x < GameMap.size - 1 && map[y][x + 1] == "0") {
-      // console.log("Left neighbour");
-      result.push({ From: { Y: y, X: x }, To: { Y: y, X: x + 1 } });
-    }
-    if (x > 0 && map[y][x - 1] == "0") {
-      // console.log("Right neighbour");
-      result.push({ From: { Y: y, X: x }, To: { Y: y, X: x - 1 } });
-    }
-    if (y < GameMap.size - 1 && map[y + 1][x] == "0") {
-      // console.log("Upp neighbour");
-      result.push({ From: { Y: y, X: x }, To: { Y: y + 1, X: x } });
-    }
-    if (y > 0 && map[y - 1][x] == "0") {
-      // console.log("Down neighbour");
-      result.push({ From: { Y: y, X: x }, To: { Y: y - 1, X: x } });
-    }
-
-    return result;
-  }
 }
+
+// Tests
+// module.exports = new ComponentLabeling();
