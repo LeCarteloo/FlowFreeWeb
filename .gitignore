@@ -120,9 +120,6 @@ dist
 # VS code
 .vscode
 
-# Edit this
-# Libraries
+# Test gitignores
 lodash.js
-
-# Test folder
-/ZApp
+Kek.*
