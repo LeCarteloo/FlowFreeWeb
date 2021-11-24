@@ -14,32 +14,37 @@ class GameMap {
         this.numberOfColors = 0;
         this.startPoint = [];
         this.endPoint = [];
+        //_.cloneDeep(gameMap)
         this.map = gameMap;
         this.finishedPoints = [];
-        
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
                 if(gameMap[y][x] == '0') {
                     continue;
                 }
-                else {
-                    let index;
-                    let tileValue = gameMap[y][x];
-                    // Start and end position of each point.
-                    if(this.foundColors.includes(tileValue)) {
-                        index = this.foundColors.indexOf(tileValue);
-                        this.endPoint.splice(index, 0, {Y: y, X: x})
-                        gameMap[y][x] = '?';
-                    }
-                    else {
-                        index = this.numberOfColors;
-                        this.foundColors.push(gameMap[y][x]);
-                        this.startPoint.splice(index, 0, {Y: y, X: x})
-                        this.numberOfColors++;
-                    }
+
+                let index;
+                let tileValue = gameMap[y][x];
+                // Start and end position of each point.
+                if(this.foundColors.includes(tileValue)) {
+                    index = this.foundColors.indexOf(tileValue);
+                    this.endPoint.splice(index, 1, {Y: y, X: x})
+                    gameMap[y][x] = '?';
                 }
+                else {
+                    index = this.numberOfColors;
+                    this.foundColors.push(gameMap[y][x]);
+                    this.startPoint.splice(index, 0, {Y: y, X: x})
+                    this.endPoint.push(-1);
+
+                    this.numberOfColors++;
+                }
+                
             }
         }
+        console.log(GameMap.startPoint);
+        console.log(GameMap.endPoint);
+        
         if(!this.#isInitializated(gameMap) || this.endPoint.length != this.startPoint.length) {
             throw('Something went wrong... Map could not be initalized');
         }

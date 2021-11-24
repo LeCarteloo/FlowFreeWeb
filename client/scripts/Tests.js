@@ -79,23 +79,42 @@ class Tests {
         // GameMap.finishedPoints.push(0);
 
         //! Not stranded
-        node.mapState.map = [    
-            ['R', 'R', 'R', 'R', 'R', 'R'],
-            ['B', '0', '0', '0', '?', '?'],
-            ['0', '0', '0', '0', '0', 'Y'],
-            ['0', 'G', 'A', '0', '0', '0'],
-            ['0', '0', '0', '0', 'G', 'A'],
-            ['Y', 'O', '0', '0', '0', 'O'],
-        ]
-        node.mapState.current[0] = {Y: 0, X: 5}
-        node.mapState.current[1] = {Y: 1, X: 0}
-        node.mapState.current[2] = {Y: 2, X: 5}
-        node.mapState.current[3] = {Y: 3, X: 1}
-        node.mapState.current[4] = {Y: 3, X: 2}
+        // node.mapState.map = [    
+        //     ['R', 'R', 'R', 'R', 'R', 'R'],
+        //     ['B', '0', '0', '0', '?', '?'],
+        //     ['0', '0', '0', '0', '0', 'Y'],
+        //     ['0', 'G', 'A', '0', '0', '0'],
+        //     ['0', '0', '0', '0', 'G', 'A'],
+        //     ['Y', 'O', '0', '0', '0', 'O'],
+        // ]
+        // node.mapState.current[0] = {Y: 0, X: 5}
+        // node.mapState.current[1] = {Y: 1, X: 0}
+        // node.mapState.current[2] = {Y: 2, X: 5}
+        // node.mapState.current[3] = {Y: 3, X: 1}
+        // node.mapState.current[4] = {Y: 3, X: 2}
 
-        //TODO: Tutaj endpoint podac do testów
-        GameMap.numberOfColors = 5;
+        // // TODO: Tutaj endpoint podac do testów
+        // GameMap.numberOfColors = 5;
         // GameMap.finishedPoints.push(0);
+
+        //! Not stranded
+        node.mapState.map = [    
+            ['R', 'R', 'G', 'B', '0'],
+            ['R', 'G', 'G', 'Y', '0'],
+            ['R', 'G', '0', '0', '0'],
+            ['R', '0', 'Y', 'O', '0'],
+            ['G', '0', 'O', '0', 'B'],
+        ]
+        Debug.printMapState(node.mapState)
+        node.mapState.current[0] = {Y: 3, X: 0}
+        node.mapState.current[1] = {Y: 2, X: 1}
+        node.mapState.current[2] = {Y: 0, X: 3}
+        node.mapState.current[3] = {Y: 1, X: 3}
+        node.mapState.current[4] = {Y: 3, X: 3}
+
+        // //TODO: Tutaj endpoint podac do testów
+        GameMap.numberOfColors = 5;
+        GameMap.finishedPoints.push(0);
 
         console.log(componentLabeling.isStranded(node.mapState));
         let end = performance.now();

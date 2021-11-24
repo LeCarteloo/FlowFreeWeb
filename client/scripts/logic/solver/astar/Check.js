@@ -5,12 +5,6 @@ class Check {
     // Check if pipe has missed any tile that cannot be filled later
     // One tile is surrounded by three pipes with this same color
     //! WORK IN PROGRESS (probably not working atm)
-    par;
-
-    constructor() {
-        this.par = [];
-    }
-
     missedTile(mapState, color) {
         //! ONLY TESTING (it will be changed)
         let neighbours = Moves.testMoves(mapState, color)
@@ -21,7 +15,7 @@ class Check {
             tilesFiled = 0;
             const y = neighbour.To.Y;
             const x = neighbour.To.X;
-            let neigh = Moves.allNeighbours(mapState, y, x);
+            let neigh = Moves.allNeighbours(y, x);
             // console.log(neigh);
             neigh.forEach(nei => {
                 // console.log(nei);
@@ -50,6 +44,5 @@ class Check {
             // Debug.printMapState(mapState, "Stranded")
             return true;
         }
-        // check.stranded(mapState, color);
     }
 }

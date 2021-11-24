@@ -1,10 +1,11 @@
 var gameMap = [
-    ['R', '0', '0', '0', '0', '0'],
-    ['B', '0', '0', '0', 'B', 'R'],
-    ['0', '0', '0', '0', '0', 'Y'],
-    ['0', 'G', 'A', '0', '0', '0'],
-    ['0', '0', '0', '0', 'G', 'A'],
-    ['Y', 'O', '0', '0', '0', 'O'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['R', '0', '0', '0', '0', 'Y', 'R'],
+    ['O', '0', '0', 'B', 'A', '0', '0'],
+    ['0', '0', '0', 'G', '0', 'G', '0'],
+    ['0', '0', '0', '0', 'A', '0', '0'],
+    ['0', '0', '0', '0', 'P', '0', '0'],
+    ['0', 'O', 'Y', '0', '0', 'B', 'P'],
 ];
 
 const astarColor = {
@@ -25,9 +26,9 @@ window.onload = function () {
 
     let astar = new Astar();
 
-    console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
+    // console.log(`Game map is ${astar.search()} and it created ${Global.nodeNumber} nodes`);
 
-    // Tests.astarPerformance();
+    Tests.astarPerformance();
 
     // console.log(gameMap);
 

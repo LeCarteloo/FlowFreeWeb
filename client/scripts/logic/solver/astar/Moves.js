@@ -1,40 +1,17 @@
 class Moves {
-    static positiveNeighbours(mapState, y, x) {
+    static allNeighbours(y, x) {
         let result = [];
         
-        const map = mapState.map;
-        // TODO: This is completly opposite needs to be changed
-        if (x < GameMap.size - 1 && map[y][x + 1] == '0') {
-            // console.log("Left neighbour");
-            result.push({Y: y, X: x + 1});
-        }
-        if (y < GameMap.size - 1 && map[y + 1][x] == '0') {
-            // console.log("Upp neighbour");
-            result.push({Y: y + 1, X: x});
-        }
-
-        return result;
-    }
-
-    static allNeighbours(mapState, y, x) {
-        let result = [];
-        
-        const map = mapState.map;
-        // TODO: This is completly opposite needs to be changed
         if (x < GameMap.size - 1) {
-            // console.log("Left neighbour");
             result.push({Y: y, X: x + 1});
         }
         if (y < GameMap.size - 1) {
-            // console.log("Upp neighbour");
             result.push({Y: y + 1, X: x});
         }
         if (y > 0) {
-            // console.log("Left neighbour");
             result.push({Y: y - 1, X: x});
         }
         if (x > 0) {
-            // console.log("Upp neighbour");
             result.push({Y: y, X: x - 1});
         }
 

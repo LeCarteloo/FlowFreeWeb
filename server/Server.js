@@ -3,6 +3,8 @@ const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
 
+const solve = require('./solve.js')
+
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
@@ -16,7 +18,7 @@ io.on('connection', socket => {
   console.log('Client connected');
 
   // Emit message to client that connects
-  socket.emit('message', 'Test message');
+  socket.emit('message', 'Connected to server');
 
   // Broadcast message to everyone except client that connected
   socket.broadcast.emit('message', `Client ${socket.id} connected`);
@@ -26,9 +28,13 @@ io.on('connection', socket => {
   // Emit message to all connected clients
     io.emit('message',`Client ${socket.id} disconnected`);
   });
+
+  // Lisen for button
+  socket.on('solve', data => {
+    socket.emit('message', solve.test()); 
+  })
 });
 
 const PORT = 3000 || process.env.PORT;
 
-server.listen(PORT, () =>
-console.log(`Server listening on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

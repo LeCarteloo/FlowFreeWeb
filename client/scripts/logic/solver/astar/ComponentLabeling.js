@@ -4,7 +4,7 @@ class ComponentLabeling {
     // Filling map with -1 (later -1 - point)
     this.labels = Array(GameMap.size)
       .fill()
-      .map(() => Array(GameMap.size).fill('-1')); //! To -1 later
+      .map(() => Array(GameMap.size).fill('-1'));
 
     // Equivalent table
     this.equivalent = []; // Array(GameMap.size).fill('')
@@ -191,14 +191,15 @@ class ComponentLabeling {
     let colorsInSectors = [];
 
     // console.log(this.numberOfSectors.length);
-
-    for (let i = 0; i < this.numberOfSectors.length; i++) {
+    //! It was this.numberOfSectors.length in FOR
+    // console.log(this.numberOfSectors[this.numberOfSectors.length - 1]);
+    for (let i = 0; i <= this.numberOfSectors[this.numberOfSectors.length - 1]; i++) {
       const curr = this.currentPoint[i];
       const end = this.endPoint[i];
       // console.log(this.currentPoint);
       // console.log(this.endPoint);
       // console.log(this.currentPoint[i]);
-
+      // console.log(this.numberOfSectors.length);
       if (
         (curr.length > 0 && end.length == 0) ||
         (end.length > 0 && curr.length == 0)
@@ -208,6 +209,7 @@ class ComponentLabeling {
 
       for (let c = 0; c < curr.length; c++) {
         for (let e = 0; e < end.length; e++) {
+          // console.log(this.currentPoint[i][c], this.endPoint[i][e]);
           if (this.currentPoint[i][c] == this.endPoint[i][e]) {
             if (!colorsInSectors.includes(this.endPoint[i][e])) {
               colorsInSectors.push(this.endPoint[i][e]);
@@ -219,6 +221,13 @@ class ComponentLabeling {
     }
     // console.log(colorsInSectors);
     if (colorsInSectors.length != GameMap.numberOfColors - GameMap.finishedPoints.length) {
+      // console.log(colorsInSectors.length);
+      // console.log(GameMap.numberOfColors);
+      // console.log(GameMap.foundColors);
+      // console.log(GameMap.startPoint);
+      // console.log(GameMap.endPoint);
+
+
       return true;
     }
 
