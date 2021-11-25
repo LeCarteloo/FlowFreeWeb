@@ -1,4 +1,7 @@
-class ComponentLabeling {
+const Neighbours = require('./Neighbours');
+const GameMap = require('./GameMap');
+
+module.exports = class ComponentLabeling {
   constructor() {
     // Creating empty array 3D with size of the map
     // Filling map with -1 (later -1 - point)
@@ -148,7 +151,7 @@ class ComponentLabeling {
         continue;
       }
 
-      let neighboursOfCurrent = Moves.testMoves(mapState, j);
+      let neighboursOfCurrent = Neighbours.testMoves(mapState, j);
       // let temp = [];
       neighboursOfCurrent.forEach((neighbour) => {
         const y = neighbour.To.Y;

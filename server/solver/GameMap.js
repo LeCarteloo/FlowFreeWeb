@@ -1,4 +1,4 @@
-class GameMap {
+module.exports = class GameMap {
     static map;
     static size;
     static numberOfColors;
@@ -36,22 +36,27 @@ class GameMap {
                     this.foundColors.push(gameMap[y][x]);
                     this.startPoint.splice(index, 0, {Y: y, X: x})
                     this.endPoint.push(-1);
-
                     this.numberOfColors++;
                 }
                 
             }
         }
-        console.log(GameMap.startPoint);
-        console.log(GameMap.endPoint);
-        
-        if(!this.#isInitializated(gameMap) || this.endPoint.length != this.startPoint.length) {
-            throw('Something went wrong... Map could not be initalized');
-        }
+        // console.log(GameMap.startPoint);
+        // console.log(GameMap.endPoint);
     }
 
-static #isInitializated(gameMap) {
-    return this.map == gameMap;
-}
+    // Clearing all variables needed on game map initialization.
+    static clearAll() {
+        this.size = 0;
+        this.foundColors = [];
+        this.numberOfColors = 0;
+        this.startPoint = [];
+        this.endPoint = [];
+        this.map = [];
+        this.finishedPoints = [];
+    }
 
+    static missingPoint() {
+        return this.startPoint.includes(-1) || this.endPoint.includes(-1);
+    }
 }

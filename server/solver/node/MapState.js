@@ -1,4 +1,6 @@
-class MapState {
+const GameMap = require('../GameMap');
+
+module.exports = class MapState {
     constructor() {
         this.map = [];
         this.current = [];

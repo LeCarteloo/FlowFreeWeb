@@ -1,4 +1,8 @@
-class Moves {
+const GameMap = require('./GameMap');
+const Check = require('./Check');
+const _ = require('lodash');
+
+module.exports = class Moves {
     static allNeighbours(y, x) {
         let result = [];
         
@@ -203,7 +207,7 @@ class Moves {
                 continue;
             }
             //TODO: Remove array later
-            console.log("FORCED2");
+            // console.log("FORCED2");
             return [moves, i];
         }
         return -1;
@@ -216,7 +220,7 @@ class Moves {
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
 
-        Debug.printMapState(_.cloneDeep(node.mapState), "MakeMOVE");
+        // Debug.printMapState(_.cloneDeep(node.mapState), "MakeMOVE");
         
         // Check if current pipe is one tile away from end point
         //! By this VVV two times make Move is called (check it)

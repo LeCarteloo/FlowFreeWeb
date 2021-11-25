@@ -1,4 +1,8 @@
-class Node {
+const MapState = require('./MapState');
+const GameMap = require('../GameMap');
+const _ = require('lodash');
+
+module.exports = class Node {
     constructor(){
         // Map state and number of free tiles
         this.mapState = new MapState();

@@ -13,6 +13,10 @@ Developer dependencies
  - **[Jest.js](https://jestjs.io/)** - for unit tests
  - **[Nodemon](https://nodemon.io/)** - for automatic reload
 
+Run commands
+---
+For running express.js server with nodemon type: **npm run dev** in console.
+For running tests with JEST type: **npm test** in console.
 
-Before using the application use **npm ci** in console to download those dependencies.
+Before using the application use **npm install** in console to download those dependencies.
 

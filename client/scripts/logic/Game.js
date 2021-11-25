@@ -89,44 +89,8 @@ window.onload = function () {
             solverInfo.style.display = 'none';
             drawGame(event)
         }
-      });
-
-    //!#######################################################!//
-                //! Testing the SAT ALGORITHM !//
-
-    // Global game map variable for test puropses
-    satMap = [
-        [1, 0, 2, 0, 3],
-        [0, 0, 4, 0, 5],
-        [0, 0, 0, 0, 0],
-        [0, 2, 0, 3, 0],
-        [0, 1, 4, 5, 0]
-    ];
-    // Enum with colors for test purposes
-    const satColors = {
-        '1': 0,
-        '2': 1,
-        '3': 2,
-        '4': 3,
-        '5': 4,
-        // '6': 6
-    }
-    const satNumberColors = 5;
-    var satClass = new SAT(satMap, satColors, satNumberColors);
-    satClass.main();
-    var debugClauses = satClass.colorArray;
-    satLog.value = "";
-
-    satLog.value += `p cnf 126 ${debugClauses.length}\n`
-
-    for(let i = 0; i < debugClauses.length; i++) {
-        satLog.value += (debugClauses[i].toString()).replaceAll(",", " ") + " 0\n";
-    }
-
-    solveTime.innerHTML = `Solved in: ${satClass.time}`
-    solverComplexity.innerHTML = `Clauses: ${debugClauses.length}`
-    //!#######################################################!//  
-    
+    });
+        
     // MapGenerator.placePoints();
 
     //! Responsive canvas

@@ -1,4 +1,4 @@
-class NodeOrder {
+module.exports = class NodeOrder {
   #array;
   constructor() {
     this.#array = [];
@@ -27,7 +27,8 @@ class NodeOrder {
   }
   printMapState() {
     for (let i = 0; i < this.#array.length; i++) {
-      Debug.printMapState(this.#array[i].mapState, `Node order ${i}`)
+      console.log('No debug yet');
+      // Debug.printMapState(this.#array[i].mapState, `Node order ${i}`)
     }
   }
   length() {

@@ -9,7 +9,7 @@ socket.on('message', data => {
 solveForm.addEventListener('submit', (e) => {
     e.preventDefault();
     // Only on Client side
-    console.log("Button clicked");
+    // console.log("Button clicked");
 
     // Emit message to server
     socket.emit('solve', true);

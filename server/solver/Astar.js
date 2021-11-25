@@ -1,4 +1,10 @@
-class Astar {
+const NodeOrder = require('./node/NodeOrder');
+const Node = require('./node/Node');
+const Global = require('./Global');
+const Moves = require('./Moves');
+const _ = require('lodash');
+
+module.exports = class Astar {
     search() {
         // List of nodes to be evaluated, list that have been visited, result, neighbours
         // and counter of how much nodes have been created
@@ -10,7 +16,7 @@ class Astar {
         const stop = 100;
 
         let node = new Node();
-
+        // console.log(node);
         // Starting node
         openList.push(_.cloneDeep(node));
        
@@ -18,23 +24,18 @@ class Astar {
             return 'No solution'
         }
         while(openList.length() > 0) {
-            console.count("Astar call")
+            // console.count("Astar call")
             // Utility.sortNodes(openList);
             
             var nextNode = openList.shift();
 
             // console.log(_.cloneDeep(openList));
-            Debug.printMapState(nextNode.mapState, "Picked Up")
+            // Debug.printMapState(nextNode.mapState, "Picked Up")
             // console.log(nextNode.h, nextNode.g, nextNode.getFCost());
 
             nodeCounter++;
 
             closedList.push(_.cloneDeep(nextNode.mapState));
-
-            if(nodeCounter == 100) {
-                Global.nodeNumber = nodeCounter;
-                return 'No solution';
-            }
 
             if(nextNode.isSolved()){
                 Global.nodeNumber = nodeCounter;
@@ -52,12 +53,14 @@ class Astar {
             
             //! Testing
             if(nodeCounter == stop) {
+                Global.nodeNumber = nodeCounter;
 
                 openList.printMapState();
                 
                 return 'Paused'
             }
         }
+        Global.nodeNumber = nodeCounter;
         return 'No solution';
     }
 }
