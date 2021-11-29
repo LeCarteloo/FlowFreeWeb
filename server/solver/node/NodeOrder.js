@@ -27,7 +27,6 @@ module.exports = class NodeOrder {
   }
   printMapState() {
     for (let i = 0; i < this.#array.length; i++) {
-      console.log('No debug yet');
       // Debug.printMapState(this.#array[i].mapState, `Node order ${i}`)
     }
   }

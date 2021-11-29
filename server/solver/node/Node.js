@@ -13,74 +13,40 @@ module.exports = class Node {
         for (let i = 0; i < GameMap.numberOfColors; i++) {
             this.mapState.current[i] = GameMap.startPoint[i];
         }
+
         this.g = 0;
         this.h = this.manhattan();
         this.parent = null;
         this.movesNumber = [];
     }
-    // A bit modified manhattan distance - it returns remaining free cells beetwen points.
+    /* Function returns distance beetwen all points combined.
+    Manhattan works slower so at the moment manhattan is equal to free tiles*/
     manhattan() {
         var manhValue = 0; 
-        //TODO: Check what is the problem with manhattan
 
+        // Distance between two points
+        // TODO: Check why is this slower
         // for (let i = 0; i < GameMap.numberOfColors; i++) {
         //     const curr = this.mapState.current[i];
         //     const end = GameMap.endPoint[i];
         //     manhValue += Math.abs(curr.X - end.X) + Math.abs(curr.Y - end.Y);
-        //     console.log(manhValue);
-        // }
-        
-        //! Wrote something just to test it out
-        // for (let y = 0; y < GameMap.size; y++) {
-        //     for (let x = 0; x < GameMap.size; x++) {
-        //         if(this.mapState.map[y][x] == '0' || this.mapState.map[y][x] == '?') {
-        //             manhValue++;
-        //         }    
-
-                // if(GameMap.map[y][x] == '0' || GameMap.map[y][x] == '?') {
-                //     manhValue++;
-                //     // console.log(_.cloneDeep(GameMap.map));
-                // }
-            // }
         // }
 
         manhValue = this.mapState.freeTiles;
 
         return manhValue;
     }
-
-    //Check if point is finished
     isSolved() {
         return this.mapState.isSolved();
     }
-
-    //! Move To MapState
     isFinished(color) {
         return this.mapState.isFinished(color);
     }
-
-    toString() {
-        // return this.mapState;
-    }
-
     getFCost() {
         return this.g + this.h;
     }
-
-    setHCost(value) {
-        this.h = value;
-    }
-
-    setCurrent(x, y, color) {
-        this.mapState.current.splice(color, 1, {Y: y, X: x})
-    }
-
     // Updating map state for given node
     updateMapState(color, position) {
-        //TODO: Remove the extra array and work only on object
-        // console.log(position);
-        this.mapState.map[position[0].To.Y][position[0].To.X] = GameMap.foundColors[color];
-        this.mapState.freeTiles--;
-        this.setCurrent(position[0].To.X, position[0].To.Y, color);
+        this.mapState.updateMapState(color, position);
     }
 }

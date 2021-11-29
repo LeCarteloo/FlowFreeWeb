@@ -1,3 +1,6 @@
 module.exports = class Global {
-    nodeNumber = 0;
+
+    static usedNodes = 0;
+    static createdNodes = 0;
+
 }

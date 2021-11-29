@@ -32,7 +32,7 @@ describe('Forced moves', () => {
         node.mapState.current[0] = {Y: 1, X: 1}
         node.mapState.current[1] = {Y: 2, X: 0}
 
-        expect(Moves.forcedMoves(node)).toEqual(-1);
+        expect(Moves.forcedMoves(node)).not.toBeTruthy();
     });
 
     test("Node doesn't have forced move", () => {
@@ -46,7 +46,7 @@ describe('Forced moves', () => {
         ]
         node.mapState.current[0] = {Y: 1, X: 2}
 
-        expect(Moves.forcedMoves(node)).toEqual(-1);
+        expect(Moves.forcedMoves(node)).not.toBeTruthy();
     });
 
     test("Node doesn't have forced move", () => {
@@ -60,7 +60,7 @@ describe('Forced moves', () => {
         ]
         node.mapState.current[0] = {Y: 0, X: 1}
 
-        expect(Moves.forcedMoves(node)).toEqual(-1);
+        expect(Moves.forcedMoves(node)).not.toBeTruthy();
     });
 
     test("Node has forced move", () => {
@@ -74,9 +74,9 @@ describe('Forced moves', () => {
         ]
         node.mapState.current[0] = {Y: 1, X: 5}
         node.mapState.current[1] = {Y: 2, X: 3}
-        GameMap.finishedPoints.push(0);
+        node.mapState.finishedPoints.push(0);
 
-        expect(Moves.forcedMoves(node)).not.toEqual(-1);
+        expect(Moves.forcedMoves(node)).toBeTruthy();
     });
 
     test("Node has forced move", () => {
@@ -90,9 +90,9 @@ describe('Forced moves', () => {
         ]
         node.mapState.current[0] = {Y: 1, X: 5}
         node.mapState.current[1] = {Y: 2, X: 2}
-        GameMap.finishedPoints.push(0);
+        node.mapState.finishedPoints.push(0);
         
-        expect(Moves.forcedMoves(node)).not.toEqual(-1);
+        expect(Moves.forcedMoves(node)).toBeTruthy();
     });
 
     test("Node has forced move", () => {
@@ -106,7 +106,7 @@ describe('Forced moves', () => {
         ]
         node.mapState.current[0] = {Y: 2, X: 2}
         node.mapState.current[1] = {Y: 1, X: 0}
-        expect(Moves.forcedMoves(node)).not.toEqual(-1);
+        expect(Moves.forcedMoves(node)).toBeTruthy();
     });
 
     afterAll(() => {

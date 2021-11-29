@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node ./server/Server.js",
     "dev": "nodemon ./server/Server.js",
-    "test": "jest"
+    "test": "jest ./tests",
+    "testOne": "jest ./tests/missedTile.test.js"
+
   },
   "repository": {
     "type": "git",

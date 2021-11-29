@@ -30,10 +30,10 @@ describe('Stranded sector/point', () => {
             ['0', '0', '0', '0', 'G', 'A'],
             ['Y', 'O', '0', '0', '0', 'O'],
         ];
-        node.mapState.current[0] = {Y: 0, X: 5}
-        node.mapState.current[1] = {Y: 2, X: 0};
-        GameMap.finishedPoints.push(0);
-        expect(componentLabeling.isStranded(node.mapState)).not.toBeTruthy();
+        node.mapState.current[0] = {Y: 1, X: 5}
+        node.mapState.current[1] = {Y: 1, X: 0};
+        node.mapState.finishedPoints.push(0);
+        expect(componentLabeling.isStranded(node.mapState, false).Is).not.toBeTruthy();
     });
 
     test("Node is not stranded", () => {
@@ -47,7 +47,7 @@ describe('Stranded sector/point', () => {
         ]
         node.mapState.current[0] = {Y: 1, X: 3}
         node.mapState.current[1] = {Y: 2, X: 0}
-        expect(componentLabeling.isStranded(node.mapState)).not.toBeTruthy();
+        expect(componentLabeling.isStranded(node.mapState , false).Is).not.toBeTruthy();
     });
 
     test("Node created stranded sector", () => {
@@ -61,7 +61,7 @@ describe('Stranded sector/point', () => {
         ]
         node.mapState.current[0] = {Y: 2, X: 4}
         node.mapState.current[1] = {Y: 2, X: 0}
-        expect(componentLabeling.isStranded(node.mapState)).toBeTruthy();
+        expect(componentLabeling.isStranded(node.mapState , false).Is).toBeTruthy();
     });
 
     test("Node created stranded sector", () => {
@@ -75,7 +75,7 @@ describe('Stranded sector/point', () => {
         ]
         node.mapState.current[0] = {Y: 2, X: 2}
         node.mapState.current[1] = {Y: 4, X: 0}
-        expect(componentLabeling.isStranded(node.mapState)).toBeTruthy();
+        expect(componentLabeling.isStranded(node.mapState , false).Is).toBeTruthy();
     });
 
     afterAll(() => {

@@ -1,53 +1,62 @@
 const ComponentLabeling = require('./ComponentLabeling');
-const GameMap = require('./GameMap');
+const BlockedPass = require('./BlockedPass');
 const Neighbours = require('./Neighbours');
-
+const GameMap = require('./GameMap');
 module.exports = class Check {
-    //TODO: First check function that is faster if it found 
-    //TODO: the problem then return and stop everything else
+    /* Check if pipe has missed any tile that cannot be filled later
+    (One tile is surrounded by three pipes with the same color */
+    hasMissedTile(mapState, color) {
 
-    // Check if pipe has missed any tile that cannot be filled later
-    // One tile is surrounded by three pipes with this same color
-    //! WORK IN PROGRESS (probably not working atm)
-    missedTile(mapState, color) {
-        //! ONLY TESTING (it will be changed)
-        let neighbours = Neighbours.testMoves(mapState, color);
-
-        // console.log(neighbours);
+        // Free space around currently checked map state and color
+        let neighbours = Neighbours.allFreeSpace(mapState, color);
         let tilesFiled = 0;
-        
-        neighbours.forEach(neighbour => {
+
+        /* For every neighbour - check if their neighbour haven't
+        missed any tile (tile surrounded by three pipes with same color) */
+        for (const neighbour of neighbours) {
             tilesFiled = 0;
-            const y = neighbour.To.Y;
-            const x = neighbour.To.X;
-            let neigh = Neighbours.allNeighbours(y, x);
-            // console.log(neigh);
-            neigh.forEach(nei => {
-                // console.log(nei);
-                const y = nei.Y;
-                const x = nei.X;
-                if(mapState.map[y][x] == GameMap.foundColors[color]){
-                    // console.log(mapState.map[y][x]);
-                    tilesFiled++;
-                }
-            });
-        });
-        return tilesFiled >= 3;
+
+            const y = neighbour.Y;
+            const x = neighbour.X;
+
+            let neighboursToCheck = Neighbours.allNeighbours(y, x);
+
+            // For every neighbour check how many tiles surround him (same color)
+            for (const neighbour of neighboursToCheck) {
+
+               const y = neighbour.Y;
+               const x = neighbour.X;
+               
+               // Find same color (current position doesn't count)
+               if(mapState.map[y][x] == GameMap.foundColors[color] &&
+                y != mapState.current[color].Y &&
+                x != mapState.current[color].X){
+                   tilesFiled++;
+               } 
+            }
+            
+            if(neighboursToCheck.length - tilesFiled <= 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    // Check all the requirements for node to be valid
     static checkAll(mapState, color) {
-        // Debug.printMapState(mapState, "Checking Node")
-        // console.log("Checking...");
         let check = new Check();
         let componentLabeling = new ComponentLabeling();
-        if(check.missedTile(mapState, color)) {
-            // console.log("MISSEDTILE");
+
+        if(check.hasMissedTile(mapState, color)) {
             return true;
         }
-        if(componentLabeling.isStranded(mapState)) {
-            // console.log("STRANDED");
-            // Debug.printMapState(mapState, "Stranded")
+        if(componentLabeling.isStranded(mapState, false).Is) {
             return true;
         }
+        if(BlockedPass.hasBlockedPass(mapState, color)) {
+            return true;
+        }
+        
+        return false;
     }
 }

@@ -5,7 +5,8 @@ const socketio = require('socket.io');
 const { performance, PerformanceObserver } = require('perf_hooks');
 
 // Solver
-const Solver = require('./Solver/Solver');
+const Solver = require('./solver/Solver');
+const Global = require('./solver/Global');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,24 +22,32 @@ io.on('connection', socket => {
 
   //! Tests
   let gameMap = [            
-    ['0', '0', '0', '0', '0', '0', '0'],
-    ['R', '0', '0', '0', '0', 'Y', 'R'],
-    ['O', '0', '0', 'B', 'A', '0', '0'],
-    ['0', '0', '0', 'G', '0', 'G', '0'],
-    ['0', '0', '0', '0', 'A', '0', '0'],
-    ['0', '0', '0', '0', 'P', '0', '0'],
-    ['0', 'O', 'Y', '0', '0', 'B', 'P']
+    ['Y','0','0','Y','0','0','0','0','0','0','0','0','B'],
+    ['P','0','0','g','0','0','0','0','0','0','T','0','0'],
+    ['W','0','0','T','0','0','0','0','0','0','0','0','B'],
+    ['M','0','0','C','R','g','0','0','0','0','0','0','0'],
+    ['0','0','0','0','0','0','0','0','0','0','0','0','0'],
+    ['0','0','0','0','0','0','0','0','0','0','Z','0','0'],
+    ['0','0','0','0','0','0','0','0','G','0','G','0','0'],
+    ['0','0','0','0','0','0','0','0','C','0','0','0','0'],
+    ['0','0','0','0','M','0','0','0','P','A','0','0','0'],
+    ['O','0','0','0','0','0','0','0','0','0','0','0','0'],
+    ['0','0','W','0','0','0','0','0','0','0','0','Z','0'],
+    ['0','0','0','0','0','0','0','R','0','0','0','A','0'],
+    ['0','O','0','0','0','0','0','0','0','0','0','0','0']
   ];
-
+  
   let start = performance.now();
 
   let solve = new Solver(gameMap);
-
-  socket.emit('message', solve.init()); 
+  let result = solve.init()
+  socket.emit('message', result); 
 
   let end = performance.now();
   let time = `${(end - start) / 1000} seconds`;
-  console.log(`%c It took ${time}`, 'color: yellow;' );
+  console.log(`${result} - It took ${time}`);
+  console.log(`Created ${Global.createdNodes}, Used ${Global.usedNodes}`);
+
   //! Tests
 
   // Emit message to client that connects

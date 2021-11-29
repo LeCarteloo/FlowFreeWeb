@@ -5,7 +5,6 @@ module.exports = class GameMap {
     static foundColors;
     static startPoint;
     static endPoint;
-    static finishedPoints;
     
     // Find size of the map, colors, positions for start and endpoint.
     static initializeMap(gameMap) {
@@ -14,9 +13,9 @@ module.exports = class GameMap {
         this.numberOfColors = 0;
         this.startPoint = [];
         this.endPoint = [];
-        //_.cloneDeep(gameMap)
-        this.map = gameMap;
+        this.map = gameMap; //_.cloneDeep(gameMap)
         this.finishedPoints = [];
+
         for (let y = 0; y < this.size; y++) {
             for (let x = 0; x < this.size; x++) {
                 if(gameMap[y][x] == '0') {
@@ -29,7 +28,7 @@ module.exports = class GameMap {
                 if(this.foundColors.includes(tileValue)) {
                     index = this.foundColors.indexOf(tileValue);
                     this.endPoint.splice(index, 1, {Y: y, X: x})
-                    gameMap[y][x] = '?';
+                    gameMap[y][x] = '|';
                 }
                 else {
                     index = this.numberOfColors;
@@ -41,11 +40,10 @@ module.exports = class GameMap {
                 
             }
         }
-        // console.log(GameMap.startPoint);
-        // console.log(GameMap.endPoint);
+        //! Map not initializated - error handling would be here
     }
 
-    // Clearing all variables needed on game map initialization.
+    // Clearing all variables needed for game map initialization.
     static clearAll() {
         this.size = 0;
         this.foundColors = [];

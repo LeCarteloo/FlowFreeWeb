@@ -11,5 +11,5 @@ const Colors = {
     M: "magenta",
     W: "white",
     D: "darkblue",
-    S: "silver"
+    S: "silver",
 };
