@@ -11,6 +11,8 @@ module.exports = class Moves {
                 continue;
             }
 
+            /* Getting neighbours where current node can move,
+            later check neighbours of this node possible moves */
             let moves = Neighbours.possibleMoves(node.mapState, i);
 
             for (const move of moves) {
@@ -75,8 +77,8 @@ module.exports = class Moves {
                 }            
             }
 
-            /* If the above loop haven't found a forced move then forced move is 
-            only possible when node has only one neighbour */
+            /* If the above loop haven't found a neighbour with forced move then 
+            forced move is only possible when node has only one neighbour */
             if(moves.length != 1) {
                 continue;
             }

@@ -1,9 +1,8 @@
-const Generator = require('../generator/Generator');
 const GameMap = require('./GameMap');
 const Astar = require('./Astar')
 
 module.exports = class Solver {
-constructor(gameMap) {
+    constructor(gameMap) {
         this.gameMap = gameMap;
     }
     

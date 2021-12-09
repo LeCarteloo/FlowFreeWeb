@@ -171,7 +171,7 @@ module.exports = class ComponentLabeling {
   // Add points to detected sectors
   #addPointsToSectors(mapState) {
     // TODO: IMPORTANT NUMBER OF SECTORS COULD BE LARGER THAN NUMBER OF COLORS
-    for (let i = 0; i < GameMap.numberOfColors; i++) {
+    for (let i = 0; i < this.numberOfSectors.length; i++) {
       this.currentPoint[i] = "";
       this.endPoint[i] = "";
     }
@@ -188,7 +188,7 @@ module.exports = class ComponentLabeling {
         const x = neighbour.X;
         if (
           this.labels[y][x] != -1 &&
-          !this.currentPoint[this.labels[y][x]].includes(j)
+          !this.currentPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
         ) {
           this.currentPoint[this.labels[y][x]] += GameMap.foundColors[j];
           // this.currentPoint.splice(this.labels[y][x], 0, j.toString())
@@ -202,7 +202,7 @@ module.exports = class ComponentLabeling {
         const x = neighbour.X;
         if (
           this.labels[y][x] != -1 &&
-          !this.endPoint[this.labels[y][x]].includes(j)
+          !this.endPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
         ) {
           this.endPoint[this.labels[y][x]] += GameMap.foundColors[j];
         }
@@ -229,6 +229,10 @@ module.exports = class ComponentLabeling {
     for (let i = 0; i <= this.numberOfSectors.length; i++) {
       const curr = this.currentPoint[i];
       const end = this.endPoint[i];
+      // console.log(curr, end);
+      if(typeof curr == 'undefined' && typeof end == 'undefined') {
+        continue;
+      }
       // console.log(this.currentPoint);
       // console.log(this.endPoint);
       // console.log(this.currentPoint[i]);

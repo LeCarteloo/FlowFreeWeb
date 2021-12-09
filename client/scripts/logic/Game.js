@@ -21,14 +21,12 @@ let satMap = [];
 
 //! GAME MAP (for test purposes)
 var gameMap = [
-    ['0', '0', '0', '0', 'R', '0', '0', '0'],
-    ['0', '0', '0', '0', 'A', '0', 'G', 'Y'],
-    ['0', '0', '0', '0', 'G', 'Y', '0', 'A'],
-    ['0', '0', '0', 'O', 'B', '0', '0', '0'],
-    ['0', '0', '0', '0', 'O', '0', '0', '0'],
-    ['0', '0', '0', '0', 'B', '0', '0', '0'],
-    ['0', '0', '0', '0', '0', '0', '0', '0'],
-    ['0', 'R', '0', '0', '0', '0', '0', '0'],
+    ['R', '0', 'O', '0', '0', '0'],
+    ['0', '0', '0', '0', 'B', '0'],
+    ['0', 'O', 'R', 'G', '0', '0'],
+    ['0', 'G', '0', '0', '0', '0'],
+    ['0', 'Y', '0', 'Y', 'B', '0'],
+    ['0', '0', '0', '0', '0', '0'],
 ];
 
 var solvedGameMap = [
@@ -60,6 +58,7 @@ window.onload = function () {
     // Height and weight of a tile is equal to size of canvas divided by map size
     // Map size is always a square
     tileW = canvas.width / gameMap.length;
+    console.log(gameMap[0].length);
     tileH = canvas.height / gameMap.length;
     mapLength = gameMap.length;
 
@@ -436,5 +435,5 @@ function drawGame(event) {
     }
 
     //! Developer tool
-    Debug.gameDebugInfo(event, debugMode);
+    // Debug.gameDebugInfo(event, debugMode);
 }

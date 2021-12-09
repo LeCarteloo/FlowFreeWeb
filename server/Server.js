@@ -7,6 +7,7 @@ const { performance, PerformanceObserver } = require('perf_hooks');
 // Solver
 const Solver = require('./solver/Solver');
 const Global = require('./solver/Global');
+const Generator = require('./generator/Generator');
 
 const app = express();
 const server = http.createServer(app);
@@ -20,23 +21,21 @@ app.use(express.static('client'));
 io.on('connection', socket => {
   console.log('Client connected');
 
-  //! Tests
+  //! ########### Tests ###########
   let gameMap = [            
-    ['Y','0','0','Y','0','0','0','0','0','0','0','0','B'],
-    ['P','0','0','g','0','0','0','0','0','0','T','0','0'],
-    ['W','0','0','T','0','0','0','0','0','0','0','0','B'],
-    ['M','0','0','C','R','g','0','0','0','0','0','0','0'],
-    ['0','0','0','0','0','0','0','0','0','0','0','0','0'],
-    ['0','0','0','0','0','0','0','0','0','0','Z','0','0'],
-    ['0','0','0','0','0','0','0','0','G','0','G','0','0'],
-    ['0','0','0','0','0','0','0','0','C','0','0','0','0'],
-    ['0','0','0','0','M','0','0','0','P','A','0','0','0'],
-    ['O','0','0','0','0','0','0','0','0','0','0','0','0'],
-    ['0','0','W','0','0','0','0','0','0','0','0','Z','0'],
-    ['0','0','0','0','0','0','0','R','0','0','0','A','0'],
-    ['0','O','0','0','0','0','0','0','0','0','0','0','0']
+    ['0', '0', '0', '0', 'R', '0', '0', '0'],
+    ['0', '0', '0', '0', 'C', '0', 'G', 'Y'],
+    ['0', '0', '0', '0', 'G', 'Y', '0', 'C'],
+    ['0', '0', '0', 'O', 'B', '0', '0', '0'],
+    ['0', '0', '0', '0', 'O', '0', '0', '0'],
+    ['0', '0', '0', '0', 'B', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0', '0'],
+    ['0', 'R', '0', '0', '0', '0', '0', '0']
   ];
   
+  Global.usedNodes = 0;
+  Global.createdNodes = 0;
+
   let start = performance.now();
 
   let solve = new Solver(gameMap);
@@ -45,10 +44,11 @@ io.on('connection', socket => {
 
   let end = performance.now();
   let time = `${(end - start) / 1000} seconds`;
+  console.log("######### SOLVING TEST #########");
   console.log(`${result} - It took ${time}`);
   console.log(`Created ${Global.createdNodes}, Used ${Global.usedNodes}`);
 
-  //! Tests
+  //! ########### Tests ###########
 
   // Emit message to client that connects
   socket.emit('message', 'Connected to server');
@@ -64,10 +64,20 @@ io.on('connection', socket => {
 
   // Listen for button event (when clicked)
   socket.on('solve', data => {
-    // let solve = new Solver();
-    // socket.emit('message', solve.printMap()); 
+    //! ########### Tests ###########
+    console.log("CLICKED");
+    start = performance.now();
 
-  })
+    let generator = new Generator();
+    let genMaps = generator.generateMap(5, 5, 4);
+
+    end = performance.now();
+    time = `${(end - start) / 1000} seconds`;
+    console.log("######### MAP GENERATION #########");
+    console.log(`It took ${time}`);
+    socket.emit('message', genMaps); 
+   //! ########### Tests ###########
+    })
 });
 
 const PORT = 3000 || process.env.PORT;
