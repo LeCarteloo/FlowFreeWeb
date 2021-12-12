@@ -8,6 +8,7 @@ describe('Try to solve map', () => {
     });
     
     test("Map is solvable", () => {
+        
         const map = [
             ['B', '0', '0', '0', 'G'],
             ['0', '0', 'R', '0', '0'],
@@ -85,9 +86,9 @@ describe('Try to solve map', () => {
 
     test("Map is unsolvable (YET)", () => {
         const map = [
-            ['0', '0', '0'],
+            ['0', '0', 'R'],
             ['R', '0', '0'],
-            ['O', '0', '0'],
+            ['O', '0', 'O'],
         ];
         solver = new Solver(map);
 

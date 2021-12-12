@@ -28,51 +28,62 @@ module.exports = class Moves {
                     continue;
                 }
 
-                let freeTiles = 0;
+                let test = 0;
+                let freeTiles1 = 0;
 
-                // TODO: 'If' statements inside loop needs to be rewrited somehow
+                //TODO: This really needs to be written diffrently
+                if (move.X < GameMap.size - 1 && node.mapState.map[move.Y][move.X + 1] == '0') {
+                    test++;
+                }
+                else if(move.X < GameMap.size - 1 && node.mapState.map[move.Y][move.X + 1] == '|') {
+                    freeTiles1++;
+                }
+                if (move.Y < GameMap.size - 1 && node.mapState.map[move.Y + 1][move.X] == '0') {
+                    test++;
+                }
+                else if (move.Y < GameMap.size - 1 && node.mapState.map[move.Y + 1][move.X] == '|') {
+                    freeTiles1++;
+                }
+                if (move.X > 0 && node.mapState.map[move.Y][move.X - 1] == '0') {
+                    test++;
+                }
+                else if (move.X > 0 && node.mapState.map[move.Y][move.X - 1] == '|') {
+                    freeTiles1++;
+                }
+                if (move.Y > 0 && node.mapState.map[move.Y - 1][move.X] == '0') {
+                    test++;
+                }
+                else if (move.Y > 0 && node.mapState.map[move.Y - 1][move.X] == '|') {
+                    freeTiles1++;
+                }
+
                 for (let j = 0; j < GameMap.numberOfColors; j++) {
                     // console.log("CUR", node.mapState.current[c]);
                     // console.log("END", GameMap.endPoint[c]);
+                    if(node.isFinished(j) || j == i) {
+                        continue;
+                    }
 
                     if((move.X - 1 == node.mapState.current[j].X
                     && move.Y == node.mapState.current[j].Y)) {
-                        freeTiles++;
+                        freeTiles1++;
                     }
                     if((move.X + 1 == node.mapState.current[j].X
                     && move.Y == node.mapState.current[j].Y)) {
-                        freeTiles++;
+                        freeTiles1++;
                     }
                     if((move.X  == node.mapState.current[j].X
                     && move.Y - 1 == node.mapState.current[j].Y)) {
-                        freeTiles++;
+                        freeTiles1++;
 
                     }
                     if((move.X == node.mapState.current[j].X
                     && move.Y + 1 == node.mapState.current[j].Y)) {
-                        freeTiles++;
+                        freeTiles1++;
                     }
+                }
 
-                    //! Just testing (atm have no idea how to fix Yellow Color move [from (2,5) to (3,5))]
-                    if((move.X - 1 == GameMap.endPoint[j].X
-                    && move.Y == GameMap.endPoint[j].Y && i != j)) {
-                        freeTiles++;
-                    }
-                    if((move.X + 1 == GameMap.endPoint[j].X
-                    && move.Y == GameMap.endPoint[j].Y && i != j)) {
-                        freeTiles++;
-                    }
-                    if((move.X == GameMap.endPoint[j].X
-                    && move.Y - 1 == GameMap.endPoint[j].Y && i != j)) {
-                        freeTiles++;
-                    }
-                    if((move.X == GameMap.endPoint[j].X
-                    && move.Y + 1 == GameMap.endPoint[j].Y && i != j)) {
-                        freeTiles++;
-                    }
-                }    
-
-                if(freeTiles == 1) {
+                if(test == 1 && freeTiles1 == 0) {
                     return [move, i];
                 }            
             }

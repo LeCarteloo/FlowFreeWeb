@@ -21,7 +21,6 @@ module.exports = class Neighbours {
         return result;
     }
 
-    
     // All free space around current position of given color.
     static allFreeSpace(mapState, color) {
         let result = [];
@@ -99,6 +98,26 @@ module.exports = class Neighbours {
             result.push({Y: y + 1, X: x});
         }
 
+        return result;
+    }
+
+    // Searching for free tiles for endPoint and current
+    static forcedFreeTiles(move, point) {
+        let result = [];
+        const y = point.Y;
+        const x = point.X;
+        if(move.X == x - 1 && move.Y == y) {
+            result.push({Y: y, X: x - 1});
+        }
+        if(move.X == x + 1 && move.Y == y) {
+            result.push({Y: y, X: x + 1});
+        }
+        if(move.X  == x && move.Y == y - 1) {
+            result.push({Y: y - 1, X: x});
+        }
+        if(move.X == x && move.Y == y + 1) {
+            result.push({Y: y + 1, X: x});
+        }
         return result;
     }
 }
