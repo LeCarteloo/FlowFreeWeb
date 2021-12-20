@@ -20,6 +20,9 @@ module.exports = class ComponentLabeling {
     // To which sector points belong
     this.currentPoint = [];
     this.endPoint = [];
+
+    //! Testing
+    this.boom = null;
   }
   // Printing labels for debug
   #printLabels(labels) {
@@ -29,25 +32,26 @@ module.exports = class ComponentLabeling {
   }
 
   //TODO: Remove this function and wrote it in Moves.js
-  #possibleMoves(color) {
+  //! There should be also VALID function when cannot touch
+  #possibleMoves(mapState, color) {
     let result = [];
     const y = GameMap.endPoint[color].Y;
     const x = GameMap.endPoint[color].X;
     const map = GameMap.map;
-
-    if (x < GameMap.size - 1 && map[y][x + 1] == "0") {
+    const pt = mapState.current[color];
+    if (x < GameMap.size - 1 && map[y][x + 1] == "0" || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X) {
       // console.log("Left neighbour");
       result.push({Y: y, X: x + 1 });
     }
-    if (x > 0 && map[y][x - 1] == "0") {
+    if (x > 0 && map[y][x - 1] == "0" || x > 0 && y == pt.Y && x - 1 == pt.X) {
       // console.log("Right neighbour");
       result.push({Y: y, X: x - 1 });
     }
-    if (y < GameMap.size - 1 && map[y + 1][x] == "0") {
+    if (y < GameMap.size - 1 && map[y + 1][x] == "0" || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X) {
       // console.log("Upp neighbour");
       result.push({Y: y + 1, X: x });
     }
-    if (y > 0 && map[y - 1][x] == "0") {
+    if (y > 0 && map[y - 1][x] == "0" || y > 0 && y - 1 == pt.Y && x == pt.X) {
       // console.log("Down neighbour");
       result.push({Y: y - 1, X: x });
     }
@@ -171,10 +175,12 @@ module.exports = class ComponentLabeling {
   // Add points to detected sectors
   #addPointsToSectors(mapState) {
     // TODO: IMPORTANT NUMBER OF SECTORS COULD BE LARGER THAN NUMBER OF COLORS
-    for (let i = 0; i < this.numberOfSectors.length; i++) {
-      this.currentPoint[i] = "";
-      this.endPoint[i] = "";
+    for (let i = 0; i <= this.numberOfSectors.length; i++) {
+      this.currentPoint[i] = '';
+      this.endPoint[i] = '';
     }
+    //! Added
+    this.boom = '';
 
     for (let j = 0; j < GameMap.numberOfColors; j++) {
       if (mapState.isFinished(j)) {
@@ -186,25 +192,31 @@ module.exports = class ComponentLabeling {
       neighboursOfCurrent.forEach((neighbour) => {
         const y = neighbour.Y;
         const x = neighbour.X;
-        if (
-          this.labels[y][x] != -1 &&
-          !this.currentPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
-        ) {
+        if (this.labels[y][x] != -1 &&
+          !this.currentPoint[this.labels[y][x]].includes(GameMap.foundColors[j])) {
           this.currentPoint[this.labels[y][x]] += GameMap.foundColors[j];
-          // this.currentPoint.splice(this.labels[y][x], 0, j.toString())
+        }
+        //! Added
+        if(y == GameMap.endPoint[j].Y &&
+          x == GameMap.endPoint[j].X) {
+            // console.log("SSSS");
+            this.boom += GameMap.foundColors[j];
         }
       });
 
-      let neighboursOfEnd = this.#possibleMoves(j);
+      let neighboursOfEnd = this.#possibleMoves(mapState, j);
 
       neighboursOfEnd.forEach((neighbour) => {
         const y = neighbour.Y;
         const x = neighbour.X;
-        if (
-          this.labels[y][x] != -1 &&
-          !this.endPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
-        ) {
+        if (this.labels[y][x] != -1 &&
+          !this.endPoint[this.labels[y][x]].includes(GameMap.foundColors[j])) {
           this.endPoint[this.labels[y][x]] += GameMap.foundColors[j];
+        }
+        //! Added
+        if(y == mapState.current[j].Y &&
+          x == mapState.current[j].X) {
+            this.boom += GameMap.foundColors[j];
         }
       });
     }
@@ -227,11 +239,30 @@ module.exports = class ComponentLabeling {
     //! It was this.numberOfSectors.length in FOR
     // console.log(this.numberOfSectors[this.numberOfSectors.length - 1]);
     for (let i = 0; i <= this.numberOfSectors.length; i++) {
-      const curr = this.currentPoint[i];
-      const end = this.endPoint[i];
+      let curr = this.currentPoint[i];
+      let end = this.endPoint[i];
       // console.log(curr, end);
-      if(typeof curr == 'undefined' && typeof end == 'undefined') {
-        continue;
+
+      //! Added
+      if(this.boom != null){
+        if(curr.includes(this.boom)) {
+          if(!end.includes(this.boom)) {
+            // console.log("#");
+            end += this.boom;
+          }
+        }
+
+        if(end.includes(this.boom)) {
+          if(!curr.includes(this.boom)) {
+            // console.log("#");
+            curr += this.boom;
+          }
+        }
+
+        if(!curr.includes(this.boom) && !end.includes(this.boom)) {
+          end += this.boom;
+          curr += this.boom;
+        }
       }
       // console.log(this.currentPoint);
       // console.log(this.endPoint);
@@ -247,9 +278,9 @@ module.exports = class ComponentLabeling {
       for (let c = 0; c < curr.length; c++) {
         for (let e = 0; e < end.length; e++) {
           // console.log(this.currentPoint[i][c], this.endPoint[i][e]);
-          if (this.currentPoint[i][c] == this.endPoint[i][e]) {
-            if (!colorsInSectors.includes(this.endPoint[i][e])) {
-              colorsInSectors.push(this.endPoint[i][e]);
+          if (curr[c] == end[e]) {
+            if (!colorsInSectors.includes(end[e])) {
+              colorsInSectors.push(end[e]);
             }
             break;
           }

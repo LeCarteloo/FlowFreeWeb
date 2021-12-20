@@ -2,6 +2,7 @@ const Neighbours = require('./Neighbours');
 const GameMap = require('./GameMap');
 const Check = require('./Check');
 const _ = require('lodash');
+const LobbySettings = require('../LobbySettings');
 
 module.exports = class Moves { 
     // Find forced moves of all not finished colors
@@ -32,58 +33,59 @@ module.exports = class Moves {
                 let freeTiles1 = 0;
 
                 //TODO: This really needs to be written diffrently
-                if (move.X < GameMap.size - 1 && node.mapState.map[move.Y][move.X + 1] == '0') {
+                if (move.X < GameMap.size - 1 && tempNode.mapState.map[move.Y][move.X + 1] == '0') {
                     test++;
                 }
-                else if(move.X < GameMap.size - 1 && node.mapState.map[move.Y][move.X + 1] == '|') {
+                else if(move.X < GameMap.size - 1 && tempNode.mapState.map[move.Y][move.X + 1] == '|') {
                     freeTiles1++;
                 }
-                if (move.Y < GameMap.size - 1 && node.mapState.map[move.Y + 1][move.X] == '0') {
+                if (move.Y < GameMap.size - 1 && tempNode.mapState.map[move.Y + 1][move.X] == '0') {
                     test++;
                 }
-                else if (move.Y < GameMap.size - 1 && node.mapState.map[move.Y + 1][move.X] == '|') {
+                else if (move.Y < GameMap.size - 1 && tempNode.mapState.map[move.Y + 1][move.X] == '|') {
                     freeTiles1++;
                 }
-                if (move.X > 0 && node.mapState.map[move.Y][move.X - 1] == '0') {
+                if (move.X > 0 && tempNode.mapState.map[move.Y][move.X - 1] == '0') {
                     test++;
                 }
-                else if (move.X > 0 && node.mapState.map[move.Y][move.X - 1] == '|') {
+                else if (move.X > 0 && tempNode.mapState.map[move.Y][move.X - 1] == '|') {
                     freeTiles1++;
                 }
-                if (move.Y > 0 && node.mapState.map[move.Y - 1][move.X] == '0') {
+                if (move.Y > 0 && tempNode.mapState.map[move.Y - 1][move.X] == '0') {
                     test++;
                 }
-                else if (move.Y > 0 && node.mapState.map[move.Y - 1][move.X] == '|') {
+                else if (move.Y > 0 && tempNode.mapState.map[move.Y - 1][move.X] == '|') {
                     freeTiles1++;
                 }
 
                 for (let j = 0; j < GameMap.numberOfColors; j++) {
-                    // console.log("CUR", node.mapState.current[c]);
+                    // console.log("CUR", tempNode.mapState.current[c]);
                     // console.log("END", GameMap.endPoint[c]);
-                    if(node.isFinished(j) || j == i) {
+                    if(tempNode.isFinished(j) || j == i) {
                         continue;
                     }
 
-                    if((move.X - 1 == node.mapState.current[j].X
-                    && move.Y == node.mapState.current[j].Y)) {
+                    if((move.X - 1 == tempNode.mapState.current[j].X
+                    && move.Y == tempNode.mapState.current[j].Y)) {
                         freeTiles1++;
                     }
-                    if((move.X + 1 == node.mapState.current[j].X
-                    && move.Y == node.mapState.current[j].Y)) {
+                    if((move.X + 1 == tempNode.mapState.current[j].X
+                    && move.Y == tempNode.mapState.current[j].Y)) {
                         freeTiles1++;
                     }
-                    if((move.X  == node.mapState.current[j].X
-                    && move.Y - 1 == node.mapState.current[j].Y)) {
+                    if((move.X  == tempNode.mapState.current[j].X
+                    && move.Y - 1 == tempNode.mapState.current[j].Y)) {
                         freeTiles1++;
 
                     }
-                    if((move.X == node.mapState.current[j].X
-                    && move.Y + 1 == node.mapState.current[j].Y)) {
+                    if((move.X == tempNode.mapState.current[j].X
+                    && move.Y + 1 == tempNode.mapState.current[j].Y)) {
                         freeTiles1++;
                     }
                 }
 
                 if(test == 1 && freeTiles1 == 0) {
+                    // console.log("FORCED2");
                     return [move, i];
                 }            
             }
@@ -93,7 +95,7 @@ module.exports = class Moves {
             if(moves.length != 1) {
                 continue;
             }
-
+            // console.log("FORCED");
             return [moves[0], i];
         }
         return false;
@@ -101,19 +103,23 @@ module.exports = class Moves {
 
     // Making move on the given node - moving specific color with given cost to the given position
     static makeMove(node, moveTo, color, cost) {
-        node.parent = node;
+        // node.parent = _.cloneDeep(node);
         node.g += cost;
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
-        
+
+        // console.log("Make move");
+        // console.log(_.cloneDeep(node.mapState.map));
+
         // Check if current pipe is one tile away from end point
         // This cause to check two times if the move is valid (even when first one is not)
         // TODO: Fix double checking valid node
-        let moves = Neighbours.possibleMoves(node.mapState, color);
-        for (const move of moves) {
-            if(move.X == GameMap.endPoint[color].X &&
-                move.Y == GameMap.endPoint[color].Y) {
-                this.makeMove(node, move, color, 0);
+        if(!LobbySettings.canTouch){
+            let moves = Neighbours.possibleMoves(node.mapState, color);
+            for (const move of moves) {
+                if(move.X == GameMap.endPoint[color].X && move.Y == GameMap.endPoint[color].Y) {
+                    this.makeMove(node, move, color, 0);
+                }
             }
         }
 

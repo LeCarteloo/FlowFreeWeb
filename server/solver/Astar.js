@@ -12,7 +12,7 @@ module.exports = class Astar {
         //TODO: Change closed list to other type of array
         let closedList = [];
         let nodeCounter = 0;
-        const stop = 2500;
+        const stop = 4000;
 
         // Starting node
         let node = new Node();
@@ -39,6 +39,9 @@ module.exports = class Astar {
             var pickedNode = openList.shift();
 
             nodeCounter++;
+
+            // console.count("Picked node:");
+            // console.log(_.cloneDeep(pickedNode.mapState.map));
 
             // Next node is used so it is pushed to closedList
             closedList.push(_.cloneDeep(pickedNode.mapState));

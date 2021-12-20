@@ -7,7 +7,8 @@
     "start": "node ./server/Server.js",
     "dev": "nodemon ./server/Server.js",
     "test": "jest ./tests",
-    "testOne": "jest ./tests/ForcedMove.test.js"
+    "testCanTouch": "jest ./tests/SolveAll_CAN.test.js",
+    "testCantTouch": "jest ./tests/SolveAll.test.js"
 
   },
   "repository": {
