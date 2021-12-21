@@ -1,6 +1,6 @@
 module.exports = class LobbySettings {
         static canTouch = false;
-        static size;
+        static size = 5;
         static time;
-        static numberOfMaps;
+        static numberOfMaps = 1;
 }

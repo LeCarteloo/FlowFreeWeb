@@ -42,7 +42,7 @@ class Debug {
         }
     
         context.fillStyle = "#FFF";
-        context.fillText(`(Y: ${y}, X: ${x} | Y:${y * tileW}, X: ${x * tileH})`, x * tileW, y * tileH + 10)
+        context.fillText(`  (Y: ${y}, X: ${x})`, x * tileW, y * tileH + 10)
     }
     
     // ############ Algorithm debug statics ############ //

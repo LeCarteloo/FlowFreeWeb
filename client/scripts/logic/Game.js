@@ -75,29 +75,10 @@ window.onload = function () {
     bugWithPipes = document.getElementById('bugWithPipes');
     checkBox = document.getElementById('debugCheckBox');
 
+
     var gameInfo = document.querySelector('.game-info');
     var solverInfo = document.querySelector('.solver-info');
-    var satLog = document.getElementById('satLog');
-    var solveTime = document.getElementById('solveTime');
-    var solverComplexity = document.getElementById('solverComplexity');
-    var completedMap = document.getElementById('completedMap');
-    var solve = document.getElementById('solver');
-
-    checkBox.addEventListener('change', function() {
-        if (this.checked) {
-            debugMode = true;
-            gameInfo.style.display = 'block';
-            solverInfo.style.display = 'block';
-        } else {
-            debugMode = false;
-            gameInfo.style.display = 'none';
-            solverInfo.style.display = 'none';
-            drawGame(event)
-        }
-    });
         
-    // MapGenerator.placePoints();
-
     //! Responsive canvas
     //TODO: make canvas responsive
     // window.addEventListener('resize', function() {
@@ -200,7 +181,7 @@ function handleMouseDown(event) {
                     drawSquares(x, y);
 
                     //! Developer tool
-                   Debug.drawPosOfSquares(x, y, debugMode);
+                //    Debug.drawPosOfSquares(x, y, debugMode);
                 }
 
                 // Clearing points
@@ -212,7 +193,7 @@ function handleMouseDown(event) {
                     drawPoint(x, y);
 
                     //! Developer tool
-                    Debug.drawPosOfSquares(x, y, debugMode);
+                    // Debug.drawPosOfSquares(x, y, debugMode);
                 }
             }
         }
@@ -333,7 +314,7 @@ function drawGame(event) {
                 // drawPipe(x, y);
 
                 //! Developer tool
-                Debug.drawPosOfSquares(x, y, debugMode);
+                // Debug.drawPosOfSquares(x, y, debugMode);
             }
         }
        
@@ -395,7 +376,7 @@ function drawGame(event) {
                     var mouseMoveY = (Math.floor(moveEvent.offsetY / tileW) * tileW) / tileH;
 
                     //! Developer tool
-                    Debug.mouseOffset(moveEvent, debugMode);
+                    // Debug.mouseOffset(moveEvent, debugMode);
 
                     //  Drawing a lines
                     if (gameMap[mouseMoveY][mouseMoveX] == '0') {

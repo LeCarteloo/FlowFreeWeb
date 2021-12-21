@@ -4,14 +4,71 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Flow Free Multiplayer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-    <h1>Working...</h1>
+    <div id="start-screen">
+        <h1 class="title">Flow Free Multiplayer</h1>
+        <div class="buttons-group">
 
-    <form id="solve-form">
-        <button id="solve-btn">Solve Button</button>
-    </form>
+            <h3>Start your game!</h3>
+            <br>
+            <button type="submit" id="create-room">Create new game</button>
+            <div class='or'>OR</div>
+            <input type="text" placeholder="Game Code" id="game-code" autocomplete="off">
+            <button type="submit" id="join-room">Join room</button>
+        </div>
+    </div>
+    
+    <div id="lobby-options">
+        <div class="players">
+            <div class="row" id="row-one">
+                <h3>Your game code is: <span id="code-display"></span></h3>
+            </div>
+            <div class="row" id="row-two">
+                <div class="player pl-one"></div>
+                <span class="username" id="user-one">Username1</span>
+            </div>
+            <div class="row" id="row-three">
+                <div class="player pl-two"></div>
+                <span class="username" id="user-two">Username2</span>
+            </div>
+        </div>
+        <div class="lobby-group">
+            <br>
+            <div class="group-options">
+                <h3>Lobby Settings</h3>
+                <br>
+                Time limit <input type="text" class='option' id='time-limit' value='5'>
+                Map size <input type="text" class='option' id='map-size' value='5'>
+                Map number <input type="text" class='option' id='map-number' value='1'>
+            </div>
+            <button type="submit" id='start-game'>START</button>
+            <br>
+            <button id="switchButton">Switch</button>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+            <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
+        </section>
+
+        <!-- <script src="/scripts/logic/Utility.js"></script>
+        <script src="/scripts/logic/Path.js"></script>
+        <script src="/scripts/logic/Debug.js"></script>
+        <script src="/scripts/logic/enums/Colors.js"></script>
+        <script src="/scripts/logic/enums/Positions.js"></script>
+        <script src="/scripts/logic/Win.js"></script>
+        <script src="/scripts/logic/Game.js"></script> -->
+
+    </div>
+
+
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- Client scripts -->

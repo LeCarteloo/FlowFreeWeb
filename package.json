@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node ./server/Server.js",
     "dev": "nodemon ./server/Server.js",
-    "test": "jest ./tests",
-    "testCanTouch": "jest ./tests/SolveAll_CAN.test.js",
-    "testCantTouch": "jest ./tests/SolveAll.test.js"
-
+    "test": "jest ./tests"
   },
   "repository": {
     "type": "git",

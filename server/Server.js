@@ -1,84 +1,111 @@
-const path = require('path');
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io');
+const express = require('express')
+const { makeid } = require('./Utility')
+const app = express()
+const port = 3000
+const server = app.listen(port)
+const io = require('socket.io')(server)
 const { performance, PerformanceObserver } = require('perf_hooks');
-
-// Solver
-const Solver = require('./solver/Solver');
-const Global = require('./solver/Global');
 const Generator = require('./generator/Generator');
-const LobbySettings = require('./LobbySettings');
 
-const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
-
-// Set static folder
-// app.use(express.static(path.join(__dirname, 'client')));
+//Hello World line taken from the express website
 app.use(express.static('client'));
 
-// Run when client connects
-// io.on('connection', socket => {
-  console.log('Client connected');
+var rooms = {};
 
-  //! ########### Tests ###########
-  LobbySettings.canTouch = true;
-  let gameMap = [            
-    ['0','R','G','0','0',],
-    ['0','0','0','0','G',],
-    ['0','0','0','0','A',],
-    ['0','0','0','0','0',],
-    ['R','0','A','0','0',],
-  ];
-  
-  Global.usedNodes = 0;
-  Global.createdNodes = 0;
+//The 'connection' is a reserved event name in socket.io
+//For whenever a connection is established between the server and a client
+io.on('connection', (socket) => {
+  //When the client sends a message via the 'clientToClient' event
+  //The server forwards it to all the other clients that are connected
+  socket.on('buttonPressed', clientRoom => {
+      io.to(clientRoom).emit('switchFromServer');
+  })
+    
+  socket.on('createRoom', () => {
+    let roomCode = makeid(5);
+    // Emit roomCode to client side
+    socket.emit('displayGameCode', roomCode)
+    
+    // Join to the room that was just created
+    socket.join(roomCode);
 
-  let start = performance.now();
+    const clients = io.sockets.adapter.rooms.get(roomCode);
+    console.log(clients);
+    socket.emit('serverMsg', roomCode)
 
-  let solve = new Solver(gameMap);
-  let result = solve.init()
-  // socket.emit('message', result); 
+    // Create room object
+    rooms[roomCode] = {
+      time: 5,
+      maps: [],
+      players: [],
+    };
 
-  let end = performance.now();
-  let time = `${(end - start) / 1000} seconds`;
-  console.log("######### SOLVING TEST #########");
-  console.log(`${result} - It took ${time}`);
-  console.log(`Created ${Global.createdNodes}, Used ${Global.usedNodes}`);
+    rooms[roomCode].players.push(socket.id);
 
-  //! ########### Tests ###########
+    console.log(rooms);
 
-  // Emit message to client that connects
-  // socket.emit('message', 'Connected to server');
+    // Show connected players
+    io.to(roomCode).emit('userConnected', rooms[roomCode].players);
+  });
 
-  // Broadcast message to everyone except client that connected
-  // socket.broadcast.emit('message', `Client ${socket.id} connected`);
+  socket.on('joinRoom', (gameCode) => {
+    // Check if game code exists
+    const clients = io.sockets.adapter.rooms.get(gameCode);
+    
+    // Room with given game code doesn't exist
+    if (!clients) {
+      socket.emit('unknownRoom');
+      return;
+    }
+    
+    let numberOfClients;
+    numberOfClients = clients.size;
 
-  // Runs when client disconnects
-  // socket.on('disconnect', () => {
-  // // Emit message to all connected clients
-  //   io.emit('message',`Client ${socket.id} disconnected`);
-  // });
+    // Room is full
+    if(numberOfClients > 1) {
+      socket.emit('fullRoom');
+      return;
+    }
 
-  // Listen for button event (when clicked)
-//   socket.on('solve', data => {
-//     //! ########### Tests ###########
-//     console.log("CLICKED");
-//     start = performance.now();
+    // Join to given game code
+    socket.join(gameCode);
 
-//     let generator = new Generator();
-//     let genMaps = generator.generateMap(5, 5, 4);
+    //! Debug
+    console.log(numberOfClients, clients);
+    
 
-//     end = performance.now();
-//     time = `${(end - start) / 1000} seconds`;
-//     console.log("######### MAP GENERATION #########");
-//     console.log(`It took ${time}`);
-//     socket.emit('message', genMaps); 
-//    //! ########### Tests ###########
-//     })
-// });
+    socket.emit('serverMsg', gameCode);
+    // Change scene
+    socket.emit('init');
+    
+    rooms[gameCode].players.push(socket.id);
 
-// const PORT = 3000 || process.env.PORT;
+    console.log(rooms);
 
-// server.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+    io.to(gameCode).emit('userConnected', rooms[gameCode].players);
+
+  });
+
+  socket.on('startGame', (options) => {
+    start = performance.now();
+
+    let generator = new Generator();
+    let genMaps = generator.generateMap(
+      parseInt(options.mapSize),
+      5, 
+      parseInt(options.mapNumber)
+    );
+
+    end = performance.now();
+    time = `${(end - start) / 1000} seconds`;
+    console.log(`It took ${time}`);
+
+    // Sent to clients 
+    io.to(options.roomCode).emit('testMessage', genMaps);
+    io.to(options.roomCode).emit('hostGameStart')
+  });
+
+  socket.on('disconnect', () => {
+    console.log("disconnected");
+  });
+});

@@ -12,4 +12,5 @@ const Colors = {
     W: "white",
     D: "darkblue",
     S: "silver",
+    C: "cyan",
 };
