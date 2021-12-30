@@ -21,12 +21,14 @@ module.exports = class Generator {
     Also the start and end point of the same color can be next to each other */
     generateMap(size, numOfColors, numOfMaps) {
         let maps = [];
+        let finishedMaps = [];
         while(maps.length != numOfMaps) {
             const createdMap = this.createMap(size, numOfColors);
             const result = this.isSolvable(_.cloneDeep(createdMap));
             // console.log(result);
             if(result) {
                 maps.push(createdMap);
+                // finishedMaps.push(result)
             }
         }  
         return maps;    

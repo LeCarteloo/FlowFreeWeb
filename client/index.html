@@ -43,9 +43,11 @@
             <div class="group-options">
                 <h3>Lobby Settings</h3>
                 <br>
-                Time limit <input type="text" class='option' id='time-limit' value='5'>
-                Map size <input type="text" class='option' id='map-size' value='5'>
-                Map number <input type="text" class='option' id='map-number' value='1'>
+                Hints number <input type="number" class='option' id='hints-amount' value='1'>
+                Time limit <input type="number" class='option' id='time-limit' value='5'>
+                Map size <input type="number" class='option' id='map-size' value='5'>
+                Map number <input type="number" class='option' id='map-number' value='2'>
+
             </div>
             <button type="submit" id='start-game'>START</button>
             <br>
@@ -54,21 +56,25 @@
     </div>
 
     <div id="game-screen">
-        <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+        <section class="game-section">
+            <div class="game-info">
+                <span id="time-display">05:00</span>
+                <span id="points-display">3000 points</span>
+            </div>
             <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
+            <button id="hints-btn" type="submit">Use hint</button>
+            <span id="hints-display">Hints remaining: ?</span>
+            <button id="change-btn" type="submit">Next map</button>
         </section>
-
-        <!-- <script src="/scripts/logic/Utility.js"></script>
-        <script src="/scripts/logic/Path.js"></script>
-        <script src="/scripts/logic/Debug.js"></script>
-        <script src="/scripts/logic/enums/Colors.js"></script>
-        <script src="/scripts/logic/enums/Positions.js"></script>
-        <script src="/scripts/logic/Win.js"></script>
-        <script src="/scripts/logic/Game.js"></script> -->
-
     </div>
-
-
+    
+    <script src="/scripts/logic/Utility.js"></script>
+    <script src="/scripts/logic/Path.js"></script>
+    <script src="/scripts/logic/Debug.js"></script>
+    <script src="/scripts/logic/enums/Colors.js"></script>
+    <script src="/scripts/logic/enums/Positions.js"></script>
+    <script src="/scripts/logic/Win.js"></script>
+    <script src="/scripts/logic/Game.js"></script>
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- Client scripts -->

@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--//! Imports will be moved to js in future  !\\-->
+    
+    <link rel="stylesheet" href="../css/game.css">
+    <title>Tests</title>
+</head>
+<body>
+    <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+        <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
+    </section>
     <!-- ### Utility ### -->
     <script src="../scripts/logic/Utility.js"></script>
     <!-- ### Generator ### -->
@@ -21,34 +29,5 @@
     <script src="../scripts/logic/Win.js"></script>
     <!-- ### Game ### -->
     <script src="../scripts/logic/Game.js"></script>
-
-    <link rel="stylesheet" href="../css/game.css">
-    <title>Tests</title>
-</head>
-<body>
-    <div id="debug-mode">
-        <input id="debugCheckBox" type="checkbox" checked> Debug Mode</input>
-        <div class="game-info">
-            <p class="header">Game informations</p>
-            <div id="end"></div>
-            <div id="status"></div>
-            <div id="gameMapArray">Game map array:</div>
-            <div id="mouseMoved">Mouse position (Y, X):</div>
-            <div id="bugWithPipes"></div>
-        </div>
-        <div class="solver-info">
-            <p class="header">Solver informations</p>
-            <p >***Buttons don't work at the moment***</p>
-            <button id="solveAll" onclick="solveAll()">SOLVE FULL MAP</button>
-            <button id="solveOne" onclick="solveOne()">SOLVE ONE COLOR</button>
-            <div id="solveTime">Solved in: </div>
-            <div id="solverComplexity">Nodes: </div>
-            <br>
-        </div>
-    </div>
-
-    <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-        <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
-    </section>
 </body>
 </html>

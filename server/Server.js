@@ -7,16 +7,16 @@ const io = require('socket.io')(server)
 const { performance, PerformanceObserver } = require('perf_hooks');
 const Generator = require('./generator/Generator');
 
-//Hello World line taken from the express website
+// Static file for express server
 app.use(express.static('client'));
 
+// Rooms information
 var rooms = {};
 
-//The 'connection' is a reserved event name in socket.io
-//For whenever a connection is established between the server and a client
+// Event for whenever a connection is established between the server and a client
 io.on('connection', (socket) => {
-  //When the client sends a message via the 'clientToClient' event
-  //The server forwards it to all the other clients that are connected
+
+  // Switch background on all connected clients 
   socket.on('buttonPressed', clientRoom => {
       io.to(clientRoom).emit('switchFromServer');
   })
@@ -29,8 +29,6 @@ io.on('connection', (socket) => {
     // Join to the room that was just created
     socket.join(roomCode);
 
-    const clients = io.sockets.adapter.rooms.get(roomCode);
-    console.log(clients);
     socket.emit('serverMsg', roomCode)
 
     // Create room object
@@ -42,7 +40,7 @@ io.on('connection', (socket) => {
 
     rooms[roomCode].players.push(socket.id);
 
-    console.log(rooms);
+    // console.log(rooms);
 
     // Show connected players
     io.to(roomCode).emit('userConnected', rooms[roomCode].players);
@@ -69,21 +67,21 @@ io.on('connection', (socket) => {
 
     // Join to given game code
     socket.join(gameCode);
-
-    //! Debug
-    console.log(numberOfClients, clients);
     
-
     socket.emit('serverMsg', gameCode);
+    
     // Change scene
     socket.emit('init');
     
+    // Add player to room
     rooms[gameCode].players.push(socket.id);
-
+    
+    //! Debug
     console.log(rooms);
+    console.log(numberOfClients, clients);
 
+    // Emit userConnected event to everyone connected to current room
     io.to(gameCode).emit('userConnected', rooms[gameCode].players);
-
   });
 
   socket.on('startGame', (options) => {
@@ -100,9 +98,33 @@ io.on('connection', (socket) => {
     time = `${(end - start) / 1000} seconds`;
     console.log(`It took ${time}`);
 
-    // Sent to clients 
+    setTimeout(() => {
+      console.log("Uplynela 1 minuta");
+    }, options.timeLimit * 60000);
+
+    // Sent to clients test message and start the game
     io.to(options.roomCode).emit('testMessage', genMaps);
-    io.to(options.roomCode).emit('hostGameStart')
+
+    // Add generated maps to the room info
+    rooms[options.roomCode].maps = genMaps;
+
+    // console.log(rooms[options.roomCode].maps.length);
+
+    io.to(options.roomCode).emit('hostGameStart', genMaps[0])
+  });
+
+  socket.on('changeMap', (mapInfo) => {
+    Array.prototype.indexOfArray = function(array) {
+      const arrayJSON = JSON.stringify(array);
+      const mainJSON = this.map(JSON.stringify);
+
+      return mainJSON.indexOf(arrayJSON);
+    }
+
+    let mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.actualMap);
+    let nextMap = rooms[mapInfo.gameCode].maps[mapIndex + 1];
+
+    io.to(mapInfo.gameCode).emit('changeMap', nextMap); 
   });
 
   socket.on('disconnect', () => {

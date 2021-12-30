@@ -12,7 +12,7 @@ body {
     float: right; 
     /* pointer-events:none;  */
     /* user-select: none; */
-    display: block;
+    display: none;
 }
 
 div {
