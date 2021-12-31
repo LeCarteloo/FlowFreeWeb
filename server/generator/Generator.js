@@ -37,7 +37,7 @@ module.exports = class Generator {
     // Try to solve the map and return
     isSolvable(map) {
         let solver = new Solver(map);
-        return solver.init() == 'Solved';
+        return solver.init().isSolved;
     }
 
     createMap(size, numOfColors) {

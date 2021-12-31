@@ -6,6 +6,7 @@ const server = app.listen(port)
 const io = require('socket.io')(server)
 const { performance, PerformanceObserver } = require('perf_hooks');
 const Generator = require('./generator/Generator');
+const Solver = require('./solver/Solver')
 
 // Static file for express server
 app.use(express.static('client'));
@@ -121,10 +122,19 @@ io.on('connection', (socket) => {
       return mainJSON.indexOf(arrayJSON);
     }
 
-    let mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.actualMap);
+    let mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
     let nextMap = rooms[mapInfo.gameCode].maps[mapIndex + 1];
 
     io.to(mapInfo.gameCode).emit('changeMap', nextMap); 
+  });
+
+  socket.on('getHint', (mapInfo) => {
+    // console.log(mapInfo);
+    // console.log("getHint");
+    let solver = new Solver(mapInfo.startMap);
+    const result = solver.init({map: mapInfo.currentMap, solvedColors: mapInfo.solvedColors});
+    console.log(result.isSolved, result.map);
+    socket.emit('displayHint', result);
   });
 
   socket.on('disconnect', () => {

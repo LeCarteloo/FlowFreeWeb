@@ -21,36 +21,42 @@ class Game {
     solvedColors = [];
     blockedColors = [];
 
-    constructor(gameMap, numberOfColors, mapSize) {
-        this.gameMap = gameMap;
-        this.numberOfColors = numberOfColors;
-        this.mapSize = mapSize;
-        /* Bounding the handleMouseMove to a variable it will allow to 
-        remove the listener after user no longer clicks left mouse button */
-        this.boundMove = event => this.handleMouseMove(event)
-    }
+    gameMap = [];
+    numberOfColors = 0;
+    mapSize = 0;
 
-    initialize() {
+    constructor() {        
         // Getting the canvas and it context
         this.canvas = document.getElementById('game');
         this.context = this.canvas.getContext("2d");
         
+        // Adding the event listeners for handling user events
+        this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
+        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
+        
+        /* Bounding the handleMouseMove to a variable it will allow to 
+        remove the listener after user no longer clicks left mouse button */
+        this.boundMove = (event) => this.handleMouseMove(event)
+    }
+
+    initialize(gameMap, numberOfColors, mapSize) {
+        this.gameMap = gameMap;
+        this.numberOfColors = numberOfColors;
+        this.mapSize = mapSize;
+
         /* Height and weight of a tile is equal to size of canvas 
         divided by map size. Map size is always a square */
         this.tileW = this.canvas.width / this.mapSize;
         this.tileH = this.canvas.height / this.mapSize;
 
         requestAnimationFrame(this.drawGame.bind(this));
-
-        // Adding the event listeners for handling user events
-        this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
     }
 
     clear() {
         this.gameMap = [];
         this.numberOfColors = 0;
         this.mapSize = 0;
+        this.isMapDrawn = false;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -84,7 +90,7 @@ class Game {
             }
         }
     
-        console.log("Mouse pressed");
+        // console.log("Mouse pressed");
         // Drawing game when mouse is pressed
         this.drawGame(event);
     }
@@ -177,7 +183,7 @@ class Game {
 
         this.pressed = false;
     
-        console.log("Mouse unpressed");
+        // console.log("Mouse unpressed");
     
         // Redrawing a game when button is unpressed (to remove unlinked pipes)
         this.drawGame(event);

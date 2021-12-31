@@ -32,6 +32,8 @@ module.exports = class Moves {
                 let test = 0;
                 let freeTiles1 = 0;
 
+                
+
                 //TODO: This really needs to be written diffrently
                 if (move.X < GameMap.size - 1 && tempNode.mapState.map[move.Y][move.X + 1] == '0') {
                     test++;

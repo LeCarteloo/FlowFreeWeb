@@ -41,7 +41,8 @@ const changeMapBtn = document.getElementById('change-btn');
 
 let clientRoom;
 let gameObj;
-let actualMap;
+let startMap;
+let currentMap;
 
 // Connecting client to and server room
 socket.on('serverMsg', (data) => {
@@ -102,8 +103,15 @@ startGameBtn.addEventListener('click', () => {
 });
 
 changeMapBtn.addEventListener('click', () => {
-    console.log(actualMap);
-    socket.emit('changeMap', {gameCode: clientRoom, actualMap: actualMap});
+    console.log(startMap);
+    socket.emit('changeMap', {gameCode: clientRoom, startMap: startMap});
+});
+
+hintsBtn.addEventListener('click', () => {
+    console.log(currentMap);
+    console.log(gameObj.solvedColors);
+    console.log(startMap);
+    socket.emit('getHint', {startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
 });
 
 function init() {
@@ -132,9 +140,13 @@ function handleHostGameStart(firstMap) {
 
     hintsDisplay.innerText = `Hints remaining: ${hintsAmount.value}`;
 
-    gameObj = new Game(firstMap, 5, 5);
-    gameObj.initialize();
-    actualMap = JSON.parse(JSON.stringify(firstMap));
+    // Setting the canvas and drawing the map
+    gameObj = new Game();
+    gameObj.initialize(firstMap, 5, 5);
+
+    // Copying current game map
+    startMap = JSON.parse(JSON.stringify(firstMap));
+    currentMap = firstMap;
 }
 
 function handlefullRoom() {
@@ -142,11 +154,8 @@ function handlefullRoom() {
 }
 
 function changeMap(nextMap) {
-    console.log(nextMap);
     gameObj.clear();
-    gameObj = new Game(nextMap, 5, 5);
-    gameObj.initialize();
-    // gameObj.gameMap = map
+    gameObj.initialize(nextMap, 5, 5);
 }
 
 function timer(time, display) {

@@ -19,7 +19,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -32,7 +32,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -46,7 +46,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -61,7 +61,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -82,7 +82,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -98,7 +98,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -112,7 +112,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -131,7 +131,7 @@ describe('Try to solve map (Cannot touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is unsolvable when pipes cannot touch", () => {
@@ -143,7 +143,7 @@ describe('Try to solve map (Cannot touch)', () => {
         solver = new Solver(map);
 
         // Should give error
-        expect(solver.init()).not.toEqual('Solved');
+        expect(solver.init().isSolved).not.toBeTruthy();
     });
 
     afterAll(() => {
@@ -168,7 +168,7 @@ describe('Try to solve map (Can touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -180,7 +180,7 @@ describe('Try to solve map (Can touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     test("Map is solvable", () => {
@@ -195,7 +195,7 @@ describe('Try to solve map (Can touch)', () => {
         ];
         solver = new Solver(map);
 
-        expect(solver.init()).toEqual('Solved');
+        expect(solver.init().isSolved).toBeTruthy();
     });
 
     afterAll(() => {

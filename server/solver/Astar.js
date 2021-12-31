@@ -1,11 +1,12 @@
 const NodeOrder = require('./node/NodeOrder');
+const GameMap = require('./GameMap');
 const Node = require('./node/Node');
 const Global = require('./Global');
 const Moves = require('./Moves');
 const _ = require('lodash');
 
 module.exports = class Astar {
-    search() {
+    search(move) {
         /* Array of nodes that can be picked (openList) with the best move on the begining, 
         Array with nodes that have been used and counter of how many nodes have been used */
         let openList = new NodeOrder();
@@ -19,18 +20,21 @@ module.exports = class Astar {
 
         Global.createdNodes++;
 
-        //! Trying to solve map with one move already
-        // node.mapState.map =  [       
-        //     ['B','B','B','B','0','G',],
-        //     ['B','B','B','B','0','Y',],
-        //     ['0','0','B','B','0','0',],
-        //     ['0','R','B','?','0','0',],
-        //     ['0','B','B','0','?','0',],
-        //     ['0','0','0','0','?','0',],
-        // ];
-        // node.mapState.current[2] = GameMap.endPoint[2];
-        // node.mapState.finishedPoints = [2];
-        // node.h = node.manhattan();
+        // Solving map with moves
+        if(move != null) {
+            console.log("Solving with moves...");
+            node.mapState.map = [
+                [ '0', '0', '0', '0', '0' ],
+                [ 'B', 'R', '0', '0', '0' ],
+                [ 'O', 'Y', 'Y', '0', 'B' ],
+                [ '0', '0', '0', '0', '0' ],
+                [ 'G', 'G', '0', 'O', 'R' ]
+              ]
+            // GameMap.foundColors.indexOf(move.solvedColors)
+            // node.mapState.current[2] = GameMap.endPoint[2];
+            // node.mapState.finishedPoints = [2];
+            // node.h = node.manhattan();
+        }
 
         openList.push(_.cloneDeep(node));
        
@@ -48,7 +52,8 @@ module.exports = class Astar {
 
             if(pickedNode.isSolved()){
                 Global.usedNodes = nodeCounter;
-                return 'Solved';
+                // return 'Solved';
+                return {isSolved: true, map: pickedNode.mapState.map};
             }
             // Generated moves for next node
             let nodeList = Moves.makeAllMoves(_.cloneDeep(pickedNode));    
@@ -66,12 +71,12 @@ module.exports = class Astar {
             if(nodeCounter == stop) {
                 Global.usedNodes = nodeCounter;
                 openList.printMapState();
-        
-                return 'Paused'
+                console.log("Paused");
+                return {isSolved: 'Paused', map: pickedNode.mapState.map};
             }
         }
         Global.usedNodes = nodeCounter;
-        return 'No solution';
+        return {isSolved: false, map: pickedNode.mapState.map};
     }
 }
 

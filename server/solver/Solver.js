@@ -6,11 +6,11 @@ module.exports = class Solver {
         this.gameMap = gameMap;
     }
     
-    init() {        
+    init(move = null) {        
         GameMap.initializeMap(this.gameMap);
 
         let astar = new Astar();
 
-        return astar.search();
+        return astar.search(move);
     }
 }
