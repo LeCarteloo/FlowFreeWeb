@@ -109,9 +109,18 @@ io.on('connection', (socket) => {
     // Add generated maps to the room info
     rooms[options.roomCode].maps = genMaps;
 
+    // genMaps = [
+    //   [ '0', '0', '0', '0', '0' ],
+    //   [ 'B', 'R', '0', '0', '0' ],
+    //   [ 'O', 'Y', 'Y', '0', 'B' ],
+    //   [ '0', '0', '0', '0', '0' ],
+    //   [ 'G', 'G', '0', 'O', 'R' ]
+    // ];
+
     // console.log(rooms[options.roomCode].maps.length);
 
     io.to(options.roomCode).emit('hostGameStart', genMaps[0])
+    // io.to(options.roomCode).emit('hostGameStart', genMaps)
   });
 
   socket.on('changeMap', (mapInfo) => {
@@ -128,13 +137,35 @@ io.on('connection', (socket) => {
     io.to(mapInfo.gameCode).emit('changeMap', nextMap); 
   });
 
-  socket.on('getHint', (mapInfo) => {
-    // console.log(mapInfo);
-    // console.log("getHint");
+socket.on('getHint', (mapInfo) => {
+    // Solving given map with optional solvedColors
     let solver = new Solver(mapInfo.startMap);
     const result = solver.init({map: mapInfo.currentMap, solvedColors: mapInfo.solvedColors});
-    console.log(result.isSolved, result.map);
-    socket.emit('displayHint', result);
+
+    // console.log(result.isSolved, result.map);
+    // console.log(result.foundColors);
+    // console.log(mapInfo.solvedColors);
+
+    // Diffrence between two arrays: 1: [A, B, C], 2: [A], Result: [B, C]
+    const intersection = result.foundColors.filter(x => !mapInfo.solvedColors.includes(x));
+    // console.log(intersection);
+    const randomColor = intersection[Math.floor(Math.random() * intersection.length)];
+    console.log(randomColor);
+
+    const size = mapInfo.startMap.length;
+    let hintMap = Array(size).fill().map(() => Array(size).fill('0'));
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        if(result.map[y][x] == randomColor) {
+          hintMap[y][x] = randomColor;
+        }
+      }
+    }
+
+    console.log(hintMap);
+
+    socket.emit('displayHint', {map: hintMap, color: randomColor});
   });
 
   socket.on('disconnect', () => {

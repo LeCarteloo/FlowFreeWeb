@@ -17,6 +17,17 @@ module.exports = class MapState {
         }
         return false;
     }
+    countFreeTiles() {
+        let freeTiles = 0;
+        for (let y = 0; y < this.map.length; y++) {
+            for (let x = 0; x < this.map.length; x++) {
+                if(this.map[y][x] == '0') {
+                    freeTiles++;
+                }
+            }            
+        }
+        return freeTiles + GameMap.numberOfColors - this.finishedPoints.length;
+    }
     // Setting the position of the current color
     setCurrent(x, y, color) {
         this.current.splice(color, 1, {Y: y, X: x})

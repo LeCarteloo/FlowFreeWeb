@@ -47,11 +47,21 @@
             <div class="group-options">
                 <h3>Lobby Settings</h3>
                 <br>
-                Hints number <input type="number" class='option' id='hints-amount' value='1'>
-                Time limit <input type="number" class='option' id='time-limit' value='5'>
-                Map size <input type="number" class='option' id='map-size' value='5'>
-                Map number <input type="number" class='option' id='map-number' value='2'>
-
+                Number of hints 
+                <input type="number" class='option' id='hints-amount' value='1'>
+                Time limit 
+                <input type="number" class='option' id='time-limit' value='5'>
+                Map size 
+                <input type="number" class='option' id='map-size' value='5'>
+                Number of colors 
+                <input type="number" class='option' id='color-amount' value='5'>
+                Map number 
+                <input type="number" class='option' id='map-number' value='2'>
+                Pipes can touch
+                <label class="switch">
+                    <input type="checkbox" id='can-touch'>
+                    <span class="slider"></span>
+                </label>
             </div>
             <button type="submit" id='start-game'>START</button>
             <br>
@@ -78,6 +88,8 @@
     <script src="/scripts/logic/enums/Positions.js"></script>
     <script src="/scripts/logic/Win.js"></script>
     <script src="/scripts/logic/Game.js"></script>
+    <script src="/scripts/logic/Draw.js"></script>
+
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- Client scripts -->

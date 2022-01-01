@@ -64,8 +64,16 @@ class Game {
         this.pressed = true;
         var mouseX = (Math.floor(event.offsetX / this.tileW) * this.tileW) / this.tileH;
         var mouseY = (Math.floor(event.offsetY / this.tileW) * this.tileW) / this.tileH;
+
         // If mouse is pressed on point all pipes with this color are removed
         if(Utility.isUpper(this.gameMap[mouseY][mouseX]) && !this.blockedColors.includes(this.gameMap[mouseY][mouseX])){
+
+            // Removing from solved points
+            const index = this.solvedColors.indexOf(this.gameMap[mouseY][mouseX]);
+            if(index != -1) {
+                this.solvedColors.splice(index, 1);
+            }
+
             for (var y = 0; y < this.mapSize; y++) {
                 for (var x = 0; x < this.mapSize; x++) {
     
@@ -81,6 +89,7 @@ class Game {
                     // Clearing points
                     if(this.gameMap[y][x].toUpperCase() == this.gameMap[mouseY][mouseX] && Utility.isUpper(this.gameMap[y][x])) {
                         this.context.clearRect(x * this.tileH, y*this.tileW, this.tileW - 1, this.tileH - 1);
+
                         // TODO: Should be written better
                         // Redrawing squares and points (clearing the pipes from game map)
                         this.drawSquares(x, y);
@@ -254,7 +263,7 @@ class Game {
                         this.context.clearRect(startPosition.X * this.tileH, startPosition.Y*this.tileW, this.tileW - 1, this.tileH - 1);
                         this.context.clearRect(endPosition.X * this.tileH, endPosition.Y*this.tileW, this.tileW - 1, this.tileH - 1);
                         this.context.clearRect(x * this.tileH, y*this.tileW, this.tileW - 1, this.tileH - 1);
-    
+
                         // TODO: Should be written better
                         // Redrawing squares and points (clearing the pipes from game map)
                         this.drawSquares(startPosition.X, startPosition.Y);
@@ -270,7 +279,6 @@ class Game {
         // Drawing pipe to end point
         else {
             if(mouseX == endPosition.X && mouseY == endPosition.Y){
-    
     
                 this.drawPipe(Colors[this.gameMap[startPosition.Y][startPosition.X]], currentPosition, endPosition);
                 // Drawing the after glow of every pipe and point with that color
@@ -333,13 +341,3 @@ class Game {
     }
 
 }
-
-// var gameMap = [
-//     ['R', '0', 'G', '0', 'O'],
-//     ['0', '0', 'B', '0', 'Y'],
-//     ['0', '0', '0', '0', '0'],
-//     ['0', 'G', '0', 'O', '0'],
-//     ['0', 'R', 'B', 'Y', '0'],
-// ];
-// const game = new Game(gameMap, 5, 5);
-// game.initialize();

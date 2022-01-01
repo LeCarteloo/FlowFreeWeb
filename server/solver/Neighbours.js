@@ -49,24 +49,26 @@ module.exports = class Neighbours {
     // TODO: Fix it
     static isValid(mapState, y, x, color) {
         const map = mapState.map;
+        // const pt = GameMap.endPoint[color];
+        
         if (x < GameMap.size - 1 && map[y][x + 1] == GameMap.foundColors[color]
             && mapState.current[color].X != x + 1 && mapState.current[color].Y != y) {
-            // console.log("Left neighbour");
+            // && x != pt.X + 1 && y != pt.Y
             return false;
         }
         if (x > 0 && map[y][x - 1] == GameMap.foundColors[color] 
-            && mapState.current[color].X != x - 1 && mapState.current[color].Y != y) {
-            // console.log("Right neighbour");
+            && mapState.current[color].X != x - 1 && mapState.current[color].Y != y ) {
+            // && x != pt.X - 1 && y != pt.Y
             return false;
         }
         if (y < GameMap.size - 1 && map[y + 1][x] == GameMap.foundColors[color]
             && mapState.current[color].X != x && mapState.current[color].Y != y + 1) {
-            // console.log("Upp neighbour");
+            // && x != pt.X && y != pt.Y + 1
             return false;
         }
         if (y > 0 && map[y - 1][x] == GameMap.foundColors[color]
             && mapState.current[color].X != x && mapState.current[color].Y != y - 1) {
-            // console.log("Down neighbour");
+            // && x != pt.X && y != pt.Y - 1
             return false;
         }
         return true;
@@ -81,6 +83,8 @@ module.exports = class Neighbours {
         const x = mapState.current[color].X;
         const map = mapState.map;
         const pt = GameMap.endPoint[color];
+
+        // console.log(`CAN TOUCH - ${LobbySettings.canTouch}`);
 
         if(!LobbySettings.canTouch) {
             if ((x < GameMap.size - 1 && map[y][x + 1] == '0' || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X)

@@ -21,19 +21,25 @@ module.exports = class Astar {
         Global.createdNodes++;
 
         // Solving map with moves
+        // Todo: move.solvedColors.length != 0 (it's better - fix it later)
         if(move != null) {
-            console.log("Solving with moves...");
-            node.mapState.map = [
-                [ '0', '0', '0', '0', '0' ],
-                [ 'B', 'R', '0', '0', '0' ],
-                [ 'O', 'Y', 'Y', '0', 'B' ],
-                [ '0', '0', '0', '0', '0' ],
-                [ 'G', 'G', '0', 'O', 'R' ]
-              ]
-            // GameMap.foundColors.indexOf(move.solvedColors)
-            // node.mapState.current[2] = GameMap.endPoint[2];
-            // node.mapState.finishedPoints = [2];
-            // node.h = node.manhattan();
+
+            for (let y = 0; y < GameMap.size; y++) {
+                for (let x = 0; x < GameMap.size; x++) {
+                    if(GameMap.map[y][x] == '|') {
+                        move.map[y][x] = '|';
+                    }
+                }
+            }
+
+            node.mapState.map = move.map;
+
+            for (let i = 0; i < move.solvedColors.length; i++) {
+                // console.log(GameMap.foundColors.indexOf(move.solvedColors[i]));
+                node.mapState.finishedPoints.push(GameMap.foundColors.indexOf(move.solvedColors[i]));
+            }
+
+            node.mapState.freeTiles = node.mapState.countFreeTiles();
         }
 
         openList.push(_.cloneDeep(node));
@@ -53,7 +59,7 @@ module.exports = class Astar {
             if(pickedNode.isSolved()){
                 Global.usedNodes = nodeCounter;
                 // return 'Solved';
-                return {isSolved: true, map: pickedNode.mapState.map};
+                return {isSolved: true, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
             }
             // Generated moves for next node
             let nodeList = Moves.makeAllMoves(_.cloneDeep(pickedNode));    
@@ -72,11 +78,11 @@ module.exports = class Astar {
                 Global.usedNodes = nodeCounter;
                 openList.printMapState();
                 console.log("Paused");
-                return {isSolved: 'Paused', map: pickedNode.mapState.map};
+                return {isSolved: 'Paused', map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
             }
         }
         Global.usedNodes = nodeCounter;
-        return {isSolved: false, map: pickedNode.mapState.map};
+        return {isSolved: false, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
     }
 }
 

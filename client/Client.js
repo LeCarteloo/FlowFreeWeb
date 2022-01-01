@@ -19,6 +19,8 @@ const timeLimit = document.getElementById('time-limit');
 const mapSize = document.getElementById('map-size');
 const mapNumber = document.getElementById('map-number');
 const startGameBtn = document.getElementById('start-game');
+const colorAmount = document.getElementById('color-amount');
+const canTouch = document.getElementById('can-touch');
 
 // Users
 const rowTwo = document.getElementById('row-two');
@@ -75,6 +77,8 @@ socket.on('userConnected', handleUserConnected);
 socket.on('init', init);
 socket.on('hostGameStart', handleHostGameStart);
 socket.on('changeMap', changeMap);
+socket.on('displayHint', displayHint);
+
 
 //Event listener on the button element: sends a message to the server when clicked
 switchButton.addEventListener('click', () => {
@@ -90,12 +94,15 @@ joinRoom.addEventListener('click', () => {
 });
 
 startGameBtn.addEventListener('click', () => {
+    console.log(canTouch.checked);
     startGameBtn.disabled = true;
     const options = {
         hintsAmount: hintsAmount.value,
         timeLimit: timeLimit.value, 
         mapSize: mapSize.value, 
         mapNumber: mapNumber.value,
+        canTouch: canTouch.checked,
+        colorAmount: colorAmount.value,
         roomCode: clientRoom
     };
     timer(options.timeLimit * 60, timeDisplay);
@@ -108,11 +115,12 @@ changeMapBtn.addEventListener('click', () => {
 });
 
 hintsBtn.addEventListener('click', () => {
-    console.log(currentMap);
-    console.log(gameObj.solvedColors);
-    console.log(startMap);
     socket.emit('getHint', {startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
 });
+
+function displayHint(hint) {
+    Draw.drawAfterGlow(hint.color, hint.map, gameObj.context, gameObj.tileW, gameObj.tileH);
+}
 
 function init() {
     startScreen.style.display = "none";
@@ -143,7 +151,6 @@ function handleHostGameStart(firstMap) {
     // Setting the canvas and drawing the map
     gameObj = new Game();
     gameObj.initialize(firstMap, 5, 5);
-
     // Copying current game map
     startMap = JSON.parse(JSON.stringify(firstMap));
     currentMap = firstMap;

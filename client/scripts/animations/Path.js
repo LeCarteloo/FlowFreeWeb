@@ -28,7 +28,7 @@ class Path {
     }
     
     animatePath(positions, color, width, alpha, lineCap) {
-        if(this.counter<positions.length-1){ 
+        if(this.counter < positions.length-1){ 
             requestAnimationFrame( () => {
                 this.animatePath(positions, color, width, alpha, lineCap);
             }); 
@@ -44,7 +44,7 @@ class Path {
         context.lineTo(positions[this.counter].x, positions[this.counter].y);
         context.stroke();
 
-        // increment "t" to get the next position
+        // increment "counter" to get the next position
         this.counter++;
     }
 }

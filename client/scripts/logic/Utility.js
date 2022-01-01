@@ -37,7 +37,7 @@ class Utility {
         return sortedNodes;
     }
 
-    // Function push node to the list and sort elem by FCost
+    // Function pushes node to the list and sort elem by FCost
     static pushSort(node, list) {
         let index = 0;
         if(list.length == 0) {
