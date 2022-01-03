@@ -4,10 +4,10 @@ const Astar = require('./Astar')
 module.exports = class Solver {
     constructor(gameMap) {
         this.gameMap = gameMap;
+        GameMap.initializeMap(this.gameMap);
     }
     
     init(move = null) {        
-        GameMap.initializeMap(this.gameMap);
 
         let astar = new Astar();
 

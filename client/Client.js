@@ -71,14 +71,19 @@ socket.on('displayGameCode', (data) => {
     codeDisplay.innerText = data;
 });
 
+// Handling server responses
 socket.on('unknownRoom', handleUnknownRoom);
 socket.on('fullRoom', handlefullRoom);
+socket.on('notEnoughPlayers', notEnoughPlayers);
+
 socket.on('userConnected', handleUserConnected);
 socket.on('init', init);
+
 socket.on('hostGameStart', handleHostGameStart);
 socket.on('changeMap', changeMap);
 socket.on('displayHint', displayHint);
-
+socket.on('displayPoints', displayPoints)
+socket.on('startTimer', startTimer);
 
 //Event listener on the button element: sends a message to the server when clicked
 switchButton.addEventListener('click', () => {
@@ -105,21 +110,34 @@ startGameBtn.addEventListener('click', () => {
         colorAmount: colorAmount.value,
         roomCode: clientRoom
     };
-    timer(options.timeLimit * 60, timeDisplay);
     socket.emit('startGame', options);
 });
 
+// TODO: Start map is not needed to sent by user (remove later)
 changeMapBtn.addEventListener('click', () => {
     console.log(startMap);
-    socket.emit('changeMap', {gameCode: clientRoom, startMap: startMap});
+    socket.emit('changeMap', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
 });
 
 hintsBtn.addEventListener('click', () => {
     socket.emit('getHint', {startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
 });
 
+function startTimer(timeLimit) {
+    timer(timeLimit * 60, timeDisplay);
+}
+
 function displayHint(hint) {
     Draw.drawAfterGlow(hint.color, hint.map, gameObj.context, gameObj.tileW, gameObj.tileH);
+}
+
+function displayPoints(points) {
+    pointsDisplay.innerText = `${points} points`;
+}
+
+function notEnoughPlayers() {
+    startGameBtn.disabled = false;
+    alert('Not enough players to start game!');
 }
 
 function init() {
@@ -132,7 +150,7 @@ function handleUserConnected(players) {
     for (let i = 1; i <= players.length; i++) {
         // Display users
         rows[i - 1].style.display = "flex";
-        users[i - 1].innerText = players[i - 1];
+        users[i - 1].innerText = players[i - 1].id;
     }
 }
 
