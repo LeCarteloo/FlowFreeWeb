@@ -1,6 +1,6 @@
-const GameMap = require("./solver/GameMap");
 const { validateData } = require("./Utility");
-
+const GameMap = require("./solver/GameMap");
+const _ = require('lodash');
 module.exports = class Points {
     constructor(startMap, completedMap, solvedColors) {
         this.startMap = startMap;
@@ -16,7 +16,7 @@ module.exports = class Points {
             return -1;
         }
 
-        this.points = GameMap.findPoints(this.startMap);
+        this.points = GameMap.findPoints(_.cloneDeep(this.startMap));
         let filedTiles = 0;
 
         for (let y = 0; y < this.startMap.length; y++) {

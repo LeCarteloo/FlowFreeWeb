@@ -18,11 +18,10 @@ function makeid(length) {
 // Validating the maps sent by user  
 function validateData(startMap, currentMap, solvedColors) {
     
-    // TODO: When user clicks 'nextMap' two times this throw errors fix it
     // Validate if arrays are 2D
-    // if(!validate2d(startMap) && !validate2d(currentMap)) {
-    //     return false;
-    // }
+    if(!validate2d(startMap) && !validate2d(currentMap)) {
+        return false;
+    }
 
     // Check if both maps has the same size
     if(startMap.length != currentMap.length) {
@@ -43,6 +42,5 @@ function validateData(startMap, currentMap, solvedColors) {
 }
 
 function validate2d(map) {
-    console.log(map);
     return map.every(item => Array.isArray(item));
 }

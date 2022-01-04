@@ -1,7 +1,6 @@
 const NodeOrder = require('./node/NodeOrder');
 const GameMap = require('./GameMap');
 const Node = require('./node/Node');
-const Global = require('./Global');
 const Moves = require('./Moves');
 const _ = require('lodash');
 
@@ -13,12 +12,10 @@ module.exports = class Astar {
         //TODO: Change closed list to other type of array
         let closedList = [];
         let nodeCounter = 0;
-        const stop = 4000;
+        const stop = 10000;
 
         // Starting node
         let node = new Node();
-
-        Global.createdNodes++;
 
         // Solving map with moves
         // Todo: move.solvedColors.length != 0 (it's better - fix it later)
@@ -44,7 +41,14 @@ module.exports = class Astar {
 
         openList.push(_.cloneDeep(node));
        
-        while(openList.length() > 0) {            
+        while(openList.length() > 0) {       
+            // Solving map is taking to long to skip it
+            if(nodeCounter == stop) {
+                console.log(nodeCounter);
+                console.log("Paused");
+                return {isSolved: false, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
+            }     
+
             // Taking the best node and removing it from openList
             var pickedNode = openList.shift();
 
@@ -57,7 +61,6 @@ module.exports = class Astar {
             closedList.push(_.cloneDeep(pickedNode.mapState));
 
             if(pickedNode.isSolved()){
-                Global.usedNodes = nodeCounter;
                 // return 'Solved';
                 return {isSolved: true, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
             }
@@ -66,22 +69,12 @@ module.exports = class Astar {
 
             // For every generated moves check if map state and node is not already in arrays
             nodeList.forEach(nodeElem => {
-                Global.createdNodes++;
                 if(closedList.includes(nodeElem.mapState) || openList.includes(nodeElem)) {
                     return;
                 }
                 openList.push(_.cloneDeep(nodeElem));
             });
-            
-            //! Used for debugging
-            if(nodeCounter == stop) {
-                Global.usedNodes = nodeCounter;
-                openList.printMapState();
-                console.log("Paused");
-                return {isSolved: 'Paused', map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
-            }
         }
-        Global.usedNodes = nodeCounter;
         return {isSolved: false, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
     }
 }

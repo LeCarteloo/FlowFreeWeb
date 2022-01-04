@@ -48,9 +48,9 @@
                 <h3>Lobby Settings</h3>
                 <br>
                 Number of hints 
-                <input type="number" class='option' id='hints-amount' value='1'>
+                <input type="number" class='option' id='hints-amount' value='4'>
                 Time limit 
-                <input type="number" class='option' id='time-limit' value='5'>
+                <input type="number" class='option' id='time-limit' value='1'>
                 Map size 
                 <input type="number" class='option' id='map-size' value='5'>
                 Number of colors 
@@ -59,21 +59,20 @@
                 <input type="number" class='option' id='map-number' value='2'>
                 Pipes can touch
                 <label class="switch">
-                    <input type="checkbox" id='can-touch'>
+                    <input type="checkbox" id='can-touch' checked>
                     <span class="slider"></span>
                 </label>
             </div>
             <button type="submit" id='start-game'>START</button>
             <br>
-            <button id="switchButton">Switch</button>
         </div>
     </div>
 
     <div id="game-screen">
         <section class="game-section">
             <div class="game-info">
-                <span id="time-display">05:00</span>
-                <span id="points-display">3000 points</span>
+                <span id="time-display">00:00</span>
+                <span id="points-display">0 points</span>
             </div>
             <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
             <button id="hints-btn" type="submit">Use hint</button>
