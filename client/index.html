@@ -5,10 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flow Free Multiplayer</title>
+    <script src="https://kit.fontawesome.com/b2771ccf1d.js" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/alert.css">
 </head>
 <body>
     <div id="start-screen">
@@ -81,11 +83,32 @@
         </section>
     </div>
     
+    <div id="alertBox"></div>
+
+    <div class="game-end" id="gameEnd">
+        <span id="result">You won!</span>
+        <div class="game-info">
+            <div class="winner-info move-top" id="winner-info">
+                <span id="winner-name">Nickname</span>
+                <span id="winner-points">0 points</span>
+                <div class="canvas-box">
+                    <canvas width="500" height="500" id="winner-maps"></canvas>
+                </div>
+            </div>
+            <div class="loser-info move-top">
+                <span id="loser-name">Nickname</span>
+                <span id="loser-points">0 points</span>
+                <div class="canvas-box">
+                    <canvas width="500" height="500" id="loser-maps"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="/scripts/logic/Utility.js"></script>
     <script src="/scripts/logic/Debug.js"></script>
     <script src="/scripts/logic/enums/Colors.js"></script>
     <script src="/scripts/logic/enums/Positions.js"></script>
-    <script src="/scripts/logic/Win.js"></script>
     <script src="/scripts/logic/Game.js"></script>
     <script src="/scripts/logic/Draw.js"></script>
 

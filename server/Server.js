@@ -45,6 +45,7 @@ io.on('connection', (socket) => {
 
     // Show connected players
     io.to(roomCode).emit('userConnected', rooms[roomCode].players);
+    socket.emit('displayAlert', {type: 'success', text: 'Lobby has been created!'});
   });
 
   socket.on('joinRoom', (gameCode) => {
@@ -53,7 +54,7 @@ io.on('connection', (socket) => {
     
     // Room with given game code doesn't exist
     if (!clients) {
-      socket.emit('displayAlert', 'Unknown room!');
+      socket.emit('displayAlert', {type: 'error', text: 'Unknown room!'});
       return;
     }
     
@@ -62,7 +63,7 @@ io.on('connection', (socket) => {
 
     // Room is full
     if(numberOfClients > 1) {
-      socket.emit('displayAlert', 'Room is full!');
+      socket.emit('displayAlert', {type: 'error', text: 'Room is full!'});
       return;
     }
 
@@ -88,6 +89,7 @@ io.on('connection', (socket) => {
 
     // Emit userConnected event to everyone connected to current room
     io.to(gameCode).emit('userConnected', rooms[gameCode].players);
+    socket.emit('displayAlert', {type: 'success', text: 'Successfully joined the room!'});
   });
 
   socket.on('startGame', (options) => {
@@ -101,13 +103,13 @@ io.on('connection', (socket) => {
 
     // Check who is starting the game (only the creator of lobby can start)
     if(clients.entries().next().value[0] != socket.id) {
-      socket.emit('displayAlert', 'You are not a lobby creator!');
+      socket.emit('displayAlert', {type: 'error', text: 'You are not a lobby creator!'});
       return;
     }
 
     // Game cannot be started when there is only one user connected
     // if (clients.size <= 1) {
-    //   socket.emit('displayAlert', 'Not enough players!');
+    //   socket.emit('displayAlert', {type: 'error', text: 'Not enough players!'});
     //   return;
     // }
 
@@ -183,8 +185,7 @@ io.on('connection', (socket) => {
     // solvedColors: gameObj.solvedColors}
     // Map not found so map sent by client is fake
     if(mapIndex == -1) {
-      console.log("fake data");
-      io.to(socket.id).emit('fakeData');
+      io.to(socket.id).emit('displayAlert', {type: 'error', text: 'Provided wrong data!'});
       return;
     }
     const nextMap = rooms[mapInfo.gameCode].maps[mapIndex + 1];
@@ -212,8 +213,7 @@ io.on('connection', (socket) => {
     const points = pointsClass.countPoints();
 
     if(points == -1) {
-      console.log("fake data");
-      io.to(socket.id).emit('fakeData')
+      io.to(socket.id).emit('displayAlert', {type: 'error', text: 'Provided wrong data!'});
       return;
     }
 
@@ -229,8 +229,7 @@ io.on('connection', (socket) => {
     const points = pointsClass.countPoints();
     
     if(points == -1) {
-      console.log("fake data");
-      io.to(socket.id).emit('fakeData')
+      io.to(socket.id).emit('displayAlert', {type: 'error', text: 'Provided wrong data!'});
       return;
     }
     
@@ -249,8 +248,7 @@ io.on('connection', (socket) => {
 
     // Check if map is valid
     if(validateData(mapInfo.startMap, mapInfo.currentMap, mapInfo.solvedColors)) {
-      console.log("fake data");
-      io.to(socket.id).emit('fakeData')
+      io.to(socket.id).emit('displayAlert', {type: 'error', text: 'Provided wrong data!'});
       return;
     }
 
@@ -267,7 +265,7 @@ io.on('connection', (socket) => {
     // TODO: Handle this in client side
     if(!result.isSolved) {
       console.log("Map is unsolvable");
-      socket.emit('displayHint', 'Unsolvable');
+      socket.emit('displayAlert', {type: 'info', text: 'Map is unsolvable!'});
       return;
     }
 

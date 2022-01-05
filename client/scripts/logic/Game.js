@@ -25,11 +25,15 @@ class Game {
     numberOfColors = 0;
     mapSize = 0;
 
-    constructor() {        
+    constructor(canvasId, isPlayable) {        
         // Getting the canvas and it context
-        this.canvas = document.getElementById('game');
+        this.canvas = document.getElementById(canvasId);
         this.context = this.canvas.getContext("2d");
         
+        if(!isPlayable) {
+            return;
+        }
+
         // Adding the event listeners for handling user events
         this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
         this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));

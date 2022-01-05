@@ -147,6 +147,7 @@ addKeyPressEvent([
     colorAmount,
 ]);
 
+
 canTouch.addEventListener('click', () => {
     socket.emit('updateSwitch', {
         id: canTouch.id, 
@@ -154,6 +155,96 @@ canTouch.addEventListener('click', () => {
         roomCode: clientRoom
     });
 });
+
+function animatePoints(points) {
+    const test = document.getElementById('winner-points');
+    let pt = 0;
+    let intervalId = setInterval(() => {
+        test.innerText = `${++pt} points`
+        if(pt == points) {
+            clearInterval(intervalId);
+        } 
+    }, 30);
+}
+
+function animatePlayerInfo(direction) {
+    const playerInfo = document.getElementById('winner-info');
+    if(direction == 'middle'){
+        playerInfo.classList.add('move-middle');
+        return;
+    }
+
+    playerInfo.classList.add('move-top');
+    
+}
+
+//! Tests
+let winnerGame = new Game('winner-maps', false);
+const map = [
+    ['R', '0', 'G', '0', 'O'],
+    ['0', '0', 'B', '0', 'Y'],
+    ['0', '0', '0', '0', '0'],
+    ['0', 'G', '0', 'O', '0'],
+    ['0', 'R', 'B', 'Y', '0'],
+];
+winnerGame.initialize(map, 5, 5);
+
+let loserGame = new Game('loser-maps', false);
+loserGame.initialize(map, 5, 5);
+
+
+function createAlert(type, text) {
+    let alertDiv = document.createElement('div');
+    alertDiv.classList.add('alertDiv')
+    alertDiv.setAttribute('id','alertDiv');
+
+    let icon = document.createElement('i');
+    switch(type) {
+        case 'error':
+            icon.classList.add('fas');
+            icon.classList.add('fa-times')
+            icon.classList.add('fa-2x')
+            break;
+        case 'success':
+            icon.classList.add('fas');
+            icon.classList.add('fa-check-circle')
+            icon.classList.add('fa-2x')
+            break;
+        case 'info':
+            icon.classList.add('fas');
+            icon.classList.add('fa-info-circle')
+            icon.classList.add('fa-2x')
+            break;
+    }
+    icon.classList.add('alertIcon');
+    
+    let span = document.createElement('span');
+    span.classList.add('alertSpan');
+    span.innerText = text;
+    
+    let bar = document.createElement('div');
+    bar.classList.add('alertBar');
+    
+    const domElements = [alertDiv, icon, span, bar];
+    
+    for (const element of domElements) {
+        element.classList.add(type);
+    }
+    
+    alertDiv.appendChild(icon);
+    alertDiv.appendChild(span);
+    alertDiv.appendChild(bar);
+    document.getElementById('alertBox').appendChild(alertDiv);
+    setTimeout(() => {
+        alertDiv.classList.add('move');
+        setTimeout(() => {
+            alertDiv.classList.remove('move');
+            setTimeout(() => {
+                document.getElementById('alertBox').removeChild(alertDiv);
+            }, 600);
+        }, 2000);
+    }, 100);
+}
 
 function addKeyPressEvent(inputArray) {
     for (const input of inputArray) {
@@ -177,6 +268,11 @@ function updateSwitch(data) {
     input.checked = data.isChecked;
 }
 
+function test() {
+    const cos = document.getElementById('gameEnd');
+    cos.classList.add('move');
+}
+
 function timesUp() {
     
 }
@@ -190,10 +286,6 @@ function startTimer(timeLimit) {
 }
 
 function displayHint(hint) {
-    if(hint == 'Unsolvable') {
-        // displayAlert('Map in current state is unsolvable');
-        return;
-    }
     Draw.drawAfterGlow(hint.color, hint.map, gameObj.context, gameObj.tileW, gameObj.tileH);
 }
 
@@ -219,9 +311,9 @@ function handleUserConnected(players) {
     }
 }
 
-function displayAlert(text) {
+function displayAlert(alert) {
+    createAlert(alert.type, alert.text);
     startGameBtn.disabled = false;
-    alert(text);
 }
 
 function handleHostGameStart(firstMap) {
@@ -234,7 +326,7 @@ function handleHostGameStart(firstMap) {
 
     //! colorAmount.value, mapSize.value <-- This should be from server not from client
     // Setting the canvas and drawing the map
-    gameObj = new Game();
+    gameObj = new Game('game', true);
     gameObj.initialize(firstMap, colorAmount.value, mapSize.value);
     // Copying current game map
     startMap = JSON.parse(JSON.stringify(firstMap));
