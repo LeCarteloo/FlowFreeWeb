@@ -40,10 +40,27 @@ const hintsDisplay = document.getElementById('hints-display');
 // Change map btn
 const changeMapBtn = document.getElementById('change-btn');
 
-let clientRoom;
-let gameObj;
-let startMap;
-let currentMap;
+// Info at end view
+const endScreen = document.getElementById('end-screen');
+const winnerInfo = document.getElementById('winner-info');
+const loserInfo = document.getElementById('loser-info');
+
+// Buttons at end view
+const winnerIncrease = document.getElementById('winner-increase');
+const winnerReduce = document.getElementById('winner-reduce');
+const loserIncrease = document.getElementById('loser-increase');
+const loserReduce = document.getElementById('loser-reduce');
+const resultDisplay = document.getElementById('result');
+
+let clientRoom = 0;
+let gameObj = {};
+let startMap = [];
+let currentMap = [];
+
+let winnerMaps = [];
+let winnerIndex = 0;
+let loserMaps = [];
+let loserIndex = 0;
 
 // Connecting client to and server room
 socket.on('serverMsg', (data) => {
@@ -51,14 +68,6 @@ socket.on('serverMsg', (data) => {
     clientRoom = data;
 })
 
-//Client sends a message at the moment it got connected with the server
-socket.on('switchFromServer', () => {
-    if(document.body.style.background === 'darkgray') {
-        document.body.style.background = '#121212'
-    } else {
-        document.body.style.background = 'darkgray'
-    }
-});
 
 // Test message
 socket.on('testMessage', (test) => {
@@ -87,6 +96,8 @@ socket.on('timesUp', timesUp);
 socket.on('hideButton', hideButton);
 socket.on('updateInput', updateInput);
 socket.on('updateSwitch', updateSwitch);
+socket.on('gameEnded', gameEnded);
+socket.on('displayResult', displayResult);
 
 
 createRoom.addEventListener('click', () => {
@@ -156,26 +167,29 @@ canTouch.addEventListener('click', () => {
     });
 });
 
-function animatePoints(points) {
-    const test = document.getElementById('winner-points');
-    let pt = 0;
+function animatePoints(pointsId, infoId, pointsW, pointsL, callback) {
+    const pointsSpan = document.getElementById(pointsId);
+    let pt = -1;
     let intervalId = setInterval(() => {
-        test.innerText = `${++pt} points`
-        if(pt == points) {
+        pointsSpan.innerText = `${++pt} points`
+        if(pt == pointsW) {
             clearInterval(intervalId);
+            animatePlayerInfo('', infoId);
+            if(callback) {
+                animateEndScreen('loser-points', 'loser-info', pointsL, pointsW, false);
+            }
         } 
     }, 30);
 }
-
-function animatePlayerInfo(direction) {
-    const playerInfo = document.getElementById('winner-info');
+// 'winner-info'
+function animatePlayerInfo(direction, id) {
+    const playerInfo = document.getElementById(id);
     if(direction == 'middle'){
         playerInfo.classList.add('move-middle');
         return;
     }
-
+    playerInfo.classList.remove('move-middle');
     playerInfo.classList.add('move-top');
-    
 }
 
 //! Tests
@@ -187,11 +201,41 @@ const map = [
     ['0', 'G', '0', 'O', '0'],
     ['0', 'R', 'B', 'Y', '0'],
 ];
-winnerGame.initialize(map, 5, 5);
-
+const map1 = [
+    ['0', 'R', 'G', 'B', '0'],
+    ['0', '0', '0', 'Y', '0'],
+    ['0', '0', '0', '0', '0'],
+    ['R', '0', 'Y', 'O', '0'],
+    ['G', '0', 'O', '0', 'B'],
+];
+const maps = [map, map1];
+winnerGame.initialize(maps[0], 5, 5);
+winnerMaps = maps;
+loserMaps = maps;
 let loserGame = new Game('loser-maps', false);
-loserGame.initialize(map, 5, 5);
+loserGame.initialize(maps[0], 5, 5);
 
+addChangeEvent(true, winnerMaps, winnerIndex, winnerGame, winnerIncrease);
+addChangeEvent(false, winnerMaps, winnerIndex, winnerGame, winnerReduce);
+addChangeEvent(true, loserMaps, loserIndex, loserGame, loserIncrease);
+addChangeEvent(false, loserMaps, loserIndex, loserGame, loserReduce);
+
+function addChangeEvent(increase, map, mapIndex, gameRef, button) {
+    button.addEventListener('click', () => {
+        gameRef.clear();
+
+        let index = 0;
+        if(increase) {
+            index = ++mapIndex == map.length ? 0 : mapIndex;
+            mapIndex = index;
+        } else {
+            index = --mapIndex == -1 ? map.length - 1 : mapIndex;
+            mapIndex = index; 
+        }
+    
+        gameRef.initialize(map[index], 5, 5);
+    });
+}
 
 function createAlert(type, text) {
     let alertDiv = document.createElement('div');
@@ -258,6 +302,34 @@ function addKeyPressEvent(inputArray) {
     }
 }
 
+function gameEnded(data) {
+    //! ######
+    endScreen.classList.add('move');
+    console.log(data);
+    animateEndScreen(
+        'winner-points', 
+        'winner-info', 
+        data.won.points + data.won.currentPoints, 
+        data.lost.points  + data.lost.currentPoints, 
+        true
+    );
+
+    const winner = document.getElementById('winner-name');
+    const loser = document.getElementById('loser-name');
+    winner.innerText = data.won.id;
+    loser.innerText = data.lost.id;
+
+}
+
+function displayResult(result) {
+    resultDisplay.innerText = result;
+}
+
+function animateEndScreen(pointsDOM, infoDOM, pointsW, pointsL, callback) {
+    animatePlayerInfo('middle', infoDOM);
+    animatePoints(pointsDOM, infoDOM, pointsW, pointsL, callback);
+}
+
 function updateInput(data) {
     const input = document.getElementById(data.id);
     input.value = data.value;
@@ -266,11 +338,6 @@ function updateInput(data) {
 function updateSwitch(data) {
     const input = document.getElementById(data.id);
     input.checked = data.isChecked;
-}
-
-function test() {
-    const cos = document.getElementById('gameEnd');
-    cos.classList.add('move');
 }
 
 function timesUp() {
@@ -300,6 +367,28 @@ function displayPoints(points) {
 function init() {
     startScreen.style.display = "none";
     lobbyOptions.style.display = "flex";
+}
+
+function returnToStart() {
+    startScreen.style.display = "flex";
+    lobbyOptions.style.display = "none";
+    gameScreen.style.display = "none";
+    resultDisplay.innerText = '';
+    winnerInfo.classList.remove('move-top');
+    loserInfo.classList.remove('move-top');
+    endScreen.classList.remove('move');
+    clientRoom = 0;
+    gameObj = {};
+    startMap = [];
+    currentMap = [];
+    winnerMaps = [];
+    winnerIndex = 0;
+    loserMaps = [];
+    loserIndex = 0;
+    rows[0].display = "none";
+    rows[1].display = "none";
+    users[0].innerText = "";
+    users[1].innerText = "";
 }
 
 function handleUserConnected(players) {

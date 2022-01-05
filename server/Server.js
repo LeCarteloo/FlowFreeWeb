@@ -41,7 +41,13 @@ io.on('connection', (socket) => {
       players: [],
     };
 
-    rooms[roomCode].players.push({id: socket.id, currentPoints: 0, points: 0, hints: 0});
+    rooms[roomCode].players.push({
+      id: socket.id, 
+      finishedMaps: [], 
+      currentPoints: 0, 
+      points: 0, 
+      hints: 0
+    });
 
     // Show connected players
     io.to(roomCode).emit('userConnected', rooms[roomCode].players);
@@ -77,7 +83,8 @@ io.on('connection', (socket) => {
     
     // Add player to room
     rooms[gameCode].players.push({
-      id: socket.id, 
+      id: socket.id,
+      finishedMaps: [],
       currentPoints: 0, 
       points: 0, 
       hints: 0
@@ -134,7 +141,6 @@ io.on('connection', (socket) => {
 
     // TODO: It should start only when maps are generated
     setTimeout(() => {
-      console.log(`Uplynela ${options.timeLimit} minuta`);
       const players = rooms[options.roomCode].players;
 
       const mostPoints = Math.max.apply(Math, players.map(player => (player.points + player.currentPoints)));
@@ -144,25 +150,37 @@ io.on('connection', (socket) => {
       // Checking if there is a tie
       let result = 0;
       for (const player of players) {
-        if(player.points == mostPoints) {
+        if(player.points + player.currentPoints == mostPoints) {
           result++;
         }
       }
-
+      // Handling tie
       if(result == 2) {
-        io.to(options.roomCode).emit('displayAlert', 'Tie!');
+        io.to(options.roomCode).emit('displayResult', 'Tie!');
+        io.to(options.roomCode).emit('gameEnded', {
+          won: players[0],
+          lost: players[1]
+        });
         return;
       }
-
+      
       // Finding the winning and losing player
       const winningPlayer = players.find(player => (player.points + player.currentPoints) == mostPoints);
       const losingPlayer = players.find(player => (player.points + player.currentPoints) != mostPoints);
 
       // Sending the results to client
-      // io.to(winningPlayer.id).emit('displayAlert', 'You won!');
-      // io.to(losingPlayer.id).emit('displayAlert', 'You lost!');
+      io.to(winningPlayer.id).emit('displayResult', 'You won!');
+      io.to(losingPlayer.id).emit('displayResult', 'You lost!');
+      io.to(options.roomCode).emit('gameEnded', {
+        won: winningPlayer,
+        lost: losingPlayer
+      });
 
-    }, options.timeLimit * 60000);
+      //! Disconnect player after finish (stack)
+      // socket.leave();
+
+      //! CHANGED TIME * 60000
+    }, options.timeLimit * 1000);
 
     // Sent to clients test message and start the game
     // io.to(options.roomCode).emit('testMessage', genMaps);
