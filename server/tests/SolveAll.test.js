@@ -5,6 +5,7 @@ const Solver = require('../Solver/Solver');
 describe('Try to solve map (Cannot touch)', () => {
     let solver;
     beforeEach(() => {
+        LobbySettings.canTouch = false;
         GameMap.clearAll();
     });
     
@@ -154,11 +155,11 @@ describe('Try to solve map (Cannot touch)', () => {
 describe('Try to solve map (Can touch)', () => {
     let solver;
     beforeEach(() => {
+        LobbySettings.canTouch = true;
         GameMap.clearAll();
     });
     
     test("Map is solvable", () => {
-        LobbySettings.canTouch = true;
         const map = [
             ['0','R','G','0','0',],
             ['0','0','0','0','G',],
@@ -172,7 +173,6 @@ describe('Try to solve map (Can touch)', () => {
     });
 
     test("Map is solvable", () => {
-        LobbySettings.canTouch = true;
         const map = [
          ['R', '0', '0'],
          ['0', '0', 'R'],
@@ -184,7 +184,6 @@ describe('Try to solve map (Can touch)', () => {
     });
 
     test("Map is solvable", () => {
-        LobbySettings.canTouch = true;
         const map = [
             ['R', '0', '0', '0', '0', '0'],
             ['B', '0', '0', '0', 'B', 'R'],
@@ -199,6 +198,7 @@ describe('Try to solve map (Can touch)', () => {
     });
 
     afterAll(() => {
+        LobbySettings.canTouch = false;
         GameMap.clearAll();
     });
 });

@@ -31,6 +31,7 @@ module.exports = class Generator {
                 // TODO: Remove it after fixing bug
                 debugMaps.push(result.map);
             }
+            console.count("generated: ");
         }  
         return {maps: maps, debugMaps: debugMaps};    
     }

@@ -232,6 +232,7 @@ function handleHostGameStart(firstMap) {
 
     hintsDisplay.innerText = `Hints remaining: ${hintsAmount.value}`;
 
+    //! colorAmount.value, mapSize.value <-- This should be from server not from client
     // Setting the canvas and drawing the map
     gameObj = new Game();
     gameObj.initialize(firstMap, colorAmount.value, mapSize.value);
