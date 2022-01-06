@@ -15,6 +15,7 @@ module.exports = class Generator {
         W: "white",
         D: "darkblue",
         S: "silver",
+        C: "cyan",
     };
     
     /* At the moment generating maps with same size and number of colors,

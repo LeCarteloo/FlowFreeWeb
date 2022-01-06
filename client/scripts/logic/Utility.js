@@ -4,6 +4,10 @@ class Utility {
         return /^[A-Z]*$/.test(string);
     }
 
+    static isPoint(string) {
+        return /^[A-Z]*$/.test(string);
+    }
+
     // Function returns sorted array
     static sortArray(array) {
         var temp = 0;

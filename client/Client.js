@@ -62,9 +62,12 @@ let currentMap = [];
 let winnerMaps = [];
 let winnerIndex = 0;
 let winnerGame = {};
+let winnerMoves = [];
+
 let loserMaps = [];
 let loserIndex = 0;
 let loserGame = {};
+let loserMoves = [];
 
 
 // Connecting client to and server room
@@ -203,7 +206,7 @@ function animatePlayerInfo(direction, id) {
     playerInfo.classList.add('move-top');
 }
 
-function addChangeEvent(increase, map, mapIndex, gameRef, button) {
+function addChangeEvent(increase, map, moves, colors, mapIndex, gameRef, button) {
     button.addEventListener('click', () => {
         gameRef.clear();
 
@@ -216,7 +219,7 @@ function addChangeEvent(increase, map, mapIndex, gameRef, button) {
             mapIndex = index; 
         }
     
-        gameRef.initialize(map[index], 5, 5);
+        gameRef.initialize(map[index], 5, 5, moves[index], colors[index]);
     });
 }
 
@@ -304,16 +307,25 @@ function gameEnded(data) {
     loser.innerText = data.lost.nickname;
 
     winnerMaps = data.won.finishedMaps;
-    loserMaps = data.lost.finishedMaps;;
-    winnerGame = new Game('winner-maps', false);
-    winnerGame.initialize(winnerMaps[0], data.colors, data.size);
-    loserGame = new Game('loser-maps', false);
-    loserGame.initialize(loserMaps[0], data.colors, data.size);
+    winnerColors = data.won.solvedColors;
+    winnerMoves = data.won.moves;
 
-    addChangeEvent(true, winnerMaps, winnerIndex, winnerGame, winnerIncrease);
-    addChangeEvent(false, winnerMaps, winnerIndex, winnerGame, winnerReduce);
-    addChangeEvent(true, loserMaps, loserIndex, loserGame, loserIncrease);
-    addChangeEvent(false, loserMaps, loserIndex, loserGame, loserReduce);
+    loserMaps = data.lost.finishedMaps;
+    loserColors = data.lost.solvedColors;
+    loserMoves = data.lost.moves;
+
+    console.log(winnerMoves);
+    console.log(loserMoves);
+
+    winnerGame = new Game('winner-maps', false);
+    winnerGame.initialize(winnerMaps[0], data.colors, data.size, winnerMoves[0], winnerColors[0]);
+    loserGame = new Game('loser-maps', false);
+    loserGame.initialize(loserMaps[0], data.colors, data.size, loserMoves[0], loserColors[0]);
+
+    addChangeEvent(true, winnerMaps, winnerMoves, winnerColors, winnerIndex, winnerGame, winnerIncrease);
+    addChangeEvent(false, winnerMaps, winnerMoves, winnerColors, winnerIndex, winnerGame, winnerReduce);
+    addChangeEvent(true, loserMaps, loserMoves, loserColors, loserIndex, loserGame, loserIncrease);
+    addChangeEvent(false, loserMaps, loserMoves, loserColors, loserIndex, loserGame, loserReduce);
 }
 let x = [];
 
@@ -379,8 +391,10 @@ function resetUI() {
     currentMap = [];
     winnerMaps = [];
     winnerIndex = 0;
+    winnerMoves = [];
     loserMaps = [];
     loserIndex = 0;
+    loserMoves = [];
     rows[0].display = "none";
     rows[1].display = "none";
     users[0].innerText = "";
@@ -402,7 +416,6 @@ function displayAlert(alert) {
 }
 
 function handleHostGameStart(firstMap) {
-    console.log("Game has started!")
     startScreen.style.display = "none";
     lobbyOptions.style.display = "none";
     gameScreen.style.display = "flex";
@@ -422,7 +435,7 @@ function changeMap(nextMap) {
     gameObj.clear();
     startMap = JSON.parse(JSON.stringify(nextMap.map));
     currentMap = nextMap.map;
-    gameObj.initialize(nextMap.map, nextMap.color, nextMap.size);
+    gameObj.initialize(nextMap.map, nextMap.colors, nextMap.size);
 }
 
 function timer(time, display) {

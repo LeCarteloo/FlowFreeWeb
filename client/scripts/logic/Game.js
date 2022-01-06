@@ -1,35 +1,16 @@
 class Game {
-    // Canvas
-    canvas = null;
-    context = null;
-    
-    // Tile width and height (for drawing)
-    tileW = 0;
-    tileH = 0;
-
     // Mouse and map event
     selected = false;
     pressed = false;
     isMapDrawn = false;
     boundMove = null;
 
-    // Speed for animations (will be removed)
-    SPEED = 30;
-    
-    // Colors
-    colors;
-    solvedColors = [];
-    blockedColors = [];
-
-    gameMap = [];
-    numberOfColors = 0;
-    mapSize = 0;
-
     constructor(canvasId, isPlayable) {        
         // Getting the canvas and it context
         this.canvas = document.getElementById(canvasId);
         this.context = this.canvas.getContext("2d");
-        
+        this.isPlayable = isPlayable;
+
         if(!isPlayable) {
             return;
         }
@@ -43,10 +24,20 @@ class Game {
         this.boundMove = (event) => this.handleMouseMove(event)
     }
 
-    initialize(gameMap, numberOfColors, mapSize) {
+    initialize(gameMap, numberOfColors, mapSize, moves = {}, solvedColors = []) {
         this.gameMap = gameMap
         this.numberOfColors = numberOfColors;
         this.mapSize = mapSize;
+        this.moves = moves;
+        this.solvedColors = solvedColors;
+
+        if(this.isPlayable) {
+            for (let i = 0; i < numberOfColors; i++) {
+                this.moves[Object.keys(Colors)[i]] = {
+                    coords: [],
+                };
+            }
+        }
 
         /* Height and weight of a tile is equal to size of canvas 
         divided by map size. Map size is always a square */
@@ -60,6 +51,7 @@ class Game {
         this.gameMap = [];
         this.numberOfColors = 0;
         this.mapSize = 0;
+        this.moves = [];
         this.solvedColors = [];
         this.isMapDrawn = false;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -70,9 +62,15 @@ class Game {
         var mouseX = Math.floor( (( event.offsetX / this.tileW ) * this.tileW) / this.tileH);
         var mouseY = Math.floor( (( event.offsetY / this.tileW ) * this.tileW) / this.tileH);
 
-        // If mouse is pressed on point all pipes with this color are removed
-        if(Utility.isUpper(this.gameMap[mouseY][mouseX]) && !this.blockedColors.includes(this.gameMap[mouseY][mouseX])){
+        if(Utility.isPoint(this.gameMap[mouseY][mouseX])) {
+            this.moves[this.gameMap[mouseY][mouseX]].coords.push({Y: mouseY, X: mouseX});
+        }
 
+        // If mouse is pressed on point all pipes with this color are removed
+        if(Utility.isPoint(this.gameMap[mouseY][mouseX]) && this.solvedColors.includes(this.gameMap[mouseY][mouseX])){
+            // Removing all moves
+            this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords = [];
+            
             // Removing from solved points
             const index = this.solvedColors.indexOf(this.gameMap[mouseY][mouseX]);
             if(index != -1) {
@@ -81,27 +79,28 @@ class Game {
 
             for (var y = 0; y < this.mapSize; y++) {
                 for (var x = 0; x < this.mapSize; x++) {
-    
                     // Clearing pipes
-                    if (this.gameMap[y][x].toUpperCase() == this.gameMap[mouseY][mouseX] && !Utility.isUpper(this.gameMap[y][x])) {
+                    if (this.gameMap[y][x].toUpperCase() == this.gameMap[mouseY][mouseX] && !Utility.isPoint(this.gameMap[y][x])) {
                         this.gameMap[y][x] = '0';
-    
                         this.context.clearRect(x * this.tileH, y * this.tileW, this.tileW - 1, this.tileH - 1);
                         this.drawSquares(x, y);
                     }
     
                     // Clearing points
-                    if(this.gameMap[y][x].toUpperCase() == this.gameMap[mouseY][mouseX] && Utility.isUpper(this.gameMap[y][x])) {
+                    if(this.gameMap[y][x].toUpperCase() == this.gameMap[mouseY][mouseX] && Utility.isPoint(this.gameMap[y][x])) {
                         this.context.clearRect(x * this.tileH, y * this.tileW, this.tileW - 1, this.tileH - 1);
-
-                        // TODO: Should be written better
-                        // Redrawing squares and points (clearing the pipes from game map)
                         this.drawSquares(x, y);
                         this.drawPoint(x, y);
                     }
                 }
             }
-            // socket.emit('removePoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
+            socket.emit('removePoints', {
+                gameCode: clientRoom, 
+                startMap: startMap, 
+                currentMap: currentMap, 
+                solvedColors: gameObj.solvedColors, 
+                moves: this.moves
+            });
         }
     
         // console.log("Mouse pressed");
@@ -121,23 +120,25 @@ class Game {
                 // Full map with points is drawn only once (at startup)
                 if (!this.isMapDrawn) {
                     this.drawSquares(x, y)
-    
                     this.drawPoint(x, y);
-    
-                    // Drawing map from game map array
-                    // drawPipe(x, y);
-    
-                    //! Developer tool
-                    // Debug.drawPosOfSquares(x, y, debugMode);
                 }
             }
-           
         }
-    
+
+        if (!this.isMapDrawn && !this.isPlayable) {     
+            for (const solvedColor of this.solvedColors) {
+                const move = this.moves[solvedColor].coords;
+                for (let i = 1; i < move.length; i++) {
+                    this.drawPipe(Colors[solvedColor], move[i - 1], move[i]);
+                }
+                this.drawAfterGlow(solvedColor);
+            }
+        }
+
         //Border is drawn only once
         this.isMapDrawn = true;
     
-        // Coordinates of a mouse when mouse is pressed
+        // Coordsinates of a mouse when mouse is pressed
         // TODO: Code it diffrent (note)
         var mouseX = Math.floor( (( event.offsetX / this.tileW ) * this.tileW) / this.tileH);
         var mouseY = Math.floor( (( event.offsetY / this.tileW ) * this.tileW) / this.tileH);
@@ -145,8 +146,10 @@ class Game {
         if (!this.pressed) {
             // If tile with point is pressed then 'IF' statement is executed
             if (this.selected) {
+                // console.log(this.gameMap[mouseY][mouseX]);
+                // console.log(this.moves);
+                this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords.push({Y: mouseY, X: mouseX});
                 this.selected = false;
-                
                 // 'FOR' loops search for a tile with same color
                 for (var y = 0; y < this.mapSize; y++) {
                     for (var x = 0; x < this.mapSize; x++) {
@@ -172,7 +175,7 @@ class Game {
     
                 /* If tile with a point is selected then selected = true (it prevents from clicking an empty tile)
                 If a value is upper case that tells that this is the point*/
-                if (Utility.isUpper(this.gameMap[startPosition.Y][startPosition.X]) && !this.blockedColors.includes(this.gameMap[startPosition.Y][startPosition.X])) {
+                if (Utility.isPoint(this.gameMap[startPosition.Y][startPosition.X])) {
                     this.selected = true;
                     this.drawGame(event);
                 }
@@ -225,6 +228,8 @@ class Game {
                     currentPosition.X = mouseMoveX;
                     currentPosition.Y = mouseMoveY;
 
+                    // Saving the moves for drawing map later
+                    this.moves[this.gameMap[mouseMoveY][mouseMoveX].toUpperCase()].coords.push({Y: mouseMoveY, X: mouseMoveX})
                     // Drawing the pipe     
                     this.drawPipe(Colors[this.gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition)
                 }
@@ -254,11 +259,13 @@ class Game {
         }
     }
 
+    // TODO: This is pointless and needs to be renamed and fixed
     clearNotConntectedPipes(mouseX, mouseY) {
 
         if (!(endPosition.X == mouseX && endPosition.Y == mouseY) || !((currentPosition.X == endPosition.X - 1 && currentPosition.Y == endPosition.Y) 
         || (currentPosition.X == endPosition.X + 1 && currentPosition.Y == endPosition.Y) || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y - 1)
         || (currentPosition.X == endPosition.X && currentPosition.Y == endPosition.Y + 1))) {
+            this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords = [];
             for (var y = 0; y < this.mapSize; y++) {
                 for (var x = 0; x < this.mapSize; x++) {
                     if (this.gameMap[y][x].toUpperCase() == this.gameMap[startPosition.Y][startPosition.X] && !Utility.isUpper(this.gameMap[y][x])) {
@@ -266,7 +273,7 @@ class Game {
                         this.context.clearRect(startPosition.X * this.tileH, startPosition.Y*this.tileW, this.tileW - 1, this.tileH - 1);
                         this.context.clearRect(endPosition.X * this.tileH, endPosition.Y*this.tileW, this.tileW - 1, this.tileH - 1);
                         this.context.clearRect(x * this.tileH, y*this.tileW, this.tileW - 1, this.tileH - 1);
-
+    
                         // TODO: Should be written better
                         // Redrawing squares and points (clearing the pipes from game map)
                         this.drawSquares(startPosition.X, startPosition.Y);
@@ -289,7 +296,13 @@ class Game {
                 this.solvedColors.push(this.gameMap[startPosition.Y][startPosition.X]);
 
                 // Counting points after every completed move (#)
-                // socket.emit('countPoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
+                socket.emit('countPoints', {
+                    gameCode: clientRoom, 
+                    startMap: startMap, 
+                    currentMap: currentMap, 
+                    solvedColors: gameObj.solvedColors, 
+                    moves: this.moves
+                });
             }
         }
     }
@@ -345,13 +358,35 @@ class Game {
             this.context.fill(circle);
         }
     }
-
 }
-let map = [
-    ['0', '0', 'R'],
-    ['R', '0', '0'],
-    ['O', '0', 'O'],
-];
 
-let game = new Game('game', true);
-game.initialize(map, 2, 3);
+
+
+// let map = [
+//     ['R', '0', '0', 'O', '0'],
+//     ['0', '0', 'R', '0', '0'],
+//     ['0', '0', 'G', 'O', 'Y'],
+//     ['0', 'B', 'B', '0', '0'],
+//     ['0', '0', 'G', '0', 'Y']
+// ];
+
+// let kek = {
+//     R: {
+//         coords: [
+//             {Y: 0, X: 0},
+//             {Y: 1, X: 0},
+//             {Y: 2, X: 0},
+//         ]
+//     },
+//     G: {
+//         coords: [
+//             {Y: 0, X: 1},
+//             {Y: 0, X: 2},
+//             {Y: 1, X: 2},
+//             {Y: 2, X: 2},
+//         ]
+//     }
+// };
+
+// let game = new Game('game', true);
+// game.initialize(map, 5, 5);

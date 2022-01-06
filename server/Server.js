@@ -57,6 +57,8 @@ io.on('connection', (socket) => {
       id: socket.id, 
       nickname: socket.nickname, 
       finishedMaps: [], 
+      solvedColors: [],
+      moves: [],
       currentPoints: 0, 
       points: 0, 
       hints: 0
@@ -101,6 +103,8 @@ io.on('connection', (socket) => {
       id: socket.id,
       nickname: socket.nickname, 
       finishedMaps: [],
+      solvedColors: [],
+      moves: [],
       currentPoints: 0, 
       points: 0, 
       hints: 0
@@ -124,6 +128,8 @@ io.on('connection', (socket) => {
       player.hints = parseInt(options.hintsAmount);
       for (let i = 0; i < 2; i++) {
         player.finishedMaps.push([]);
+        player.solvedColors.push([]);
+        player.moves.push([]);
       }
     }
 
@@ -173,6 +179,8 @@ io.on('connection', (socket) => {
         for (let i = 0; i < player.finishedMaps.length; i++) {
           if(player.finishedMaps[i].length == 0) {
             player.finishedMaps[i] = rooms[options.roomCode].maps[i];
+            player.solvedColors[i] = [];
+            player.moves[i] = {};
           }
         }
       }
@@ -207,7 +215,7 @@ io.on('connection', (socket) => {
       // socket.leave();
 
       //! CHANGED TIME * 60000
-    }, options.timeLimit * 6000);
+    }, options.timeLimit * 60000);
 
     io.to(options.roomCode).emit('startTimer', options.timeLimit);
     io.to(options.roomCode).emit('hostGameStart', genMaps.maps[0]);
@@ -255,6 +263,9 @@ io.on('connection', (socket) => {
     player.currentPoints += pt;
     const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
     player.finishedMaps[mapIndex] = mapInfo.currentMap;
+    player.solvedColors[mapIndex] = mapInfo.solvedColors;
+    player.moves[mapIndex] = mapInfo.moves;
+
 
     io.to(socket.id).emit('displayPoints', player.currentPoints + player.points);
   });
@@ -272,6 +283,8 @@ io.on('connection', (socket) => {
     player.currentPoints = points;
     const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
     player.finishedMaps[mapIndex] = mapInfo.currentMap;
+    player.solvedColors[mapIndex] = mapInfo.solvedColors;
+    player.moves[mapIndex] = mapInfo.moves;
 
     io.to(socket.id).emit('displayPoints', player.currentPoints + player.points);
   });
