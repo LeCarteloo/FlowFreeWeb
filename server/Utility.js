@@ -1,7 +1,7 @@
 module.exports = {
     makeid,
     validateData,
-    validate2d,
+    validateNickname,
 }
   
 function makeid(length) {
@@ -43,4 +43,27 @@ function validateData(startMap, currentMap, solvedColors) {
 
 function validate2d(map) {
     return map.every(item => Array.isArray(item));
+}
+
+function validateNickname(socket) {
+    if(socket.nickname == '') {
+        socket.emit('displayAlert', {
+          type: 'error', 
+          text: 'Nickname can not be empty!'
+        });
+        return false;
+      } else if(socket.nickname.length <= 3) {
+        socket.emit('displayAlert', {
+          type: 'error', 
+          text: 'Nickname is too short!'
+        });
+        return false;
+      } else if(socket.nickname.length > 15) {
+        socket.emit('displayAlert', {
+          type: 'error', 
+          text: 'Nickname is too long!'
+        });
+        return false;
+      }
+    return true;
 }

@@ -18,7 +18,6 @@
     display: flex;
     border-radius: 8px;
     transition: ease .5s;
-
 }
 .alertBar {
     width: 10px;
@@ -50,7 +49,6 @@
     transition: ease .5s;
     transform: translateX(5px);
 }
-
 /* Types of alerts */
 .alertDiv.error {
     background-color: rgb(251, 138, 138);
@@ -78,7 +76,6 @@
 .alertSpan.success{
     color: #54bf41;
 }
-
 .alertDiv.info {
     background-color: rgb(138, 174, 251);
 }
@@ -92,130 +89,4 @@
 .alertSpan.info{
     color: #4182bf;
 }
-
-.end-screen{
-    position: fixed;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    backdrop-filter: blur(0px);
-    pointer-events: none;
-    transition: 2s;
-}
-.end-screen.move{
-    backdrop-filter: blur(40px);
-    pointer-events: initial;
-    transition: 2s;
-}
-#result, #winner-points, #loser-points {
-    display: flex;
-    justify-content: center;
-    font-size: 50px;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: bold;
-}
-.end-info {
-    width: 100%;
-    min-width: 1500px;
-    height: 100%;
-    transition: .2s;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-.winner-info, .loser-info {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 400px;
-    height: 400px;
-    transform: translateX(1500px);
-    /* background: green; */
-    transition: .5s;
-}
-.winner-info.move-middle {
-    transform: translateX(0%);
-}
-.winner-info.move-top {
-    transform: translate(-500px, -100px);
-}
-#winner-name, #loser-name {
-    display: flex;
-    justify-content: center;
-
-    text-align: center;
-    font-size: 40px;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: lighter;
-    letter-spacing: 10px;
-}
-#loser-info.move-middle {
-    transform: translateX(0px);
-}
-#loser-info.move-top {
-    transform: translate(500px, -100px);
-}
-.canvas-box {
-    display: flex;
-    justify-content: center;
-}
-/* #winner-maps, #loser-maps {
-} */
-.arrow-btn {
-    margin-right: 15px;
-    margin-left: 15px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-@keyframes leftArrow {
-    0% {
-        margin-right: 15px;
-    }
-    25% {
-        margin-right: 25px;
-        margin-left: 5px;
-    }
-    50% {
-        margin-right: 25px;
-        margin-left: 5px;
-    }
-    100% {
-        margin-right: 15px;
-        margin-left: 15px;
-    }
-}
-
-@keyframes rightArrow {
-    0% {
-        margin-left: 15px;
-    }
-    25% {
-        margin-left: 25px;
-        margin-right: 5px;
-    }
-    50% {
-        margin-left: 25px;
-        margin-right: 5px;
-    }
-    100% {
-        margin-left: 15px;
-        margin-right: 15px;
-    }
-}
-
-.arrow-btn:active.left {
-    animation: leftArrow .25s ease, fade-out 0.25s linear;
-}
-.arrow-btn:active.right {
-    animation: rightArrow .25s ease, fade-out 0.25s linear;
-
-}
-
 

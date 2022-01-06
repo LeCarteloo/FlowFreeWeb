@@ -101,7 +101,7 @@ class Game {
                     }
                 }
             }
-            socket.emit('removePoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
+            // socket.emit('removePoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
         }
     
         // console.log("Mouse pressed");
@@ -289,7 +289,7 @@ class Game {
                 this.solvedColors.push(this.gameMap[startPosition.Y][startPosition.X]);
 
                 // Counting points after every completed move (#)
-                socket.emit('countPoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
+                // socket.emit('countPoints', {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, solvedColors: gameObj.solvedColors});
             }
         }
     }
@@ -347,11 +347,11 @@ class Game {
     }
 
 }
-// let map = [
-//     ['0', '0', 'R'],
-//     ['R', '0', '0'],
-//     ['O', '0', 'O'],
-// ];
+let map = [
+    ['0', '0', 'R'],
+    ['R', '0', '0'],
+    ['O', '0', 'O'],
+];
 
-// let game = new Game();
-// game.initialize(map, 2, 3);
+let game = new Game('game', true);
+game.initialize(map, 2, 3);

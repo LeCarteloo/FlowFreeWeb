@@ -1,5 +1,5 @@
 const express = require('express')
-const { makeid, validateData, validate2d } = require('./Utility')
+const { makeid, validateData, validateNickname } = require('./Utility')
 const app = express()
 const port = 3000
 const server = app.listen(port)
@@ -16,14 +16,26 @@ app.use(express.static('client'));
 // Rooms information
 var rooms = {};
 
+// Function to find index of Array
+Array.prototype.indexOfArray = function(array) {
+  const arrayJSON = JSON.stringify(array);
+  const mainJSON = this.map(JSON.stringify);
+
+  return mainJSON.indexOf(arrayJSON);
+}
+
 // Event for whenever a connection is established between the server and a client
-io.on('connection', (socket) => {
-  // Switch background on all connected clients 
-  socket.on('buttonPressed', clientRoom => {
-      io.to(clientRoom).emit('switchFromServer');
-  })
-    
+io.on('connection', (socket) => { 
+  socket.on('setNickname', (nickname) => {
+    socket.nickname = nickname;
+  });
+
   socket.on('createRoom', () => {
+    // Validating nickname
+    if(!validateNickname(socket)) {
+      return;
+    }
+
     let roomCode = makeid(5);
     // Emit roomCode to client side
     socket.emit('displayGameCode', roomCode)
@@ -43,6 +55,7 @@ io.on('connection', (socket) => {
 
     rooms[roomCode].players.push({
       id: socket.id, 
+      nickname: socket.nickname, 
       finishedMaps: [], 
       currentPoints: 0, 
       points: 0, 
@@ -55,6 +68,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoom', (gameCode) => {
+    // Validating nickname
+    if(!validateNickname(socket)) {
+      return;
+    }
+
     // Check if game code exists
     const clients = io.sockets.adapter.rooms.get(gameCode);
     
@@ -64,8 +82,7 @@ io.on('connection', (socket) => {
       return;
     }
     
-    let numberOfClients;
-    numberOfClients = clients.size;
+    let numberOfClients = clients.size;
 
     // Room is full
     if(numberOfClients > 1) {
@@ -75,15 +92,14 @@ io.on('connection', (socket) => {
 
     // Join to given game code
     socket.join(gameCode);
-    
     socket.emit('serverMsg', gameCode);
-    
     // Change scene
     socket.emit('init');
     
     // Add player to room
     rooms[gameCode].players.push({
       id: socket.id,
+      nickname: socket.nickname, 
       finishedMaps: [],
       currentPoints: 0, 
       points: 0, 
@@ -106,6 +122,9 @@ io.on('connection', (socket) => {
     for (const id of clients) {
       const player = rooms[options.roomCode].players.find(player => player.id == id);
       player.hints = parseInt(options.hintsAmount);
+      for (let i = 0; i < 2; i++) {
+        player.finishedMaps.push([]);
+      }
     }
 
     // Check who is starting the game (only the creator of lobby can start)
@@ -142,10 +161,7 @@ io.on('connection', (socket) => {
     // TODO: It should start only when maps are generated
     setTimeout(() => {
       const players = rooms[options.roomCode].players;
-
       const mostPoints = Math.max.apply(Math, players.map(player => (player.points + player.currentPoints)));
-
-      console.log(mostPoints);
 
       // Checking if there is a tie
       let result = 0;
@@ -153,13 +169,22 @@ io.on('connection', (socket) => {
         if(player.points + player.currentPoints == mostPoints) {
           result++;
         }
+        // If user didn't provide one of maps it is added from started maps
+        for (let i = 0; i < player.finishedMaps.length; i++) {
+          if(player.finishedMaps[i].length == 0) {
+            player.finishedMaps[i] = rooms[options.roomCode].maps[i];
+          }
+        }
       }
+
       // Handling tie
       if(result == 2) {
         io.to(options.roomCode).emit('displayResult', 'Tie!');
         io.to(options.roomCode).emit('gameEnded', {
           won: players[0],
-          lost: players[1]
+          lost: players[1],
+          size: options.mapSize,
+          colors: options.colorAmount
         });
         return;
       }
@@ -173,39 +198,30 @@ io.on('connection', (socket) => {
       io.to(losingPlayer.id).emit('displayResult', 'You lost!');
       io.to(options.roomCode).emit('gameEnded', {
         won: winningPlayer,
-        lost: losingPlayer
+        lost: losingPlayer,
+        size: options.mapSize,
+        colors: options.colorAmount
       });
 
       //! Disconnect player after finish (stack)
       // socket.leave();
 
       //! CHANGED TIME * 60000
-    }, options.timeLimit * 1000);
-
-    // Sent to clients test message and start the game
-    // io.to(options.roomCode).emit('testMessage', genMaps);
+    }, options.timeLimit * 6000);
 
     io.to(options.roomCode).emit('startTimer', options.timeLimit);
     io.to(options.roomCode).emit('hostGameStart', genMaps.maps[0]);
   });
 
   socket.on('changeMap', (mapInfo) => {
-    Array.prototype.indexOfArray = function(array) {
-      const arrayJSON = JSON.stringify(array);
-      const mainJSON = this.map(JSON.stringify);
-
-      return mainJSON.indexOf(arrayJSON);
-    }
-
     const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
     
-    // {gameCode: clientRoom, startMap: startMap, currentMap: currentMap, 
-    // solvedColors: gameObj.solvedColors}
     // Map not found so map sent by client is fake
     if(mapIndex == -1) {
       io.to(socket.id).emit('displayAlert', {type: 'error', text: 'Provided wrong data!'});
       return;
     }
+
     const nextMap = rooms[mapInfo.gameCode].maps[mapIndex + 1];
 
     if(mapIndex == rooms[mapInfo.gameCode].maps.length - 1) {
@@ -237,6 +253,8 @@ io.on('connection', (socket) => {
 
     const pt = Math.abs(player.currentPoints - points);
     player.currentPoints += pt;
+    const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
+    player.finishedMaps[mapIndex] = mapInfo.currentMap;
 
     io.to(socket.id).emit('displayPoints', player.currentPoints + player.points);
   });
@@ -252,6 +270,8 @@ io.on('connection', (socket) => {
     }
     
     player.currentPoints = points;
+    const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(mapInfo.startMap);
+    player.finishedMaps[mapIndex] = mapInfo.currentMap;
 
     io.to(socket.id).emit('displayPoints', player.currentPoints + player.points);
   });
@@ -260,7 +280,7 @@ io.on('connection', (socket) => {
     const player = rooms[mapInfo.roomCode].players.find(player => player.id == socket.id);
 
     // if(player.hints <= 0) {
-    //   console.log("No more hints!");
+    //   socket.emit('displayAlert', {type: 'info', text: 'All available hints used!'});
     //   return;
     // }
 
@@ -270,9 +290,9 @@ io.on('connection', (socket) => {
       return;
     }
 
-    LobbySettings.canTouch = rooms[mapInfo.roomCode].options.canTouch;
-
+    
     // Solving given map with moves done by user
+    LobbySettings.canTouch = rooms[mapInfo.roomCode].options.canTouch;
     let solver = new Solver(mapInfo.startMap);
     io.to(socket.id).emit('testMessage', {map: mapInfo.currentMap, solvedColors: mapInfo.solvedColors});
     const result = solver.init({map: mapInfo.currentMap, solvedColors: mapInfo.solvedColors});
@@ -330,6 +350,5 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log("disconnected");
   });
 });

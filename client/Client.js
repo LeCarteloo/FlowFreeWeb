@@ -4,6 +4,7 @@ const socket = io('http://localhost:3000');
 const startScreen = document.getElementById('start-screen');
 const lobbyOptions = document.getElementById('lobby-options');
 const gameScreen = document.getElementById('game-screen');
+const nickname = document.getElementById('nickname');
 
 // Other important stuff
 const createRoom = document.getElementById('create-room');
@@ -51,6 +52,7 @@ const winnerReduce = document.getElementById('winner-reduce');
 const loserIncrease = document.getElementById('loser-increase');
 const loserReduce = document.getElementById('loser-reduce');
 const resultDisplay = document.getElementById('result');
+const resetUi = document.getElementById('reset-ui');
 
 let clientRoom = 0;
 let gameObj = {};
@@ -59,15 +61,17 @@ let currentMap = [];
 
 let winnerMaps = [];
 let winnerIndex = 0;
+let winnerGame = {};
 let loserMaps = [];
 let loserIndex = 0;
+let loserGame = {};
+
 
 // Connecting client to and server room
 socket.on('serverMsg', (data) => {
     console.log(data);
     clientRoom = data;
-})
-
+});
 
 // Test message
 socket.on('testMessage', (test) => {
@@ -101,7 +105,9 @@ socket.on('displayResult', displayResult);
 
 
 createRoom.addEventListener('click', () => {
-    socket.emit('createRoom')
+    socket.emit('setNickname', nickname.value);
+    socket.emit('createRoom');
+
 });
 
 joinRoom.addEventListener('click', () => {
@@ -113,6 +119,7 @@ joinRoom.addEventListener('click', () => {
     colorAmount.disabled = true;
     canTouch.disabled = true;
     startGameBtn.style.display = "none";
+    socket.emit('setNickname', nickname.value);
     socket.emit('joinRoom', gameCode.value);
 });
 
@@ -167,6 +174,10 @@ canTouch.addEventListener('click', () => {
     });
 });
 
+resetUi.addEventListener('click', () => {
+    resetUI();
+});
+
 function animatePoints(pointsId, infoId, pointsW, pointsL, callback) {
     const pointsSpan = document.getElementById(pointsId);
     let pt = -1;
@@ -191,34 +202,6 @@ function animatePlayerInfo(direction, id) {
     playerInfo.classList.remove('move-middle');
     playerInfo.classList.add('move-top');
 }
-
-//! Tests
-let winnerGame = new Game('winner-maps', false);
-const map = [
-    ['R', '0', 'G', '0', 'O'],
-    ['0', '0', 'B', '0', 'Y'],
-    ['0', '0', '0', '0', '0'],
-    ['0', 'G', '0', 'O', '0'],
-    ['0', 'R', 'B', 'Y', '0'],
-];
-const map1 = [
-    ['0', 'R', 'G', 'B', '0'],
-    ['0', '0', '0', 'Y', '0'],
-    ['0', '0', '0', '0', '0'],
-    ['R', '0', 'Y', 'O', '0'],
-    ['G', '0', 'O', '0', 'B'],
-];
-const maps = [map, map1];
-winnerGame.initialize(maps[0], 5, 5);
-winnerMaps = maps;
-loserMaps = maps;
-let loserGame = new Game('loser-maps', false);
-loserGame.initialize(maps[0], 5, 5);
-
-addChangeEvent(true, winnerMaps, winnerIndex, winnerGame, winnerIncrease);
-addChangeEvent(false, winnerMaps, winnerIndex, winnerGame, winnerReduce);
-addChangeEvent(true, loserMaps, loserIndex, loserGame, loserIncrease);
-addChangeEvent(false, loserMaps, loserIndex, loserGame, loserReduce);
 
 function addChangeEvent(increase, map, mapIndex, gameRef, button) {
     button.addEventListener('click', () => {
@@ -306,6 +289,7 @@ function gameEnded(data) {
     //! ######
     endScreen.classList.add('move');
     console.log(data);
+
     animateEndScreen(
         'winner-points', 
         'winner-info', 
@@ -313,13 +297,25 @@ function gameEnded(data) {
         data.lost.points  + data.lost.currentPoints, 
         true
     );
-
+    
     const winner = document.getElementById('winner-name');
     const loser = document.getElementById('loser-name');
-    winner.innerText = data.won.id;
-    loser.innerText = data.lost.id;
+    winner.innerText = data.won.nickname;
+    loser.innerText = data.lost.nickname;
 
+    winnerMaps = data.won.finishedMaps;
+    loserMaps = data.lost.finishedMaps;;
+    winnerGame = new Game('winner-maps', false);
+    winnerGame.initialize(winnerMaps[0], data.colors, data.size);
+    loserGame = new Game('loser-maps', false);
+    loserGame.initialize(loserMaps[0], data.colors, data.size);
+
+    addChangeEvent(true, winnerMaps, winnerIndex, winnerGame, winnerIncrease);
+    addChangeEvent(false, winnerMaps, winnerIndex, winnerGame, winnerReduce);
+    addChangeEvent(true, loserMaps, loserIndex, loserGame, loserIncrease);
+    addChangeEvent(false, loserMaps, loserIndex, loserGame, loserReduce);
 }
+let x = [];
 
 function displayResult(result) {
     resultDisplay.innerText = result;
@@ -369,7 +365,7 @@ function init() {
     lobbyOptions.style.display = "flex";
 }
 
-function returnToStart() {
+function resetUI() {
     startScreen.style.display = "flex";
     lobbyOptions.style.display = "none";
     gameScreen.style.display = "none";
@@ -396,7 +392,7 @@ function handleUserConnected(players) {
     for (let i = 1; i <= players.length; i++) {
         // Display users
         rows[i - 1].style.display = "flex";
-        users[i - 1].innerText = players[i - 1].id;
+        users[i - 1].innerText = players[i - 1].nickname;
     }
 }
 

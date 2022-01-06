@@ -20,12 +20,15 @@
         <div id="start-options">
             <h1 class="title">Flow Free Multiplayer</h1>
             <div class="buttons-group">
+                <h3>Set your nickname!</h3>
+                <input type="text" placeholder="Nickname" id="nickname" autocomplete="off" value='XXXXXXXXXXXXXXX'>
+                <br><br><br>
                 <h3>Start your game!</h3>
                 <br>
-                <button type="submit" id="create-room">Create new game</button>
+                <button type="submit" id="create-room"><span>Create new game</span></button>
                 <div class='or'>OR</div>
                 <input type="text" placeholder="Game Code" id="game-code" autocomplete="off">
-                <button type="submit" id="join-room">Join room</button>
+                <button type="submit" id="join-room"><span>Join room</span></button>
             </div>
         </div>
     </div>
@@ -65,7 +68,8 @@
                     <span class="slider"></span>
                 </label>
             </div>
-            <button type="submit" id='start-game'>START</button>
+            <br>
+            <button type="submit" id='start-game'><span>START GAME</span></button>
             <br>
         </div>
     </div>
@@ -77,9 +81,9 @@
                 <span id="points-display">0 points</span>
             </div>
             <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
-            <button id="hints-btn" type="submit">Use hint</button>
+            <button id="hints-btn" type="submit"><span>Use hint</span></button>
             <span id="hints-display">Hints remaining: ?</span>
-            <button id="change-btn" type="submit">Next map</button>
+            <button id="change-btn" type="submit"><span>Next map</span></button>
         </section>
     </div>
     
@@ -106,6 +110,7 @@
                     <button type="submit" class="arrow-btn right" id="loser-reduce"><i class="fas fa-4x fa-chevron-right"></i></button>
                 </div>
             </div>
+            <button type="submit" id="reset-ui"><i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby</button>
         </div>
     </div>
 
@@ -115,10 +120,12 @@
     <script src="/scripts/logic/enums/Positions.js"></script>
     <script src="/scripts/logic/Game.js"></script>
     <script src="/scripts/logic/Draw.js"></script>
-
+    
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- Client scripts -->
     <script src="Client.js"></script>
+    <!-- Animations -->
+    <script src="/scripts/animations/Buttons.js"></script>
 </body>
 </html>
