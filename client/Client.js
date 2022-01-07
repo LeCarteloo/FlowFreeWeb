@@ -21,6 +21,10 @@ const mapNumber = document.getElementById('map-number');
 const startGameBtn = document.getElementById('start-game');
 const colorAmount = document.getElementById('color-amount');
 const canTouch = document.getElementById('can-touch');
+const progressAlert = document.querySelector('.progress-alert')
+const progressBar = document.querySelector('.progress-bar');
+const progressInfo = document.getElementById('progress-info');
+
 
 // Users
 const rowTwo = document.getElementById('row-two');
@@ -76,12 +80,6 @@ socket.on('serverMsg', (data) => {
     clientRoom = data;
 });
 
-// Test message
-socket.on('testMessage', (test) => {
-    console.log(test.map);
-    console.log(test.solvedColors);
-});
-
 // Display game code after creating the room
 socket.on('displayGameCode', (data) => {
     codeDisplay.innerText = data;
@@ -94,6 +92,10 @@ socket.on('userConnected', handleUserConnected);
 socket.on('init', init);
 
 socket.on('hostGameStart', handleHostGameStart);
+socket.on('showProgress', showProgress);
+socket.on('updateProgress', updateProgress);
+socket.on('hideProgress', hideProgress);
+
 socket.on('changeMap', changeMap);
 socket.on('displayHint', displayHint);
 socket.on('displayHintAmount', displayHintAmount);
@@ -106,11 +108,9 @@ socket.on('updateSwitch', updateSwitch);
 socket.on('gameEnded', gameEnded);
 socket.on('displayResult', displayResult);
 
-
 createRoom.addEventListener('click', () => {
     socket.emit('setNickname', nickname.value);
     socket.emit('createRoom');
-
 });
 
 joinRoom.addEventListener('click', () => {
@@ -289,9 +289,7 @@ function addKeyPressEvent(inputArray) {
 }
 
 function gameEnded(data) {
-    //! ######
     endScreen.classList.add('move');
-    console.log(data);
 
     animateEndScreen(
         'winner-points', 
@@ -327,7 +325,6 @@ function gameEnded(data) {
     addChangeEvent(true, loserMaps, loserMoves, loserColors, loserIndex, loserGame, loserIncrease);
     addChangeEvent(false, loserMaps, loserMoves, loserColors, loserIndex, loserGame, loserReduce);
 }
-let x = [];
 
 function displayResult(result) {
     resultDisplay.innerText = result;
@@ -415,13 +412,27 @@ function displayAlert(alert) {
     startGameBtn.disabled = false;
 }
 
+function updateProgress(progress) {
+    progressBar.style.width = progress + '%';
+    progressInfo.innerText = 'Generating maps...';
+}
+
+function showProgress() {
+    progressAlert.classList.add('move');
+}
+
+function hideProgress() {
+    progressAlert.classList.remove('move');
+    progressBar.style.width = 0 + '%';
+    progressInfo.innerText = 'Initializing...';
+}
+
 function handleHostGameStart(firstMap) {
     startScreen.style.display = "none";
     lobbyOptions.style.display = "none";
     gameScreen.style.display = "flex";
 
     hintsDisplay.innerText = `Hints remaining: ${hintsAmount.value}`;
-
     //! colorAmount.value, mapSize.value <-- This should be from server not from client
     // Setting the canvas and drawing the map
     gameObj = new Game('game', true);

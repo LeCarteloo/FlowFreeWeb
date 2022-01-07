@@ -233,7 +233,7 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(26px);
 }
-
+/* End screen styles */
 .end-screen{
     position: fixed;
     top: 0;
@@ -303,8 +303,6 @@ input:checked + .slider:before {
     display: flex;
     justify-content: center;
 }
-/* #winner-maps, #loser-maps {
-} */
 .arrow-btn {
     margin-right: 15px;
     margin-left: 15px;
@@ -313,7 +311,10 @@ input:checked + .slider:before {
     color: white;
     cursor: pointer;
 }
-
+#winner-increase, #winner-reduce, 
+#loser-increase, #loser-reduce {
+    display: none;
+}
 @keyframes leftArrow {
     0% {
         margin-right: 15px;

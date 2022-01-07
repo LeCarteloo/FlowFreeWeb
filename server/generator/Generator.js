@@ -1,3 +1,4 @@
+const { parentPort } = require('worker_threads');
 const Solver = require("../solver/Solver");
 const _ = require('lodash');
 module.exports = class Generator {
@@ -22,19 +23,18 @@ module.exports = class Generator {
     Also the start and end point of the same color can be next to each other */
     generateMap(size, numOfColors, numOfMaps) {
         let maps = [];
-        let debugMaps = [];
         while(maps.length != numOfMaps) {
             const createdMap = this.createMap(size, numOfColors);
             const result = this.isSolvable(_.cloneDeep(createdMap));
             // console.log(result);
             if(result.isSolved) {
                 maps.push(createdMap);
-                // TODO: Remove it after fixing bug
-                debugMaps.push(result.map);
+
+                const progress = (maps.length / numOfMaps * 100) - 10;
+                parentPort.postMessage(progress);
             }
-            // console.count("generated: ");
         }  
-        return {maps: maps, debugMaps: debugMaps};    
+        return maps;    
     }
 
     // Try to solve the map and return
