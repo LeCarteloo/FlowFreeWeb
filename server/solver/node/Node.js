@@ -16,8 +16,6 @@ module.exports = class Node {
 
         this.g = 0;
         this.h = this.manhattan();
-        this.parent = null;
-        this.movesNumber = [];
     }
     /* Function returns distance beetwen all points combined.
     Manhattan works slower so at the moment manhattan is equal to free tiles*/
@@ -26,13 +24,13 @@ module.exports = class Node {
 
         // Distance between two points
         // TODO: Check why is this slower
-        // for (let i = 0; i < GameMap.numberOfColors; i++) {
-        //     const curr = this.mapState.current[i];
-        //     const end = GameMap.endPoint[i];
-        //     manhValue += Math.abs(curr.X - end.X) + Math.abs(curr.Y - end.Y);
-        // }
-
-        manhValue = this.mapState.freeTiles;
+        for (let i = 0; i < GameMap.numberOfColors; i++) {
+            const curr = this.mapState.current[i];
+            const end = GameMap.endPoint[i];
+            manhValue += Math.abs(curr.X - end.X) + Math.abs(curr.Y - end.Y);
+        }
+        
+        // manhValue = this.mapState.freeTiles;
 
         return manhValue;
     }

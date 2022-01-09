@@ -6,6 +6,7 @@ module.exports = class NodeOrder {
   push(elem) {
     let index = 0;
 
+    // TODO: Potentialy change to <=
     if (this.#array.length == 0 ||  elem.getFCost() < this.peek().getFCost()) {
       this.#array.splice(index, 0, elem);
       return this.#array.length;

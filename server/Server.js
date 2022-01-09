@@ -215,7 +215,7 @@ io.on('connection', (socket) => {
               //! Disconnect player after finish (stack)
               // socket.leave();
 
-              }, options.timeLimit * 6000);
+              }, options.timeLimit * 60000);
 
               io.to(options.roomCode).emit('startTimer', options.timeLimit);
               io.to(options.roomCode).emit('hostGameStart', resolve.maps[0]);

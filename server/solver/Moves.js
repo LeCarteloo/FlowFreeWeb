@@ -151,6 +151,7 @@ module.exports = class Moves {
             return moves;
         }
 
+        // TODO: Probably is not needed (check it and then remove)
         // Check how many colors are still unfinished
         let colorList = [];
         for (let i = 0; i < GameMap.numberOfColors; i++) {
@@ -164,6 +165,7 @@ module.exports = class Moves {
             return moves;
         }
 
+        // TODO: Same situation as above
         // Generate move for the first not finished color
         for (const color of colorList) {
             let posMoves = Neighbours.possibleMoves(node.mapState, color);
