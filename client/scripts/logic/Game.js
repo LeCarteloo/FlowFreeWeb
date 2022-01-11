@@ -132,37 +132,6 @@ class Game {
         
         //! ## Visualizing
         if(!this.isMapDrawn) {
-
-        // this.context.globalAlpha = 0.2;
-        // this.context.fillStyle = 'aqua';
-        // this.context.fillRect(4 * this.tileW, 4 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
-        // this.context.globalAlpha = 0.2;
-        // this.context.fillStyle = 'aqua';
-        // this.context.fillRect(5 * this.tileW, 5 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
-        // this.context.globalAlpha = 0.2;
-        // this.context.fillStyle = 'aqua';
-        // this.context.fillRect(5 * this.tileW, 4 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
-        // this.context.globalAlpha = 0.2;
-        // this.context.fillStyle = 'aqua';
-        // this.context.fillRect(4 * this.tileW, 5 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
-        // this.context.globalAlpha = 0.7;
-        // this.context.fillStyle = '#4545f7';
-        // this.context.fillRect(1 * this.tileW, 2 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
-        // this.context.globalAlpha = 0.7;
-        // this.context.fillStyle = '#4545f7';
-        // this.context.fillRect(1 * this.tileW, 3 * this.tileW, this.tileW, this.tileH);
-        // this.context.globalAlpha = 1.0;
-
         // this.drawSectorNumber(1);
         // this.drawSectorNumber(2);
 
@@ -197,19 +166,19 @@ class Game {
         //     }
         // }
 
-        this.drawAfterGlow('1');
+        // this.drawAfterGlow('1');
 
 
-        for (let y = 0; y < this.mapSize; y++) {
-            for (let x = 0; x < this.mapSize; x++) {
-                if(this.gameMap[y][x] == 1 || this.gameMap[y][x] == 2) {
-                    this.drawText(x, y, 'white');
-                }
-            }
-        }   
+        // for (let y = 0; y < this.mapSize; y++) {
+        //     for (let x = 0; x < this.mapSize; x++) {
+        //         if(this.gameMap[y][x] == 1 || this.gameMap[y][x] == 2) {
+        //             this.drawText(x, y, 'white');
+        //         }
+        //     }
+        // }   
 
-        // this.drawPipe('#4545f7', {Y: 1, X: 1}, {Y: 2, X: 1});
-        // this.drawPipe('#4545f7', {Y: 2, X: 1}, {Y: 3, X: 1});       
+        // this.drawPipe('yellow', {Y: 4, X: 4}, {Y: 3, X: 4});
+        // this.drawPipe('yellow', {Y: 4, X: 4}, {Y: 4, X: 3});       
         }
 
 
@@ -319,8 +288,9 @@ class Game {
                     // Saving the moves for drawing map later
                     this.moves[this.gameMap[mouseMoveY][mouseMoveX].toUpperCase()].coords.push({Y: mouseMoveY, X: mouseMoveX})
                     
+
                     // Drawing the pipe     
-                    this.drawPipe(Colors[this.gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition)
+                    this.drawPipe(Colors[this.gameMap[startPosition.Y][startPosition.X]], previousPosition, currentPosition);
                 }
             }
 
@@ -402,10 +372,9 @@ class Game {
             for (var x = 0; x < this.mapSize; x++) {
                 if(this.gameMap[y][x].toUpperCase() == point) {
                     this.context.globalAlpha = alpha;
-                    this.context.fillStyle = 'gray';
+                    this.context.fillStyle = Colors[this.gameMap[y][x].toUpperCase()];
                     this.context.fillRect(x * this.tileW, y * this.tileW, this.tileW, this.tileH);
                     this.context.globalAlpha = 1.0;
-                    console.log("HMM");
                 }
             }
         }
@@ -485,14 +454,19 @@ class Game {
 
 
 let map = [
-    ['R', '0', '1', '1', '1', '1'],
-    ['B', '0', '1', '1', 'B', 'R'],
-    ['0', '0', '0', '1', '1', 'Y'],
-    ['0', 'G', 'A', '1', '1', '1'],
-    ['0', '1', '1', '1', 'G', 'A'],
-    ['Y', 'O', '1', '1', '1', 'O'],
+    ['0', '0', '0', 'R', 'G'],
+    ['R', '0', '0', '0', '0'],
+    ['0', '0', 'Y', '0', '0'],
+    ['0', '0', '0', 'B', '0'],
+    ['G', 'B', 'Y', '0', '0'],
 ];
 
+
+// ['0', '0', '0', '0', '0'],
+// ['B', 'G', '0', 'G', '0'],
+// ['R', '0', '0', '0', '0'],
+// ['0', 'B', '0', 'R', 'Y'],
+// ['0', '0', '0', 'Y', '0'],
 
 // [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
 // [9, 0, 0, 0, 0, 9, 9, 9, 9, 9],
@@ -529,6 +503,6 @@ let map = [
 //     }
 // };
 
-let game = new Game('game', true);
-game.initialize(map, 6, 6);
+// let game = new Game('game', true);
+// game.initialize(map, 5, 5);
 

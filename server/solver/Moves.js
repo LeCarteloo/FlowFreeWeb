@@ -25,65 +25,53 @@ module.exports = class Moves {
                 const current = tempNode.mapState.current[i].Y;
 
                 let neighbourMoves = Neighbours.allNeighbours(current.Y, current.X);
+                let tilesCounter = 0;
 
-                let test = 0;
-                let freeTiles1 = 0;
+                // Node must have only one neighbour 
+                if(neighbourMoves.length != 1) {
+                    return false;
+                }
 
                 for (const nMove of neighbourMoves) {
-                    //TODO: This really needs to be written diffrently
-                    if (nMove.X < GameMap.size - 1 && tempNode.mapState.map[nMove.Y][nMove.X + 1] == '0') {
-                        test++;
+                    if(nMove.X < GameMap.size - 1 && tempNode.mapState.map[nMove.Y][nMove.X + 1] == '|') {
+                        tilesCounter++;
                     }
-                    else if(nMove.X < GameMap.size - 1 && tempNode.mapState.map[nMove.Y][nMove.X + 1] == '|') {
-                        freeTiles1++;
+                    if (nMove.Y < GameMap.size - 1 && tempNode.mapState.map[nMove.Y + 1][nMove.X] == '|') {
+                        tilesCounter++;
                     }
-                    if (nMove.Y < GameMap.size - 1 && tempNode.mapState.map[nMove.Y + 1][nMove.X] == '0') {
-                        test++;
+                    if (nMove.X > 0 && tempNode.mapState.map[nMove.Y][nMove.X - 1] == '|') {
+                        tilesCounter++;
                     }
-                    else if (nMove.Y < GameMap.size - 1 && tempNode.mapState.map[nMove.Y + 1][nMove.X] == '|') {
-                        freeTiles1++;
-                    }
-                    if (nMove.X > 0 && tempNode.mapState.map[nMove.Y][nMove.X - 1] == '0') {
-                        test++;
-                    }
-                    else if (nMove.X > 0 && tempNode.mapState.map[nMove.Y][nMove.X - 1] == '|') {
-                        freeTiles1++;
-                    }
-                    if (nMove.Y > 0 && tempNode.mapState.map[nMove.Y - 1][nMove.X] == '0') {
-                        test++;
-                    }
-                    else if (nMove.Y > 0 && tempNode.mapState.map[nMove.Y - 1][nMove.X] == '|') {
-                        freeTiles1++;
+                    if (nMove.Y > 0 && tempNode.mapState.map[nMove.Y - 1][nMove.X] == '|') {
+                        tilesCounter++;
                     }
 
                     for (let j = 0; j < GameMap.numberOfColors; j++) {
-                        // console.log("CUR", tempNode.mapState.current[c]);
-                        // console.log("END", GameMap.endPoint[c]);
                         if(tempNode.isFinished(j) || j == i) {
                             continue;
                         }
 
-                        if((nMove.X - 1 == tempNode.mapState.current[j].X
-                        && nMove.Y == tempNode.mapState.current[j].Y)) {
-                            freeTiles1++;
+                        if(nMove.X - 1 == tempNode.mapState.current[j].X
+                        && nMove.Y == tempNode.mapState.current[j].Y) {
+                            tilesCounter++;
                         }
-                        if((nMove.X + 1 == tempNode.mapState.current[j].X
-                        && nMove.Y == tempNode.mapState.current[j].Y)) {
-                            freeTiles1++;
+                        if(nMove.X + 1 == tempNode.mapState.current[j].X
+                        && nMove.Y == tempNode.mapState.current[j].Y) {
+                            tilesCounter++;
                         }
-                        if((nMove.X  == tempNode.mapState.current[j].X
-                        && nMove.Y - 1 == tempNode.mapState.current[j].Y)) {
-                            freeTiles1++;
+                        if(nMove.X  == tempNode.mapState.current[j].X
+                        && nMove.Y - 1 == tempNode.mapState.current[j].Y) {
+                            tilesCounter++;
 
                         }
-                        if((nMove.X == tempNode.mapState.current[j].X
-                        && nMove.Y + 1 == tempNode.mapState.current[j].Y)) {
-                            freeTiles1++;
+                        if(nMove.X == tempNode.mapState.current[j].X
+                        && nMove.Y + 1 == tempNode.mapState.current[j].Y) {
+                            tilesCounter++;
                         }
                     }
                 }
 
-                if(test == 1 && freeTiles1 == 0) {
+                if(tilesCounter == 0) {
                     // console.log("FORCED2");
                     return [move, i];
                 }            
@@ -102,7 +90,6 @@ module.exports = class Moves {
 
     // Making move on the given node - moving specific color with given cost to the given position
     static makeMove(node, moveTo, color, cost) {
-        // node.parent = _.cloneDeep(node);
         node.g += cost;
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
@@ -117,7 +104,7 @@ module.exports = class Moves {
             let moves = Neighbours.possibleMoves(node.mapState, color);
             for (const move of moves) {
                 if(move.X == GameMap.endPoint[color].X && move.Y == GameMap.endPoint[color].Y) {
-                    this.makeMove(node, move, color, 0);
+                   this.makeMove(node, move, color, 0);
                 }
             }
         }
@@ -151,23 +138,12 @@ module.exports = class Moves {
             return moves;
         }
 
-        // TODO: Probably is not needed (check it and then remove)
         // Check how many colors are still unfinished
-        let colorList = [];
-        for (let i = 0; i < GameMap.numberOfColors; i++) {
-            if(node.isFinished(i)) {
-                continue;
-            }
-            colorList.push(i);
-        }
+        let allColors = [...Array(GameMap.numberOfColors).keys()];
+        let availableColors = allColors.filter(x => !node.mapState.finishedPoints.includes(x));
 
-        if(colorList.length == 0) {
-            return moves;
-        }
-
-        // TODO: Same situation as above
         // Generate move for the first not finished color
-        for (const color of colorList) {
+        for (const color of availableColors) {
             let posMoves = Neighbours.possibleMoves(node.mapState, color);
 
             for (const posMove of posMoves) {
@@ -182,6 +158,7 @@ module.exports = class Moves {
             it's finished (not counting forced moves) */
             break;
         }
+
         return moves;
     }
 }

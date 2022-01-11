@@ -17,7 +17,6 @@ module.exports = class GameMap {
         this.startPoint = points.startPoint;
         this.endPoint = points.endPoint;
         this.map = gameMap; //_.cloneDeep(gameMap)
-        this.finishedPoints = [];
     }
 
     static findPoints(gameMap) {

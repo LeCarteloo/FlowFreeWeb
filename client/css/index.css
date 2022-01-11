@@ -90,7 +90,12 @@ body {
 #start-game:active::before  {
     background: rgb(60, 114, 62);
 }
-
+.hints-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .or {
     margin-top: 10px;
 }
@@ -182,7 +187,15 @@ input[type=number] {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    /* background-color: red; */
+    transition: .5s;
+}
+.game-buttons {
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    transition: .5s;
+    justify-content: space-evenly;
 }
 #start-options {
     position: absolute;
@@ -313,7 +326,7 @@ input:checked + .slider:before {
 }
 #winner-increase, #winner-reduce, 
 #loser-increase, #loser-reduce {
-    display: none;
+    /* display: none; */
 }
 @keyframes leftArrow {
     0% {

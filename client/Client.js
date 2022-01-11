@@ -75,7 +75,7 @@ let loserMoves = [];
 
 
 // Connecting client to and server room
-socket.on('serverMsg', (data) => {
+socket.on('sendCode', (data) => {
     console.log(data);
     clientRoom = data;
 });
@@ -107,8 +107,10 @@ socket.on('updateInput', updateInput);
 socket.on('updateSwitch', updateSwitch);
 socket.on('gameEnded', gameEnded);
 socket.on('displayResult', displayResult);
+socket.on('resetUI', handleResetUI);
 
 createRoom.addEventListener('click', () => {
+    startGameBtn.style.display = "block";
     socket.emit('setNickname', nickname.value);
     socket.emit('createRoom');
 });
@@ -178,7 +180,7 @@ canTouch.addEventListener('click', () => {
 });
 
 resetUi.addEventListener('click', () => {
-    resetUI();
+    handleResetUI();
 });
 
 function animatePoints(pointsId, infoId, pointsW, pointsL, callback) {
@@ -290,7 +292,6 @@ function addKeyPressEvent(inputArray) {
 
 function gameEnded(data) {
     endScreen.classList.add('move');
-
     animateEndScreen(
         'winner-points', 
         'winner-info', 
@@ -299,6 +300,8 @@ function gameEnded(data) {
         true
     );
     
+    console.log(data);
+
     const winner = document.getElementById('winner-name');
     const loser = document.getElementById('loser-name');
     winner.innerText = data.won.nickname;
@@ -374,7 +377,7 @@ function init() {
     lobbyOptions.style.display = "flex";
 }
 
-function resetUI() {
+function handleResetUI() {
     startScreen.style.display = "flex";
     lobbyOptions.style.display = "none";
     gameScreen.style.display = "none";
@@ -392,14 +395,18 @@ function resetUI() {
     loserMaps = [];
     loserIndex = 0;
     loserMoves = [];
-    rows[0].display = "none";
-    rows[1].display = "none";
+    rows[0].style.display = "none";
+    rows[1].style.display = "none";
     users[0].innerText = "";
     users[1].innerText = "";
 }
 
 function handleUserConnected(players) {
     init();
+    rows[0].style.display = "none";
+    rows[1].style.display = "none";
+    users[0].innerText = "";
+    users[1].innerText = "";
     for (let i = 1; i <= players.length; i++) {
         // Display users
         rows[i - 1].style.display = "flex";

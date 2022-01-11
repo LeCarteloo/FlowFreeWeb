@@ -10,7 +10,6 @@ describe('Try to solve map (Cannot touch)', () => {
     });
     
     test("Map is solvable", () => {
-        
         const map = [
             ['B', '0', '0', '0', 'G'],
             ['0', '0', 'R', '0', '0'],

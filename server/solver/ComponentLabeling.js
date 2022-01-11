@@ -174,7 +174,6 @@ module.exports = class ComponentLabeling {
 
   // Add points to detected sectors
   #addPointsToSectors(mapState) {
-    // TODO: IMPORTANT NUMBER OF SECTORS COULD BE LARGER THAN NUMBER OF COLORS
     for (let i = 0; i <= this.numberOfSectors.length; i++) {
       this.currentPoint[i] = '';
       this.endPoint[i] = '';
