@@ -323,6 +323,16 @@ function gameEnded(data) {
     loserGame = new Game('loser-maps', false);
     loserGame.initialize(loserMaps[0], data.colors, data.size, loserMoves[0], loserColors[0]);
 
+    console.log(winnerMaps.length);
+    console.log(winnerMaps);
+    if(winnerMaps.length == 1) {
+            winnerIncrease.style.display = "none";
+            winnerReduce.style.display = "none";
+            loserIncrease.style.display = "none";
+            loserReduce.style.display = "none";
+            return;
+    }
+    
     addChangeEvent(true, winnerMaps, winnerMoves, winnerColors, winnerIndex, winnerGame, winnerIncrease);
     addChangeEvent(false, winnerMaps, winnerMoves, winnerColors, winnerIndex, winnerGame, winnerReduce);
     addChangeEvent(true, loserMaps, loserMoves, loserColors, loserIndex, loserGame, loserIncrease);

@@ -217,7 +217,7 @@ class Game {
                     }
                 }
                 // Clearing the points and squares if the points are not connected
-                // this.clearNotConntectedPipes(mouseX, mouseY);
+                this.clearNotConntectedPipes(mouseX, mouseY);
             }
         }
         else {

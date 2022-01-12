@@ -100,7 +100,8 @@ io.on("connection", (socket) => {
 
     // Join to given game code
     socket.join(gameCode);
-    socket.emit("serverMsg", gameCode);
+    socket.emit("sendCode", gameCode);
+
     // Change scene
     socket.emit("init");
 
@@ -129,6 +130,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startGame", (options) => {
+
+    if(options.mapNumber == 1) {
+      io.to(options.roomCode).emit("hideButton");
+    }
+
     // Showing to all users progress bar
     io.to(options.roomCode).emit("showProgress");
 
@@ -148,7 +154,6 @@ io.on("connection", (socket) => {
             // Hiding progress bar
             io.to(options.roomCode).emit("hideProgress");
 
-            const clients = io.sockets.adapter.rooms.get(options.roomCode);
 
             // Adding number of hints to all connected clients
             for (const id of clients) {
@@ -156,30 +161,13 @@ io.on("connection", (socket) => {
                 (player) => player.id == id
               );
               player.hints = parseInt(options.hintsAmount);
-              for (let i = 0; i < 2; i++) {
+              for (let i = 0; i < options.mapNumber; i++) {
                 player.finishedMaps.push([]);
                 player.solvedColors.push([]);
                 player.moves.push([]);
               }
             }
 
-            // Check who is starting the game (only the creator of lobby can start)
-            if (clients.entries().next().value[0] != socket.id) {
-              socket.emit("displayAlert", {
-                type: "error",
-                text: "You are not a lobby creator!",
-              });
-              return;
-            }
-
-            // Game cannot be started when there is only one user connected
-            if (clients.size <= 1) {
-              socket.emit("displayAlert", {
-                type: "error",
-                text: "Not enough players!",
-              });
-              return;
-            }
             // Add generated maps to the room info
             rooms[options.roomCode].maps = resolve.maps;
             rooms[options.roomCode].options = options;
@@ -242,7 +230,7 @@ io.on("connection", (socket) => {
                 //! Disconnect player after finish (stack)
                 // socket.leave();
               }
-            }, options.timeLimit * 3000);
+            }, options.timeLimit * 60000);
 
             io.to(options.roomCode).emit("startTimer", options.timeLimit);
             io.to(options.roomCode).emit("hostGameStart", resolve.maps[0]);
@@ -259,10 +247,44 @@ io.on("connection", (socket) => {
       });
     }
 
+    const clients = io.sockets.adapter.rooms.get(options.roomCode);
+
+    // Check who is starting the game (only the creator of lobby can start)
+    if (clients.entries().next().value[0] != socket.id) {
+      socket.emit("displayAlert", {
+        type: "error",
+        text: "You are not a lobby creator!",
+      });
+      // Hiding progress bar
+      io.to(options.roomCode).emit("hideProgress");
+      return;
+    }
+
+    // Game cannot be started when there is only one user connected
+    if (clients.size <= 1) {
+      socket.emit("displayAlert", {
+        type: "error",
+        text: "Not enough players!",
+      });
+      // Hiding progress bar
+      io.to(options.roomCode).emit("hideProgress");
+      return;
+    }
+
     runGenerateWorker(options);
   });
 
   socket.on("changeMap", (mapInfo) => {
+
+    if(rooms[mapInfo.gameCode].maps.length == 1) {
+      socket.emit("displayAlert", {
+        type: "error",
+        text: "There is only one map!",
+      });
+      socket.emit("hideButton");
+      return;
+    }
+
     const mapIndex = rooms[mapInfo.gameCode].maps.indexOfArray(
       mapInfo.startMap
     );

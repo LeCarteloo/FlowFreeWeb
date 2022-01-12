@@ -8,6 +8,7 @@
     pointer-events: none;
     /* IE11 */
     background: none !important;
+    z-index: 5;
 }
 .alertDiv {
     transform: translateX(-300px);
