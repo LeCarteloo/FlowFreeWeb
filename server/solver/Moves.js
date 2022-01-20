@@ -89,7 +89,7 @@ module.exports = class Moves {
     }
 
     // Making move on the given node - moving specific color with given cost to the given position
-    static makeMove(node, moveTo, color, cost) {
+    static moveNode(node, moveTo, color, cost) {
         node.g += cost;
         node.updateMapState(color, moveTo);
         node.h = node.manhattan();
@@ -104,7 +104,7 @@ module.exports = class Moves {
             let moves = Neighbours.possibleMoves(node.mapState, color);
             for (const move of moves) {
                 if(move.X == GameMap.endPoint[color].X && move.Y == GameMap.endPoint[color].Y) {
-                   this.makeMove(node, move, color, 0);
+                   this.moveNode(node, move, color, 0);
                 }
             }
         }
@@ -119,7 +119,7 @@ module.exports = class Moves {
 
     /* Make all possible moves of given node. Start with forced moves, then
     generate moves for the first color or if it is finished take another one */
-    static makeAllMoves(node) {
+    static generateMoves(node) {
 
         let forced = this.forcedMoves(node);
         let moves = [];
@@ -128,7 +128,7 @@ module.exports = class Moves {
         if(forced != false) {
             // Perform all the forced moves on the current map state
             while(forced != false) {
-                var forcedNode = this.makeMove(node, forced[0], forced[1] , 0);
+                var forcedNode = this.moveNode(node, forced[0], forced[1] , 0);
                 if(forcedNode == null) {
                     return moves;
                 }
@@ -148,7 +148,7 @@ module.exports = class Moves {
 
             for (const posMove of posMoves) {
 
-                let newNode = Moves.makeMove(_.cloneDeep(node), posMove, color, 1);
+                let newNode = Moves.moveNode(_.cloneDeep(node), posMove, color, 1);
 
                 if(newNode != null) {
                     moves.push(newNode);

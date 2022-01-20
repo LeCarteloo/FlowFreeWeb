@@ -7,7 +7,7 @@ const io = require("socket.io")(server);
 const { performance, PerformanceObserver } = require("perf_hooks");
 const Points = require("./Points");
 const { Worker } = require("worker_threads");
-const _ = require('lodash');
+const _ = require("lodash");
 
 // Static file for express server
 app.use(express.static("client"));
@@ -48,6 +48,7 @@ io.on("connection", (socket) => {
     // Create room object
     rooms[roomCode] = {
       isPlaying: false,
+      isFinished: false,
       options: {},
       maps: [],
       players: [],
@@ -78,11 +79,8 @@ io.on("connection", (socket) => {
       return;
     }
 
-    // Check if game code exists
-    const clients = io.sockets.adapter.rooms.get(gameCode);
-
-    // Room with given game code doesn't exist
-    if (!clients) {
+    // Check if room with given game code exist
+    if (!rooms.hasOwnProperty(gameCode)) {
       socket.emit("displayAlert", { type: "error", text: "Unknown room!" });
       return;
     }
@@ -92,7 +90,9 @@ io.on("connection", (socket) => {
       return;
     }
 
-    let numberOfClients = clients.size;
+    // Check how many clients are connected
+    const numberOfClients = rooms[gameCode].players.length;
+
     if (numberOfClients > 1) {
       socket.emit("displayAlert", { type: "error", text: "Room is full!" });
       return;
@@ -117,10 +117,6 @@ io.on("connection", (socket) => {
       hints: 0,
     });
 
-    //! Debug
-    // console.log(rooms);
-    // console.log(numberOfClients, clients);
-
     // Emit userConnected event to everyone connected to current room
     io.to(gameCode).emit("userConnected", rooms[gameCode].players);
     socket.emit("displayAlert", {
@@ -130,8 +126,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startGame", (options) => {
-
-    if(options.mapNumber == 1) {
+    if (options.mapNumber == 1) {
       io.to(options.roomCode).emit("hideButton");
     }
 
@@ -154,7 +149,6 @@ io.on("connection", (socket) => {
             // Hiding progress bar
             io.to(options.roomCode).emit("hideProgress");
 
-
             // Adding number of hints to all connected clients
             for (const id of clients) {
               const player = rooms[options.roomCode].players.find(
@@ -174,7 +168,8 @@ io.on("connection", (socket) => {
 
             // TODO: It should start only when maps are generated
             setTimeout(() => {
-              if(rooms[options.roomCode].players.length >= 2) {
+              rooms[options.roomCode].isFinished = true;
+              if (rooms[options.roomCode].players.length >= 2) {
                 const players = rooms[options.roomCode].players;
                 const mostPoints = Math.max.apply(
                   Math,
@@ -275,8 +270,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("changeMap", (mapInfo) => {
-
-    if(rooms[mapInfo.gameCode].maps.length == 1) {
+    if (rooms[mapInfo.gameCode].maps.length == 1) {
       socket.emit("displayAlert", {
         type: "error",
         text: "There is only one map!",
@@ -493,35 +487,44 @@ io.on("connection", (socket) => {
     io.to(player.id).emit("updateSwitch", data);
   });
 
+  socket.on("leaveRoom", () => {
+    disconnect();
+    socket.emit("resetUi");
+  });
+
   socket.on("disconnect", () => {
+    disconnect();
+    socket.disconnect();
+  });
+
+  function disconnect() {
     // Finding from which room user left
     const gameCode = Object.keys(rooms).find((key) =>
       rooms[key].players.find((player) => player.id == socket.id)
     );
-    
+
     // If user was not in room just disconnect player
-    if(gameCode == null) {
+    if (gameCode == null) {
       return;
     }
-    
+
     const index = rooms[gameCode].players.findIndex(
       (player) => player.id == socket.id
     );
-    
+
     const players = _.cloneDeep(rooms[gameCode].players);
 
     rooms[gameCode].players.splice(index, 1);
 
     // Removing player for lobby
-    if(!rooms[gameCode].isPlaying) {
-
-      if(index == 0) {
+    if (!rooms[gameCode].isPlaying) {
+      if (index == 0) {
         rooms = _.omit(rooms, gameCode);
         io.to(gameCode).emit("displayAlert", {
           type: "error",
           text: "Game host left!",
         });
-        io.to(gameCode).emit("resetUI");
+        io.to(gameCode).emit("resetUi");
         return;
       }
 
@@ -532,7 +535,6 @@ io.on("connection", (socket) => {
 
       io.to(gameCode).emit("userConnected", rooms[gameCode].players);
     } else {
-
       for (const player of players) {
         // If user didn't provide one of maps it is added from started maps
         for (let i = 0; i < player.finishedMaps.length; i++) {
@@ -544,6 +546,11 @@ io.on("connection", (socket) => {
         }
       }
 
+      // If the game is already finished then don't show any winners
+      if (rooms[gameCode].isFinished) {
+        return;
+      }
+
       io.to(gameCode).emit("displayAlert", {
         type: "error",
         text: "User disconnected!",
@@ -552,13 +559,13 @@ io.on("connection", (socket) => {
       io.to(gameCode).emit("displayResult", "You won!");
 
       // If user didn't provide one of maps it is added from started maps
-      io.to(gameCode).emit("gameEnded", {
+      io.to(players[0].id).emit("gameEnded", {
         won: players[0],
         lost: players[1],
         size: rooms[gameCode].options.mapSize,
         colors: rooms[gameCode].options.colorAmount,
       });
-
     }
-  });
+    return;
+  }
 });

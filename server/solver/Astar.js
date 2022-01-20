@@ -55,7 +55,7 @@ module.exports = class Astar {
                 return {isSolved: true, map: pickedNode.mapState.map, foundColors: GameMap.foundColors};
             }
             // Generated moves for next node
-            let nodeList = Moves.makeAllMoves(_.cloneDeep(pickedNode));    
+            let nodeList = Moves.generateMoves(_.cloneDeep(pickedNode));    
 
             // For every generated moves add to openList and sort it
             nodeList.forEach(nodeElem => {

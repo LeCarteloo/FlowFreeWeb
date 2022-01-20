@@ -1,127 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Flow Free Multiplayer</title>
-    <script src="https://kit.fontawesome.com/b2771ccf1d.js" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/alert.css">
-</head>
-<body>
+    <script
+      src="https://kit.fontawesome.com/b2771ccf1d.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/alert.css" />
+  </head>
+  <body>
     <div id="start-screen">
-        <canvas id="start-canvas"></canvas>
-        <script src="/scripts/animations/StartCanvas.js"></script>
-        <script src="/scripts/animations/Path.js"></script>
-        <div id="start-options">
-            <h1 class="title">Flow Free Multiplayer</h1>
-            <div class="buttons-group">
-                <h3>Set your nickname!</h3>
-                <input type="text" placeholder="Nickname" id="nickname" value="ellooo" autocomplete="off" value=''>
-                <br><br><br>
-                <h3>Start your game!</h3>
-                <br>
-                <button type="submit" id="create-room"><span>Create new game</span></button>
-                <div class='or'>OR</div>
-                <input type="text" placeholder="Game Code" id="game-code" autocomplete="off">
-                <button type="submit" id="join-room"><span>Join room</span></button>
-            </div>
+      <canvas id="start-canvas"></canvas>
+      <script src="/scripts/animations/StartCanvas.js"></script>
+      <script src="/scripts/animations/Path.js"></script>
+      <div id="start-options">
+        <h1 class="title">Flow Free Multiplayer</h1>
+        <div class="buttons-group">
+          <h3>Set your nickname!</h3>
+          <input
+            type="text"
+            placeholder="Nickname"
+            id="nickname"
+            value="ellooo"
+            autocomplete="off"
+            value=""
+          />
+          <br /><br /><br />
+          <h3>Start your game!</h3>
+          <br />
+          <button type="submit" id="create-room">
+            <span>Create new game</span>
+          </button>
+          <div class="or">OR</div>
+          <input
+            type="text"
+            placeholder="Game Code"
+            id="game-code"
+            autocomplete="off"
+          />
+          <button type="submit" id="join-room"><span>Join room</span></button>
         </div>
+      </div>
     </div>
-    
+
     <div id="lobby-options">
-        <div class="players">
-            <div class="row" id="row-one">
-                <h3>Your game code is: <span id="code-display"></span></h3>
-            </div>
-            <div class="row" id="row-two">
-                <div class="player pl-one"></div>
-                <span class="username" id="user-one">Username1</span>
-            </div>
-            <div class="row" id="row-three">
-                <div class="player pl-two"></div>
-                <span class="username" id="user-two">Username2</span>
-            </div>
+      <button type="submit" id="leave-room">
+        <i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby
+      </button>
+      <div class="players">
+        <div class="row" id="row-one">
+          <h3>Your game code is: <span id="code-display"></span></h3>
         </div>
-        <div class="lobby-group">
-            <br>
-            <div class="group-options">
-                <h3>Lobby Settings</h3>
-                <br>
-                Number of hints 
-                <input type="number" class='option' id='hints-amount' value='4'>
-                Time limit 
-                <input type="number" class='option' id='time-limit' value='1'>
-                Map size 
-                <input type="number" class='option' id='map-size' value='5'>
-                Number of colors 
-                <input type="number" class='option' id='color-amount' value='5'>
-                Map number 
-                <input type="number" class='option' id='map-number' value='2'>
-                Pipes can touch
-                <label class="switch">
-                    <input type="checkbox" id='can-touch' checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <br>
-            <button type="submit" id='start-game'><span>START GAME</span></button>
-            <br>
+        <div class="row" id="row-two">
+          <div class="player pl-one"></div>
+          <span class="username" id="user-one">Username1</span>
         </div>
+        <div class="row" id="row-three">
+          <div class="player pl-two"></div>
+          <span class="username" id="user-two">Username2</span>
+        </div>
+      </div>
+      <div class="lobby-group">
+        <br />
+        <div class="group-options">
+          <h3>Lobby Settings</h3>
+          <br />
+          Number of hints
+          <input type="number" class="option" id="hints-amount" value="4" />
+          Time limit
+          <input type="number" class="option" id="time-limit" value="1" />
+          Map size
+          <input type="number" class="option" id="map-size" value="5" />
+          Number of colors
+          <input type="number" class="option" id="color-amount" value="5" />
+          Map number
+          <input type="number" class="option" id="map-number" value="2" />
+          Pipes can touch
+          <label class="switch">
+            <input type="checkbox" id="can-touch" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <br />
+        <button type="submit" id="start-game"><span>START GAME</span></button>
+        <br />
+      </div>
     </div>
 
     <div id="game-screen">
-        <section class="game-section">
-            <div class="game-info">
-                <span id="time-display">00:00</span>
-                <span id="points-display">0 points</span>
-            </div>
-            <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
-            <div class="game-buttons">
-                <div class="hints-box">
-                    <button id="hints-btn" type="submit"><span>Use hint</span></button>
-                    <span id="hints-display">Hints remaining: ?</span>
-                </div>
-                <button id="change-btn" type="submit"><span>Next map</span></button>
-            </div>
-        </section>
+      <section class="game-section">
+        <div class="game-info">
+          <span id="time-display">00:00</span>
+          <span id="points-display">0 points</span>
+        </div>
+        <canvas
+          id="game"
+          width="700"
+          height="700"
+          style="border: solid 2px #fff"
+        ></canvas>
+        <div class="game-buttons">
+          <div class="hints-box">
+            <button id="hints-btn" type="submit"><span>Use hint</span></button>
+            <span id="hints-display">Hints remaining: ?</span>
+          </div>
+          <button id="change-btn" type="submit"><span>Next map</span></button>
+        </div>
+      </section>
     </div>
     <div class="progress-alert">
-        <div class="bar-box">
-            <div class="progress-bar" progress="0"></div>
-        </div>
-        <div class="info-box">
-            <span id="progress-info">Initalizing...</span>
-        </div>
+      <div class="bar-box">
+        <div class="progress-bar" progress="0"></div>
+      </div>
+      <div class="info-box">
+        <span id="progress-info">Initalizing...</span>
+      </div>
     </div>
 
     <div class="end-screen" id="end-screen">
-        <span id="result"></span>
-        <div class="end-info">
-            <div class="winner-info" id="winner-info">
-                <span id="winner-name">Nickname</span>
-                <span id="winner-points">0 points</span>
-                <div class="canvas-box">
-                    <button type="submit" class="arrow-btn left" id="winner-increase"><i class="fas fa-4x fa-chevron-left"></i></button>
-                    <canvas width="500" height="500" id="winner-maps"></canvas>
-                    <button type="submit" class="arrow-btn right" id="winner-reduce"><i class="fas fa-4x fa-chevron-right"></i></button>
-                </div>
-            </div>
-            <div class="loser-info" id="loser-info">
-                <span id="loser-name">Nickname</span>
-                <span id="loser-points">0 points</span>
-                <div class="canvas-box">
-                    <button type="submit" class="arrow-btn left" id="loser-increase"><i class="fas fa-4x fa-chevron-left"></i></button>
-                    <canvas width="500" height="500" id="loser-maps"></canvas>
-                    <button type="submit" class="arrow-btn right" id="loser-reduce"><i class="fas fa-4x fa-chevron-right"></i></button>
-                </div>
-            </div>
-            <button type="submit" id="reset-ui"><i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby</button>
+      <button class="leave-btn" type="submit" id="leave-room1">
+        <i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby
+      </button>
+      <span id="result"></span>
+      <div class="end-info">
+        <div class="winner-info" id="winner-info">
+          <span id="winner-name">Nickname</span>
+          <span id="winner-points">0 points</span>
+          <div class="canvas-box">
+            <button type="submit" class="arrow-btn left" id="winner-increase">
+              <i class="fas fa-4x fa-chevron-left"></i>
+            </button>
+            <canvas width="500" height="500" id="winner-maps"></canvas>
+            <button type="submit" class="arrow-btn right" id="winner-reduce">
+              <i class="fas fa-4x fa-chevron-right"></i>
+            </button>
+          </div>
         </div>
+        <div class="loser-info" id="loser-info">
+          <span id="loser-name">Nickname</span>
+          <span id="loser-points">0 points</span>
+          <div class="canvas-box">
+            <button type="submit" class="arrow-btn left" id="loser-increase">
+              <i class="fas fa-4x fa-chevron-left"></i>
+            </button>
+            <canvas width="500" height="500" id="loser-maps"></canvas>
+            <button type="submit" class="arrow-btn right" id="loser-reduce">
+              <i class="fas fa-4x fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="alertBox"></div>
@@ -132,12 +170,12 @@
     <script src="/scripts/logic/enums/Positions.js"></script>
     <script src="/scripts/logic/Game.js"></script>
     <script src="/scripts/logic/Draw.js"></script>
-    
+
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>
     <!-- Client scripts -->
     <script src="Client.js"></script>
     <!-- Animations -->
     <script src="/scripts/animations/Buttons.js"></script>
-</body>
+  </body>
 </html>
