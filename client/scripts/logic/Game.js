@@ -14,6 +14,7 @@ class Game {
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
     this.isPlayable = isPlayable;
+    this.draw = null;
 
     if (!isPlayable) {
       return;
@@ -47,6 +48,14 @@ class Game {
         divided by map size. Map size is always a square */
     this.tileW = this.canvas.width / this.mapSize;
     this.tileH = this.canvas.height / this.mapSize;
+
+    this.draw = new Draw(
+      this.context,
+      true,
+      this.tileW,
+      this.tileH,
+      this.gameMap
+    );
 
     requestAnimationFrame(this.drawGame.bind(this));
   }
@@ -105,7 +114,7 @@ class Game {
               this.tileW - 1,
               this.tileH - 1
             );
-            this.drawSquares(x, y);
+            this.draw.drawSquares(x, y);
           }
 
           // Clearing points
@@ -119,8 +128,8 @@ class Game {
               this.tileW - 1,
               this.tileH - 1
             );
-            this.drawSquares(x, y);
-            this.drawPoint(x, y);
+            this.draw.drawSquares(x, y);
+            this.draw.drawPoint(x, y);
           }
         }
       }
@@ -149,8 +158,8 @@ class Game {
       for (var x = 0; x < this.mapSize; x++) {
         // Full map with points is drawn only once (at startup)
         if (!this.isMapDrawn) {
-          this.drawSquares(x, y);
-          this.drawPoint(x, y);
+          this.draw.drawSquares(x, y);
+          this.draw.drawPoint(x, y);
         }
       }
     }
@@ -159,9 +168,9 @@ class Game {
       for (const solvedColor of this.solvedColors) {
         const move = this.moves[solvedColor].coords;
         for (let i = 1; i < move.length; i++) {
-          this.drawPipe(Colors[solvedColor], move[i - 1], move[i]);
+          this.draw.drawPipe(Colors[solvedColor], move[i - 1], move[i]);
         }
-        this.drawAfterGlow(solvedColor);
+        this.draw.drawAfterGlow(solvedColor);
       }
     }
 
@@ -290,7 +299,7 @@ class Game {
           ].coords.push({ Y: mouseMoveY, X: mouseMoveX });
 
           // Drawing the pipe
-          this.drawPipe(
+          this.draw.drawPipe(
             Colors[this.gameMap[startPosition.Y][startPosition.X]],
             previousPosition,
             currentPosition
@@ -365,11 +374,11 @@ class Game {
 
             // TODO: Should be written better
             // Redrawing squares and points (clearing the pipes from game map)
-            this.drawSquares(startPosition.X, startPosition.Y);
-            this.drawSquares(endPosition.X, endPosition.Y);
-            this.drawSquares(x, y);
-            this.drawPoint(startPosition.X, startPosition.Y);
-            this.drawPoint(endPosition.X, endPosition.Y);
+            this.draw.drawSquares(startPosition.X, startPosition.Y);
+            this.draw.drawSquares(endPosition.X, endPosition.Y);
+            this.draw.drawSquares(x, y);
+            this.draw.drawPoint(startPosition.X, startPosition.Y);
+            this.draw.drawPoint(endPosition.X, endPosition.Y);
           }
         }
       }
@@ -378,13 +387,13 @@ class Game {
     // Drawing pipe to end point
     else {
       if (mouseX == endPosition.X && mouseY == endPosition.Y) {
-        this.drawPipe(
+        this.draw.drawPipe(
           Colors[this.gameMap[startPosition.Y][startPosition.X]],
           currentPosition,
           endPosition
         );
         // Drawing the after glow of every pipe and point with that color
-        this.drawAfterGlow(this.gameMap[startPosition.Y][startPosition.X]);
+        this.draw.drawAfterGlow(this.gameMap[startPosition.Y][startPosition.X]);
         this.solvedColors.push(this.gameMap[startPosition.Y][startPosition.X]);
 
         // Counting points after every completed move (#)
@@ -398,135 +407,15 @@ class Game {
       }
     }
   }
-
-  // TODO: Think about better option without 2x 'FOR' loops
-  drawAfterGlow(point, alpha = 0.2) {
-    for (var y = 0; y < this.mapSize; y++) {
-      for (var x = 0; x < this.mapSize; x++) {
-        if (this.gameMap[y][x].toUpperCase() == point) {
-          this.context.globalAlpha = alpha;
-          this.context.fillStyle = Colors[this.gameMap[y][x].toUpperCase()];
-          this.context.fillRect(
-            x * this.tileW,
-            y * this.tileW,
-            this.tileW,
-            this.tileH
-          );
-          this.context.globalAlpha = 1.0;
-        }
-      }
-    }
-  }
-
-  // Drawing pipes from mouse movement
-  drawPipe(color, positionFrom, positionTo) {
-    this.context.beginPath();
-    this.context.moveTo(
-      positionFrom.X * this.tileW + this.tileW / 2,
-      positionFrom.Y * this.tileW + this.tileW / 2
-    ); // X, Y
-    this.context.lineTo(
-      positionTo.X * this.tileW + this.tileW / 2,
-      positionTo.Y * this.tileW + this.tileW / 2
-    );
-
-    this.context.strokeStyle = color;
-    this.context.lineCap = "round";
-    this.context.lineWidth = this.tileW * 0.4;
-
-    this.context.stroke();
-    this.context.closePath();
-
-    // TODO: Add global variable and handle this
-    // Drawing text for colorblind users
-    if (false) {
-      this.drawText(positionTo.X, positionTo.Y);
-      this.drawText(positionFrom.X, positionFrom.Y);
-    }
-  }
-
-  drawSquares(x, y, fillColor = this.#FILL_COLOR) {
-    // Start drawing square with dark background and white stroke
-    this.context.beginPath();
-    this.context.lineWidth = 2;
-    this.context.strokeStyle = this.#STROKE_COLOR;
-    this.context.fillStyle = fillColor;
-    this.context.fillRect(
-      x * this.tileW,
-      y * this.tileH,
-      this.tileW,
-      this.tileH
-    );
-    this.context.strokeRect(
-      x * this.tileW,
-      y * this.tileH,
-      this.tileW,
-      this.tileH
-    );
-  }
-
-  // Drawing a point
-  drawPoint(x, y) {
-    if (this.gameMap[y][x] != "0") {
-      this.context.fillStyle = Colors[this.gameMap[y][x]];
-
-      var circle = new Path2D();
-      circle.moveTo(x * this.tileW, y * this.tileH);
-      circle.arc(
-        x * this.tileW + this.tileW / 2,
-        y * this.tileH + this.tileH / 2,
-        this.tileW * 0.47,
-        this.tileH * 0.47,
-        0,
-        360
-      );
-      this.context.fill(circle);
-
-      // Drawing text for colorblind users
-      if (false) {
-        this.drawText(x, y);
-      }
-    }
-  }
-
-  // Draw a text over a pipe or point
-  drawText(x, y, color = this.#FILL_COLOR) {
-    this.context.beginPath();
-    this.context.font = "48px arial";
-    this.context.fillStyle = color;
-    this.context.fillText(
-      this.gameMap[y][x],
-      x * this.tileW + this.tileW / 2 - 15,
-      y * this.tileH + this.tileH / 2 + 12
-    );
-  }
-
-  // Function for visualizing CCL
-  drawSectorNumber(number) {
-    for (let y = 0; y < this.mapSize; y++) {
-      for (let x = 0; x < this.mapSize; x++) {
-        if (this.gameMap[y][x] == number) {
-          this.drawAfterGlow(number, 0.05);
-          this.context.font = "48px roboto";
-          this.context.fillStyle = this.#STROKE_COLOR;
-          this.context.fillText(
-            number,
-            x * this.tileW + this.tileW / 2 - 15,
-            y * this.tileH + this.tileH / 2 + 12
-          );
-        }
-      }
-    }
-  }
 }
 
-// let map = [
-//     ['0', '0', 'R', '0', '0'],
-//     ['0', '0', '0', '0', '0'],
-//     ['0', '0', '0', '0', '0'],
-//     ['0', '0', '0', '0', '0'],
-//     ['0', '0', 'R', '0', '0'],
-// ];
+let map = [
+  ["0", "0", "0", "0", "0"],
+  ["B", "G", "0", "G", "0"],
+  ["R", "0", "0", "0", "0"],
+  ["0", "B", "0", "R", "Y"],
+  ["0", "0", "0", "Y", "0"],
+];
 
 // ['0', '0', '0', '0', '0'],
 // ['B', 'G', '0', 'G', '0'],
@@ -569,5 +458,5 @@ class Game {
 //     }
 // };
 
-// let game = new Game('game', true);
-// game.initialize(map, 5, 5);
+let game = new Game("game", true);
+game.initialize(map, 5, 5);

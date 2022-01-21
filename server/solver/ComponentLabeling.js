@@ -1,5 +1,5 @@
-const Neighbours = require('./Neighbours');
-const GameMap = require('./GameMap');
+const Neighbours = require("./Neighbours");
+const GameMap = require("./GameMap");
 
 module.exports = class ComponentLabeling {
   constructor() {
@@ -7,7 +7,7 @@ module.exports = class ComponentLabeling {
     // Filling map with -1
     this.labels = Array(GameMap.size)
       .fill()
-      .map(() => Array(GameMap.size).fill('-1'));
+      .map(() => Array(GameMap.size).fill("-1"));
 
     // Equivalent table
     this.equivalent = []; // Array(GameMap.size).fill('')
@@ -22,7 +22,7 @@ module.exports = class ComponentLabeling {
     this.endPoint = [];
 
     //! Testing
-    this.boom = null;
+    this.startEndTouch = null;
   }
   // Printing labels for debug
   #printLabels(labels) {
@@ -39,21 +39,33 @@ module.exports = class ComponentLabeling {
     const x = GameMap.endPoint[color].X;
     const map = GameMap.map;
     const pt = mapState.current[color];
-    if (x < GameMap.size - 1 && map[y][x + 1] == "0" || x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X) {
+    if (
+      (x < GameMap.size - 1 && map[y][x + 1] == "0") ||
+      (x < GameMap.size - 1 && y == pt.Y && x + 1 == pt.X)
+    ) {
       // console.log("Left neighbour");
-      result.push({Y: y, X: x + 1 });
+      result.push({ Y: y, X: x + 1 });
     }
-    if (x > 0 && map[y][x - 1] == "0" || x > 0 && y == pt.Y && x - 1 == pt.X) {
+    if (
+      (x > 0 && map[y][x - 1] == "0") ||
+      (x > 0 && y == pt.Y && x - 1 == pt.X)
+    ) {
       // console.log("Right neighbour");
-      result.push({Y: y, X: x - 1 });
+      result.push({ Y: y, X: x - 1 });
     }
-    if (y < GameMap.size - 1 && map[y + 1][x] == "0" || y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X) {
+    if (
+      (y < GameMap.size - 1 && map[y + 1][x] == "0") ||
+      (y < GameMap.size - 1 && y + 1 == pt.Y && x == pt.X)
+    ) {
       // console.log("Upp neighbour");
-      result.push({Y: y + 1, X: x });
+      result.push({ Y: y + 1, X: x });
     }
-    if (y > 0 && map[y - 1][x] == "0" || y > 0 && y - 1 == pt.Y && x == pt.X) {
+    if (
+      (y > 0 && map[y - 1][x] == "0") ||
+      (y > 0 && y - 1 == pt.Y && x == pt.X)
+    ) {
       // console.log("Down neighbour");
-      result.push({Y: y - 1, X: x });
+      result.push({ Y: y - 1, X: x });
     }
 
     return result;
@@ -71,7 +83,7 @@ module.exports = class ComponentLabeling {
     }
 
     return result;
-}
+  }
 
   // TODO: It really needs to be rewrited (later)
   // Connected-component labeling //! (without Disjoint set)
@@ -86,16 +98,16 @@ module.exports = class ComponentLabeling {
           if (neighbours.length == 0) {
             this.equivalent[this.nextLabel] = this.nextLabel.toString();
             this.labels[y][x] = this.nextLabel;
-            this.union.set(this.nextLabel, this.nextLabel)
+            this.union.set(this.nextLabel, this.nextLabel);
             this.nextLabel++;
           } else {
             let label = [];
-            neighbours.forEach(neighbour => {
+            neighbours.forEach((neighbour) => {
               label.push(this.labels[neighbour.Y][neighbour.X]);
             });
             this.labels[y][x] = Math.min(...label);
             label.forEach((l) => {
-              if(this.labels[y][x] != l) {
+              if (this.labels[y][x] != l) {
                 this.equivalent[l] += this.labels[y][x];
                 this.equivalent[this.labels[y][x]] += l;
               }
@@ -110,18 +122,22 @@ module.exports = class ComponentLabeling {
     //! If got time change it
     for (let i = 0; i < this.equivalent.length; i++) {
       for (let j = 0; j < this.equivalent[i].length; j++) {
-        if(this.equivalent[i][j] == i) {
+        if (this.equivalent[i][j] == i) {
           continue;
         }
-        
-        let ts = parseInt(Math.min(...this.equivalent[Math.min(...this.equivalent[i])]));
-        if(ts < parseInt(this.equivalent[i][j]) && ts < this.union.get(parseInt(this.equivalent[i][j]))) {
-          this.union.set(parseInt(this.equivalent[i][j]), ts)
+
+        let ts = parseInt(
+          Math.min(...this.equivalent[Math.min(...this.equivalent[i])])
+        );
+        if (
+          ts < parseInt(this.equivalent[i][j]) &&
+          ts < this.union.get(parseInt(this.equivalent[i][j]))
+        ) {
+          this.union.set(parseInt(this.equivalent[i][j]), ts);
         }
       }
     }
 
-      
     // console.log("###########################");
     // console.log(this.union);
     // this.#printLabels(this.labels)
@@ -132,27 +148,27 @@ module.exports = class ComponentLabeling {
     for (let y = 0; y < GameMap.size; y++) {
       for (let x = 0; x < GameMap.size; x++) {
         if (map[y][x] == "0") {
-            this.labels[y][x] = this.union.get(this.labels[y][x]);
-            if (!this.numberOfSectors.includes(this.labels[y][x])) {
-              this.numberOfSectors.push(this.labels[y][x]);
-            }
-            // TODO: (NOTE)
-        }
-      }
-    }
-
-  // Third run
-  for (let y = 0; y < GameMap.size; y++) {
-    for (let x = 0; x < GameMap.size; x++) {
-      if (map[y][x] == "0") {
           this.labels[y][x] = this.union.get(this.labels[y][x]);
           if (!this.numberOfSectors.includes(this.labels[y][x])) {
             this.numberOfSectors.push(this.labels[y][x]);
           }
           // TODO: (NOTE)
+        }
       }
     }
-  }
+
+    // Third run
+    for (let y = 0; y < GameMap.size; y++) {
+      for (let x = 0; x < GameMap.size; x++) {
+        if (map[y][x] == "0") {
+          this.labels[y][x] = this.union.get(this.labels[y][x]);
+          if (!this.numberOfSectors.includes(this.labels[y][x])) {
+            this.numberOfSectors.push(this.labels[y][x]);
+          }
+          // TODO: (NOTE)
+        }
+      }
+    }
 
     // this.#printLabels(this.labels)
     // Normalizing sectors id's
@@ -175,11 +191,11 @@ module.exports = class ComponentLabeling {
   // Add points to detected sectors
   #addPointsToSectors(mapState) {
     for (let i = 0; i <= this.numberOfSectors.length; i++) {
-      this.currentPoint[i] = '';
-      this.endPoint[i] = '';
+      this.currentPoint[i] = "";
+      this.endPoint[i] = "";
     }
     //! Added
-    this.boom = '';
+    this.startEndTouch = "";
 
     for (let j = 0; j < GameMap.numberOfColors; j++) {
       if (mapState.isFinished(j)) {
@@ -191,15 +207,16 @@ module.exports = class ComponentLabeling {
       neighboursOfCurrent.forEach((neighbour) => {
         const y = neighbour.Y;
         const x = neighbour.X;
-        if (this.labels[y][x] != -1 &&
-          !this.currentPoint[this.labels[y][x]].includes(GameMap.foundColors[j])) {
+        if (
+          this.labels[y][x] != -1 &&
+          !this.currentPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
+        ) {
           this.currentPoint[this.labels[y][x]] += GameMap.foundColors[j];
         }
         //! Added
-        if(y == GameMap.endPoint[j].Y &&
-          x == GameMap.endPoint[j].X) {
-            // console.log("SSSS");
-            this.boom += GameMap.foundColors[j];
+        if (y == GameMap.endPoint[j].Y && x == GameMap.endPoint[j].X) {
+          // console.log("SSSS");
+          this.startEndTouch += GameMap.foundColors[j];
         }
       });
 
@@ -208,14 +225,15 @@ module.exports = class ComponentLabeling {
       neighboursOfEnd.forEach((neighbour) => {
         const y = neighbour.Y;
         const x = neighbour.X;
-        if (this.labels[y][x] != -1 &&
-          !this.endPoint[this.labels[y][x]].includes(GameMap.foundColors[j])) {
+        if (
+          this.labels[y][x] != -1 &&
+          !this.endPoint[this.labels[y][x]].includes(GameMap.foundColors[j])
+        ) {
           this.endPoint[this.labels[y][x]] += GameMap.foundColors[j];
         }
         //! Added
-        if(y == mapState.current[j].Y &&
-          x == mapState.current[j].X) {
-            this.boom += GameMap.foundColors[j];
+        if (y == mapState.current[j].Y && x == mapState.current[j].X) {
+          this.startEndTouch += GameMap.foundColors[j];
         }
       });
     }
@@ -243,24 +261,27 @@ module.exports = class ComponentLabeling {
       // console.log(curr, end);
 
       //! Added
-      if(this.boom != null){
-        if(curr.includes(this.boom)) {
-          if(!end.includes(this.boom)) {
+      if (this.startEndTouch != null) {
+        if (curr.includes(this.startEndTouch)) {
+          if (!end.includes(this.startEndTouch)) {
             // console.log("#");
-            end += this.boom;
+            end += this.startEndTouch;
           }
         }
 
-        if(end.includes(this.boom)) {
-          if(!curr.includes(this.boom)) {
+        if (end.includes(this.startEndTouch)) {
+          if (!curr.includes(this.startEndTouch)) {
             // console.log("#");
-            curr += this.boom;
+            curr += this.startEndTouch;
           }
         }
 
-        if(!curr.includes(this.boom) && !end.includes(this.boom)) {
-          end += this.boom;
-          curr += this.boom;
+        if (
+          !curr.includes(this.startEndTouch) &&
+          !end.includes(this.startEndTouch)
+        ) {
+          end += this.startEndTouch;
+          curr += this.startEndTouch;
         }
       }
       // console.log(this.currentPoint);
@@ -269,9 +290,16 @@ module.exports = class ComponentLabeling {
       // console.log(this.numberOfSectors.length);
       if (
         ((curr.length > 0 && end.length == 0) ||
-        (end.length > 0 && curr.length == 0)) && !skip
+          (end.length > 0 && curr.length == 0)) &&
+        !skip
       ) {
-        return {Is: true, Num: (GameMap.numberOfColors - mapState.finishedPoints.length) - colorsInSectors.length};
+        return {
+          Is: true,
+          Num:
+            GameMap.numberOfColors -
+            mapState.finishedPoints.length -
+            colorsInSectors.length,
+        };
       }
 
       for (let c = 0; c < curr.length; c++) {
@@ -293,11 +321,26 @@ module.exports = class ComponentLabeling {
     //   console.log(GameMap.foundColors[colorsInSectors[i]]);
     // }
 
-    if (colorsInSectors.length != GameMap.numberOfColors - mapState.finishedPoints.length) {
+    if (
+      colorsInSectors.length !=
+      GameMap.numberOfColors - mapState.finishedPoints.length
+    ) {
       // console.log(GameMap.finishedPoints.length);
-      return {Is: true, Num: (GameMap.numberOfColors - mapState.finishedPoints.length) - colorsInSectors.length};
+      return {
+        Is: true,
+        Num:
+          GameMap.numberOfColors -
+          mapState.finishedPoints.length -
+          colorsInSectors.length,
+      };
     }
 
-    return {Is: false, Num: (GameMap.numberOfColors - mapState.finishedPoints.length) - colorsInSectors.length};
+    return {
+      Is: false,
+      Num:
+        GameMap.numberOfColors -
+        mapState.finishedPoints.length -
+        colorsInSectors.length,
+    };
   }
-}
+};

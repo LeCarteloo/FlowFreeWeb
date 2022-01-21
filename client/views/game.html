@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--//! Imports will be moved to js in future  !\\-->
-    
-    <link rel="stylesheet" href="../css/game.css">
+
+    <link rel="stylesheet" href="../css/game.css" />
     <title>Tests</title>
-</head>
-<body>
-    <section style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-        <canvas id="game" width="700" height="700" style="border: solid 2px #FFF"></canvas>
+  </head>
+  <body>
+    <section
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      "
+    >
+      <canvas
+        id="game"
+        width="700"
+        height="700"
+        style="border: solid 2px #fff"
+      ></canvas>
     </section>
     <!-- ### Utility ### -->
     <script src="../scripts/logic/Utility.js"></script>
+    <script src="../scripts/logic/Draw.js"></script>
+
     <!-- ### Generator ### -->
     <!-- <script src="../scripts/logic/generator/MapGenerator.js"></script> -->
     <!-- ### Debug ### -->
@@ -25,5 +40,5 @@
     <script src="../scripts/logic/enums/Positions.js"></script>
     <!-- ### Game ### -->
     <script src="../scripts/logic/Game.js"></script>
-</body>
+  </body>
 </html>
