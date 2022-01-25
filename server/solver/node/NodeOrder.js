@@ -7,7 +7,7 @@ module.exports = class NodeOrder {
     let index = 0;
 
     // TODO: Potentialy change to <=
-    if (this.#array.length == 0 ||  elem.getFCost() < this.peek().getFCost()) {
+    if (this.#array.length == 0 || elem.getFCost() < this.peek().getFCost()) {
       this.#array.splice(index, 0, elem);
       return this.#array.length;
     }
@@ -24,7 +24,7 @@ module.exports = class NodeOrder {
     return this.#array.splice(0, 1)[0];
   }
   print() {
-    console.log(this.#array);;
+    console.log(this.#array);
   }
   printMapState() {
     for (let i = 0; i < this.#array.length; i++) {
@@ -37,4 +37,4 @@ module.exports = class NodeOrder {
   includes(elem) {
     return this.#array.includes(elem);
   }
-}
+};

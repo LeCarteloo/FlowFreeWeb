@@ -51,7 +51,7 @@ class Game {
 
     this.draw = new Draw(
       this.context,
-      true,
+      false,
       this.tileW,
       this.tileH,
       this.gameMap
@@ -409,13 +409,13 @@ class Game {
   }
 }
 
-let map = [
-  ["0", "0", "0", "0", "0"],
-  ["B", "G", "0", "G", "0"],
-  ["R", "0", "0", "0", "0"],
-  ["0", "B", "0", "R", "Y"],
-  ["0", "0", "0", "Y", "0"],
-];
+// let map = [
+//   ["R", "0", "0", "0", "0"],
+//   ["0", "0", "0", "0", "0"],
+//   ["0", "0", "0", "0", "0"],
+//   ["0", "0", "0", "0", "0"],
+//   ["0", "0", "0", "0", "R"],
+// ];
 
 // ['0', '0', '0', '0', '0'],
 // ['B', 'G', '0', 'G', '0'],
@@ -458,5 +458,5 @@ let map = [
 //     }
 // };
 
-let game = new Game("game", true);
-game.initialize(map, 5, 5);
+// let game = new Game("game", true);
+// game.initialize(map, 1, 5);
