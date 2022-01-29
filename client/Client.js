@@ -56,7 +56,6 @@ const loserIncrease = document.getElementById("loser-increase");
 const loserReduce = document.getElementById("loser-reduce");
 const resultDisplay = document.getElementById("result");
 const leaveRoom = document.getElementById("leave-room");
-const leaveRoomOne = document.getElementById("leave-room1");
 
 let clientRoom = 0;
 let gameObj = {};
@@ -177,11 +176,8 @@ canTouch.addEventListener("click", () => {
   });
 });
 
-leaveRoomOne.addEventListener("click", () => {
-  handleLeaveRoom();
-});
-
 leaveRoom.addEventListener("click", () => {
+  leaveRoom.style.display = "none";
   handleLeaveRoom();
 });
 
@@ -447,7 +443,7 @@ function startTimer(timeLimit) {
 }
 
 function displayHint(hint) {
-  Draw.drawAfterGlow(
+  Draw.drawHint(
     hint.color,
     hint.map,
     gameObj.context,
@@ -476,6 +472,7 @@ function handleLeaveRoom() {
 
 function handleUserConnected(players) {
   init();
+  leaveRoom.style.display = "flex";
   rows[0].style.display = "none";
   rows[1].style.display = "none";
   users[0].innerText = "";

@@ -1,7 +1,7 @@
 * {
   padding: 0;
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: "Robboto", sans-serif;
 }
 body {
   width: 100vw;
@@ -61,6 +61,9 @@ body {
   color: #121212;
   overflow: hidden;
 }
+button {
+  cursor: pointer;
+}
 #create-room span,
 #join-room span,
 #hints-btn span,
@@ -105,6 +108,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: 0.5s;
 }
 .or {
   margin-top: 10px;
@@ -200,6 +204,7 @@ input[type="number"] {
   align-items: center;
   flex-direction: column;
   transition: 0.5s;
+  user-select: none;
 }
 .game-buttons {
   width: 100%;
@@ -392,7 +397,8 @@ input:checked + .slider:before {
 #leave-room,
 .leave-btn {
   position: absolute;
-  z-index: 20;
+  z-index: 999;
+  top: 0;
   right: 0;
   text-transform: uppercase;
   width: 200px;
@@ -405,6 +411,10 @@ input:checked + .slider:before {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+
+#leave-room {
+  display: none;
 }
 .reset-arrow {
   margin-right: 2%;

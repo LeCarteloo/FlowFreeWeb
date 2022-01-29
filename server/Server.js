@@ -298,7 +298,9 @@ io.on("connection", (socket) => {
     const player = rooms[mapInfo.gameCode].players.find(
       (player) => player.id == socket.id
     );
+
     player.points = player.currentPoints;
+    player.currentPoints = 0;
 
     // Changing the map only for user that clicks the button (socket.id)
     socket.emit("changeMap", {
@@ -323,7 +325,6 @@ io.on("connection", (socket) => {
       (player) => player.id == socket.id
     );
     const points = pointsClass.countPoints();
-
     if (points == -1) {
       socket.emit("displayAlert", {
         type: "error",
@@ -532,7 +533,6 @@ io.on("connection", (socket) => {
         type: "info",
         text: "User disconnected!",
       });
-
       io.to(gameCode).emit("userConnected", rooms[gameCode].players);
     } else {
       for (const player of players) {
@@ -551,6 +551,8 @@ io.on("connection", (socket) => {
         return;
       }
 
+      rooms[gameCode].isFinished = true;
+
       io.to(gameCode).emit("displayAlert", {
         type: "error",
         text: "User disconnected!",
@@ -559,7 +561,7 @@ io.on("connection", (socket) => {
       io.to(gameCode).emit("displayResult", "You won!");
 
       // If user didn't provide one of maps it is added from started maps
-      io.to(players[0].id).emit("gameEnded", {
+      io.to(rooms[gameCode].players[0].id).emit("gameEnded", {
         won: players[0],
         lost: players[1],
         size: rooms[gameCode].options.mapSize,

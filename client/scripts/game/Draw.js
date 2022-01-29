@@ -9,6 +9,7 @@ class Draw {
     this.tileH = tileH;
     this.tileW = tileW;
     this.gameMap = gameMap;
+    this.mapSize = gameMap.length;
   }
 
   // TODO: Think about better option without 2x 'FOR' loops
@@ -25,6 +26,20 @@ class Draw {
             this.tileH
           );
           this.context.globalAlpha = 1.0;
+        }
+      }
+    }
+  }
+
+  // Drawing hint
+  static drawHint(point, gameMap, context, tileW, tileH) {
+    for (var y = 0; y < gameMap.length; y++) {
+      for (var x = 0; x < gameMap.length; x++) {
+        if (gameMap[y][x].toUpperCase() == point) {
+          context.globalAlpha = 0.2;
+          context.fillStyle = Colors[point];
+          context.fillRect(x * tileW, y * tileW, tileW, tileH);
+          context.globalAlpha = 1.0;
         }
       }
     }

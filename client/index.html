@@ -31,7 +31,7 @@
             type="text"
             placeholder="Nickname"
             id="nickname"
-            value="ellooo"
+            value=""
             autocomplete="off"
             value=""
           />
@@ -54,9 +54,6 @@
     </div>
 
     <div id="lobby-options">
-      <button type="submit" id="leave-room">
-        <i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby
-      </button>
       <div class="players">
         <div class="row" id="row-one">
           <h3>Your game code is: <span id="code-display"></span></h3>
@@ -128,9 +125,6 @@
     </div>
 
     <div class="end-screen" id="end-screen">
-      <button class="leave-btn" type="submit" id="leave-room1">
-        <i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby
-      </button>
       <span id="result"></span>
       <div class="end-info">
         <div class="winner-info" id="winner-info">
@@ -162,14 +156,18 @@
       </div>
     </div>
 
+    <button class="leave-btn" type="submit" id="leave-room">
+      <i class="fas fa-2x fa-arrow-left reset-arrow"></i>Back to lobby
+    </button>
+
     <div id="alertBox"></div>
 
-    <script src="/scripts/logic/Utility.js"></script>
-    <script src="/scripts/logic/Debug.js"></script>
-    <script src="/scripts/logic/enums/Colors.js"></script>
-    <script src="/scripts/logic/enums/Positions.js"></script>
-    <script src="/scripts/logic/Draw.js"></script>
-    <script src="/scripts/logic/Game.js"></script>
+    <script src="/scripts/game/Utility.js"></script>
+    <script src="/scripts/game/Debug.js"></script>
+    <script src="/scripts/game/enums/Colors.js"></script>
+    <script src="/scripts/game/enums/Positions.js"></script>
+    <script src="/scripts/game/Draw.js"></script>
+    <script src="/scripts/game/Game.js"></script>
 
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>

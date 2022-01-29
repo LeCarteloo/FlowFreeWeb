@@ -189,12 +189,18 @@ class Game {
     if (!this.pressed) {
       // If tile with point is pressed then 'IF' statement is executed
       if (this.selected) {
-        // console.log(this.gameMap[mouseY][mouseX]);
-        // console.log(this.moves);
-        this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords.push({
-          Y: mouseY,
-          X: mouseX,
-        });
+        if (
+          (mouseY >= 0 || mouseY < this.mapSize) &&
+          (mouseX >= 0 || mouseX < this.mapSize)
+        ) {
+          if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
+            this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords.push({
+              Y: mouseY,
+              X: mouseX,
+            });
+          }
+        }
+
         this.selected = false;
         // 'FOR' loops search for a tile with same color
         for (var y = 0; y < this.mapSize; y++) {
@@ -324,7 +330,6 @@ class Game {
       // }
     } else {
       // If the mouse is out of bounds then restart everything
-      //TODO: Check it later
       this.handleMouseUp(event);
     }
   }
@@ -344,7 +349,10 @@ class Game {
           currentPosition.Y == endPosition.Y + 1)
       )
     ) {
-      this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords = [];
+      this.moves[
+        this.gameMap[startPosition.Y][startPosition.X].toUpperCase()
+      ].coords = [];
+
       for (var y = 0; y < this.mapSize; y++) {
         for (var x = 0; x < this.mapSize; x++) {
           if (
@@ -408,55 +416,3 @@ class Game {
     }
   }
 }
-
-// let map = [
-//   ["R", "0", "0", "0", "0"],
-//   ["0", "0", "0", "0", "0"],
-//   ["0", "0", "0", "0", "0"],
-//   ["0", "0", "0", "0", "0"],
-//   ["0", "0", "0", "0", "R"],
-// ];
-
-// ['0', '0', '0', '0', '0'],
-// ['B', 'G', '0', 'G', '0'],
-// ['R', '0', '0', '0', '0'],
-// ['0', 'B', '0', 'R', 'Y'],
-// ['0', '0', '0', 'Y', '0'],
-
-// [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-// [9, 0, 0, 0, 0, 9, 9, 9, 9, 9],
-// [9, 0, 0, 0, 0, 9, 9, 9, 0, 9],
-// [9, 0, 0, 0, 0, 9, 9, 0, 0, 9],
-// [9, 0, 0, 9, 9, 9, 0, 0, 0, 9],
-// [9, 0, 9, 9, 9, 9, 0, 0, 0, 9],
-// [9, 0, 9, 9, 9, 0, 0, 0, 9, 9],
-// [9, 9, 9, 9, 0, 0, 0, 9, 9, 9],
-// [9, 9, 9, 0, 0, 0, 0, 0, 0, 9],
-// [9, 9, 9, 9, 9, 9, 9, 9, 9, 9],
-
-// ['B', '0', '2', '2', 'G'],
-// ['1', '0', 'R', '2', '2'],
-// ['1', '0', 'Y', '2', '2'],
-// ['1', '0', '2', '2', '2'],
-// ['R', 'Y', 'B', 'G', '2'],
-
-// let kek = {
-//     R: {
-//         coords: [
-//             {Y: 0, X: 0},
-//             {Y: 1, X: 0},
-//             {Y: 2, X: 0},
-//         ]
-//     },
-//     G: {
-//         coords: [
-//             {Y: 0, X: 1},
-//             {Y: 0, X: 2},
-//             {Y: 1, X: 2},
-//             {Y: 2, X: 2},
-//         ]
-//     }
-// };
-
-// let game = new Game("game", true);
-// game.initialize(map, 1, 5);
