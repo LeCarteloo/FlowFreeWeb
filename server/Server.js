@@ -12,6 +12,10 @@ const _ = require("lodash");
 // Static file for express server
 app.use(express.static("client"));
 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/test.html");
+});
+
 // Rooms information
 var rooms = {};
 
