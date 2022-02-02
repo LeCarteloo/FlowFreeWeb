@@ -14,6 +14,7 @@ body {
   align-items: center;
 }
 .lobby-box {
+  width: 80%;
   height: 500px;
   background-color: #2a2a2a;
   display: flex;
@@ -23,7 +24,7 @@ body {
 }
 .lobbies-list {
   background: #2a2a2a;
-  width: 90%;
+  width: 95%;
   height: 90%;
   display: flex;
   align-items: center;
@@ -47,8 +48,7 @@ body {
   border-radius: 10px;
 }
 .lobby-card {
-  width: 300px;
-  height: 100px;
+  width: 100%;
   background-color: #1d1c1c;
   border-radius: 10px;
   display: flex;
@@ -116,26 +116,29 @@ button {
   color: #fff;
 }
 
-#btn-display:hover .options-tooltip,
-#btn-display:focus-within .options-tooltip {
-  visibility: visible;
-  opacity: 1;
-}
-
 .options-tooltip {
-  visibility: hidden;
-  font-size: 13px;
   width: 200px;
   height: 120px;
   position: absolute;
   top: -60px;
   z-index: 5;
   backdrop-filter: blur(30px);
+  /* background-color: red; */
   color: white;
   border-radius: 10px;
   padding: 5px;
+  visibility: hidden;
   opacity: 0;
-  transition: 0.3s;
+  font-size: 13px;
+  transform: translateX(-24px);
+  transition: 0.4s;
+}
+
+#btn-display:hover .options-tooltip,
+#btn-display:focus-within .options-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0px);
 }
 
 .columns {
@@ -162,24 +165,55 @@ button {
   font-size: 17px;
 }
 
+.bottom-text li:nth-child(even),
+.top-text li:nth-child(even) {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.options {
+  display: none;
+}
+
 @media (min-width: 750px) {
-  .bottom-text ul:first-child {
+  .bottom-text ul {
+    display: block;
+  }
+  .bottom-text > ul:first-child {
     display: none;
   }
   .lobby-box {
     width: 80%;
   }
   .options {
-    width: 100%;
     display: flex;
-    overflow-x: scroll;
+    overflow-x: auto;
   }
-  .top-text ul {
-    width: auto;
+  .slider {
+    min-width: 733px;
+    display: flex;
+  }
+  .options::-webkit-scrollbar {
+    height: 2px;
+    /* #4caf50 */
+    /* background-image: linear-gradient(90deg, red, blue); */
+    background: none;
+  }
+  .options::-webkit-scrollbar-track {
+    background: #1d1c1c;
+    border-radius: 10px;
+  }
+  .options::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(90deg, red, blue);
+    border-radius: 10px;
   }
   .top-text,
   .bottom-text {
     width: 97%;
+  }
+  .bottom-text ul {
+    width: 200px;
   }
   .lobby-card {
     width: 95%;

@@ -545,11 +545,3 @@ function timer(time, display) {
     }
   }, 1000);
 }
-
-// TEST
-
-const test = document.getElementById("test-room");
-
-test.addEventListener("click", () => {
-  window.location = "lobbies.html";
-});
