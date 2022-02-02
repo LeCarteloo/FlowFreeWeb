@@ -50,7 +50,8 @@ body {
 #join-room,
 #hints-btn,
 #change-btn,
-#start-game {
+#start-game,
+#lobby-list {
   position: relative;
   text-transform: uppercase;
   width: 200px;
@@ -68,7 +69,8 @@ button {
 #join-room span,
 #hints-btn span,
 #change-btn span,
-#start-game span {
+#start-game span,
+#lobby-list span {
   position: relative;
   z-index: 1;
 }
@@ -76,7 +78,8 @@ button {
 #join-room::before,
 #hints-btn::before,
 #change-btn::before,
-#start-game::before {
+#start-game::before,
+#lobby-list::before {
   content: "";
   position: absolute;
   top: var(--valueY);
@@ -92,7 +95,8 @@ button {
 #join-room:hover::before,
 #hints-btn:hover::before,
 #change-btn:hover::before,
-#start-game:hover::before {
+#start-game:hover::before,
+#lobby-list:hover::before {
   width: 500px;
   height: 500px;
 }
@@ -100,7 +104,8 @@ button {
 #join-room:active::before,
 #hints-btn:active::before,
 #change-btn:active::before,
-#start-game:active::before {
+#start-game:active::before,
+#lobby-list:active::before {
   background: rgb(60, 114, 62);
 }
 .hints-box {

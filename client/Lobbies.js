@@ -96,5 +96,3 @@ createLobbyElem();
 createLobbyElem();
 createLobbyElem();
 createLobbyElem();
-
-const joinBtn = document.getElementById("btn-join");

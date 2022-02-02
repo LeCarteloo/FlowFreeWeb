@@ -49,7 +49,15 @@ io.on("connection", (socket) => {
     rooms[roomCode] = {
       isPlaying: false,
       isFinished: false,
-      options: {},
+      options: {
+        hintsAmount: 4,
+        timeLimit: 1,
+        mapSize: 5,
+        mapNumber: 2,
+        canTouch: true,
+        colorAmount: 5,
+        roomCode: roomCode,
+      },
       maps: [],
       players: [],
     };
@@ -123,6 +131,14 @@ io.on("connection", (socket) => {
       type: "success",
       text: "Successfully joined the room!",
     });
+  });
+
+  socket.on("lobbySelector", () => {
+    if (!validateNickname(socket)) {
+      return;
+    }
+
+    socket.emit("displayLobbies", rooms);
   });
 
   socket.on("startGame", (options) => {

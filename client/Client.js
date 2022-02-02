@@ -2,6 +2,7 @@ const socket = io("http://localhost:3000");
 
 // Main views
 const startScreen = document.getElementById("start-screen");
+const lobbySelector = document.getElementById("lobby-selector");
 const lobbyOptions = document.getElementById("lobby-options");
 const gameScreen = document.getElementById("game-screen");
 const nickname = document.getElementById("nickname");
@@ -9,6 +10,7 @@ const nickname = document.getElementById("nickname");
 // Other important stuff
 const createRoom = document.getElementById("create-room");
 const joinRoom = document.getElementById("join-room");
+const lobbyList = document.getElementById("lobby-list");
 const gameCode = document.getElementById("game-code");
 const codeDisplay = document.getElementById("code-display");
 const connectedUsers = document.getElementById("connected-users");
@@ -88,7 +90,7 @@ socket.on("displayAlert", displayAlert);
 
 socket.on("userConnected", handleUserConnected);
 socket.on("init", init);
-
+socket.on("displayLobbies", displayLobbies);
 socket.on("hostGameStart", handleHostGameStart);
 socket.on("showProgress", showProgress);
 socket.on("updateProgress", updateProgress);
@@ -125,6 +127,145 @@ joinRoom.addEventListener("click", () => {
   socket.emit("setNickname", nickname.value);
   socket.emit("joinRoom", gameCode.value);
 });
+
+function createLobbyElem(
+  hostName,
+  playerCount,
+  options,
+  isFinished,
+  isPlaying
+) {
+  const lobbiesList = document.querySelector(".lobbies-list");
+  lobbiesList.innerHTML = "";
+  let status = "";
+
+  if (isFinished) {
+    status = "finished";
+  } else if (isPlaying) {
+    status = "ingame";
+  }
+
+  let div = document.createElement("div");
+  div.classList.add("lobby-card");
+  div.innerHTML = `
+  <div class="top-text">
+    <ul>
+        <li>Host name</li>
+        <li>${hostName}</li>
+    </ul>
+    <ul>
+        <li>Players</li>
+        <li>${playerCount}/2</li>
+    </ul>
+    <ul>
+        <li>Status</li>
+        <li><div class="status ${status}"></div></li>
+    </ul>
+    </div>
+    <div class="bottom-text">
+    <ul>
+        <li>Options</li>
+        <li>
+        <button type="submit" id="btn-display">
+            <i class="fas fa-eye"></i>
+            <span class="options-tooltip">
+            <h3>OPTIONS</h3>
+            <div class="columns">
+                <div class="column">
+                <ul>
+                    <li>Number of hints</li>
+                    <li>${options.hintsAmount}</li>
+                    <li>Time limit</li>
+                    <li>${options.timeLimit}</li>
+                    <li>Map size</li>
+                    <li>${options.mapSize} x ${options.mapSize}</li>
+                </ul>
+                </div>
+                <div class="column">
+                <ul>
+                    <li>Number of colors</li>
+                    <li>${options.colorAmount}</li>
+                    <li>Map number</li>
+                    <li>${options.mapNumber}</li>
+                    <li>Pipes can touch</li>
+                    <li>${options.canTouch}</li>
+                </ul>
+                </div>
+            </div>
+            </span>
+        </button>
+        </li>
+    </ul>
+    <div class="options">
+        <div class="options-slider">
+        <ul>
+            <li>Number of Hints</li>
+            <li>${options.hintsAmount}</li>
+        </ul>
+        <ul>
+            <li>Time limit</li>
+            <li>${options.timeLimit}</li>
+        </ul>
+        <ul>
+            <li>Number of colors</li>
+            <li>${options.colorAmount}</li>
+        </ul>
+        <ul>
+            <li>Map number</li>
+            <li>${options.mapNumber}</li>
+        </ul>
+        <ul>
+            <li>Map size</li>
+            <li>${options.mapSize} x ${options.mapSize}</li>
+        </ul>
+        <ul>
+            <li>Pipes can touch</li>
+            <li>${options.canTouch}</li>
+        </ul>
+        </div>
+    </div>
+    <ul>
+        <li><button type="submit" id="btn-join" onclick="joinLobby('${options.roomCode}')">JOIN</button></li>
+    </ul>
+    </div>`;
+  lobbiesList.appendChild(div);
+}
+
+function joinLobby(code) {
+  hintsAmount.disabled = true;
+  timeLimit.disabled = true;
+  mapSize.disabled = true;
+  mapNumber.disabled = true;
+  startGameBtn.disabled = true;
+  colorAmount.disabled = true;
+  canTouch.disabled = true;
+  startGameBtn.style.display = "none";
+  lobbySelector.style.display = "none";
+  socket.emit("joinRoom", code);
+}
+
+lobbyList.addEventListener("click", () => {
+  socket.emit("setNickname", nickname.value);
+  socket.emit("lobbySelector");
+});
+
+function displayLobbies(rooms) {
+  startScreen.style.display = "none";
+  lobbySelector.style.display = "flex";
+  for (const id of Object.keys(rooms)) {
+    createLobbyElem(
+      rooms[id].players[0].nickname,
+      rooms[id].players.length,
+      rooms[id].options,
+      rooms[id].isFinished,
+      rooms[id].isPlaying
+    );
+  }
+  // createLobbyElem();
+  // createLobbyElem();
+  // createLobbyElem();
+  // createLobbyElem();
+}
 
 startGameBtn.addEventListener("click", () => {
   startGameBtn.disabled = true;
@@ -396,6 +537,7 @@ function displayResult(result) {
 function resetUi() {
   startScreen.style.display = "flex";
   lobbyOptions.style.display = "none";
+  lobbySelector.style.display = "none";
   gameScreen.style.display = "none";
   resultDisplay.innerText = "";
   winnerInfo.classList.remove("move-top");
@@ -466,7 +608,6 @@ function init() {
 }
 
 function handleLeaveRoom() {
-  console.log("YOOOO");
   socket.emit("leaveRoom");
 }
 
