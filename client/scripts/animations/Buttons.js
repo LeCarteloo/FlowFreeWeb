@@ -32,3 +32,10 @@ changeMapBtn.addEventListener("mousemove", (event) => {
   changeMapBtn.style.setProperty("--valueX", x + "px");
   changeMapBtn.style.setProperty("--valueY", y + "px");
 });
+
+refreshBtn.addEventListener("mousemove", (event) => {
+  const x = event.pageX - refreshBtn.offsetLeft;
+  const y = event.pageY - refreshBtn.offsetTop;
+  refreshBtn.style.setProperty("--valueX", x + "px");
+  refreshBtn.style.setProperty("--valueY", y + "px");
+});

@@ -5,10 +5,63 @@
   background-color: #121212;
   color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   display: none;
 }
+#lobby-selector h2 {
+  margin-bottom: 10px;
+}
+.refresh-box {
+  width: 80%;
+  display: flex;
+  justify-content: end;
+}
+#btn-refresh {
+  position: relative;
+  margin-bottom: 10px;
+  width: 150px;
+  height: 30px;
+  background-color: #4caf50;
+  font-size: 20px;
+  border: none;
+  color: #121212;
+  overflow: hidden;
+}
+button {
+  cursor: pointer;
+}
+#btn-refresh span {
+  position: relative;
+  z-index: 1;
+}
+#btn-refresh::before {
+  content: "";
+  position: absolute;
+  top: var(--valueY);
+  left: var(--valueX);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: 0px;
+  height: 0px;
+  background: rgb(37, 236, 44);
+  transition: width 0.8s, height 0.8s;
+}
+#btn-refresh:hover::before {
+  width: 500px;
+  height: 500px;
+}
+#btn-refresh:active::before {
+  background: rgb(60, 114, 62);
+}
+#btn-refresh span i {
+  transition: 0.5s;
+}
+#btn-refresh:hover span i {
+  transform: rotate(180deg);
+}
+
 .lobby-box {
   width: 80%;
   height: 500px;
@@ -51,7 +104,19 @@
   flex-direction: column;
   margin: 5px;
   transition: 0.3s;
+  animation: card-enter 0.5s;
 }
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
 .lobby-card:hover,
 .lobby-card:focus-within {
   transform: scale(1.048);
@@ -84,24 +149,69 @@
   height: 15px;
   background-color: green;
   border-radius: 50%;
+  position: relative;
 }
 
 .status.ingame {
-  width: 15px;
-  height: 15px;
   background-color: yellow;
-  border-radius: 50%;
 }
-
 .status.finished {
-  width: 15px;
-  height: 15px;
   background-color: red;
-  border-radius: 50%;
 }
 
-.status.full {
-  background-color: red;
+.status:hover::after {
+  content: "Waiting";
+  width: 100px;
+  height: 20px;
+  font-size: 14px;
+  transition: 0.5s;
+  text-transform: uppercase;
+  font-weight: normal;
+  color: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: -43px;
+  top: -20px;
+  box-shadow: 0px 0px 22px 0px rgb(108, 255, 95);
+  background-color: rgb(108, 255, 95);
+}
+
+.status.ingame:hover::after {
+  content: "Playing";
+  width: 100px;
+  height: 20px;
+  font-size: 14px;
+  transition: 0.5s;
+  font-weight: normal;
+  color: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: -43px;
+  top: -20px;
+  box-shadow: 0px 0px 22px 0px rgb(255, 244, 95);
+  background-color: rgb(255, 244, 95);
+}
+
+.status.finished:hover::after {
+  content: "Finished";
+  width: 100px;
+  height: 20px;
+  font-size: 14px;
+  transition: 0.5s;
+  font-weight: normal;
+  color: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: -43px;
+  top: -20px;
+  box-shadow: 0px 0px 22px 0px rgb(255, 95, 95);
+  background-color: rgb(255, 95, 95);
 }
 
 button {
@@ -109,7 +219,7 @@ button {
 }
 
 #btn-join {
-  margin-top: 5px;
+  margin-top: 9px;
   width: 100%;
   height: 30px;
   background-color: #4caf50;

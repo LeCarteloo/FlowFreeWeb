@@ -226,6 +226,7 @@ input[type="number"] {
   height: 100vh;
 }
 .start-canvas {
+  overflow: hidden;
   position: absolute;
 }
 .switch {

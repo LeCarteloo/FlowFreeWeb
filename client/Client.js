@@ -11,6 +11,7 @@ const nickname = document.getElementById("nickname");
 const createRoom = document.getElementById("create-room");
 const joinRoom = document.getElementById("join-room");
 const lobbyList = document.getElementById("lobby-list");
+const refreshBtn = document.getElementById("btn-refresh");
 const gameCode = document.getElementById("game-code");
 const codeDisplay = document.getElementById("code-display");
 const connectedUsers = document.getElementById("connected-users");
@@ -76,7 +77,6 @@ let loserMoves = [];
 
 // Connecting client to and server room
 socket.on("sendCode", (data) => {
-  console.log(data);
   clientRoom = data;
 });
 
@@ -95,6 +95,7 @@ socket.on("hostGameStart", handleHostGameStart);
 socket.on("showProgress", showProgress);
 socket.on("updateProgress", updateProgress);
 socket.on("hideProgress", hideProgress);
+socket.on("updateOptions", updateOptions);
 
 socket.on("changeMap", changeMap);
 socket.on("displayHint", displayHint);
@@ -125,7 +126,12 @@ joinRoom.addEventListener("click", () => {
   canTouch.disabled = true;
   startGameBtn.style.display = "none";
   socket.emit("setNickname", nickname.value);
+  socket.emit("getOptions", gameCode.value);
   socket.emit("joinRoom", gameCode.value);
+});
+
+refreshBtn.addEventListener("click", () => {
+  socket.emit("lobbySelector");
 });
 
 function createLobbyElem(
@@ -136,7 +142,6 @@ function createLobbyElem(
   isPlaying
 ) {
   const lobbiesList = document.querySelector(".lobbies-list");
-  lobbiesList.innerHTML = "";
   let status = "";
 
   if (isFinished) {
@@ -240,8 +245,18 @@ function joinLobby(code) {
   colorAmount.disabled = true;
   canTouch.disabled = true;
   startGameBtn.style.display = "none";
-  lobbySelector.style.display = "none";
+  socket.emit("getOptions", code.value);
   socket.emit("joinRoom", code);
+}
+
+function updateOptions(options) {
+  hintsAmount.value = options.hintsAmount;
+  timeLimit.value = options.timeLimit;
+  mapSize.value = options.mapSize;
+  mapNumber.value = options.mapNumber;
+  startGameBtn.value = options.startGameBtn;
+  colorAmount.value = options.colorAmount;
+  canTouch.checked = options.canTouch;
 }
 
 lobbyList.addEventListener("click", () => {
@@ -252,6 +267,7 @@ lobbyList.addEventListener("click", () => {
 function displayLobbies(rooms) {
   startScreen.style.display = "none";
   lobbySelector.style.display = "flex";
+  document.querySelector(".lobbies-list").innerHTML = "";
   for (const id of Object.keys(rooms)) {
     createLobbyElem(
       rooms[id].players[0].nickname,
@@ -261,10 +277,6 @@ function displayLobbies(rooms) {
       rooms[id].isPlaying
     );
   }
-  // createLobbyElem();
-  // createLobbyElem();
-  // createLobbyElem();
-  // createLobbyElem();
 }
 
 startGameBtn.addEventListener("click", () => {
@@ -313,7 +325,15 @@ canTouch.addEventListener("click", () => {
   socket.emit("updateSwitch", {
     id: canTouch.id,
     isChecked: canTouch.checked,
-    roomCode: clientRoom,
+    options: {
+      hintsAmount: hintsAmount.value,
+      timeLimit: timeLimit.value,
+      mapSize: mapSize.value,
+      mapNumber: mapNumber.value,
+      canTouch: canTouch.checked,
+      colorAmount: colorAmount.value,
+      roomCode: clientRoom,
+    },
   });
 });
 
@@ -431,7 +451,15 @@ function addKeyPressEvent(inputArray) {
       socket.emit("updateInput", {
         id: input.id,
         value: input.value,
-        roomCode: clientRoom,
+        options: {
+          hintsAmount: hintsAmount.value,
+          timeLimit: timeLimit.value,
+          mapSize: mapSize.value,
+          mapNumber: mapNumber.value,
+          canTouch: canTouch.checked,
+          colorAmount: colorAmount.value,
+          roomCode: clientRoom,
+        },
       });
     });
   }
@@ -604,6 +632,7 @@ function displayPoints(points) {
 
 function init() {
   startScreen.style.display = "none";
+  lobbySelector.style.display = "none";
   lobbyOptions.style.display = "flex";
 }
 

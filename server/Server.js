@@ -476,29 +476,43 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("getOptions", (code) => {
+    if (rooms.hasOwnProperty(code)) {
+      socket.emit("updateOptions", rooms[code].options);
+    }
+  });
+
   socket.on("updateInput", (data) => {
-    if (
-      rooms[data.roomCode].players.length <= 1 ||
-      socket.id != rooms[data.roomCode].players[0].id
-    ) {
+    if (socket.id != rooms[data.options.roomCode].players[0].id) {
       return;
     }
 
-    const player = rooms[data.roomCode].players.find(
+    rooms[data.options.roomCode].options = data.options;
+
+    if (rooms[data.options.roomCode].players.length <= 1) {
+      return;
+    }
+
+    // Finding second player in room (could also be ...players[0].id)
+    const player = rooms[data.options.roomCode].players.find(
       (player) => player.id != socket.id
     );
+
     io.to(player.id).emit("updateInput", data);
   });
 
   socket.on("updateSwitch", (data) => {
-    if (
-      rooms[data.roomCode].players.length <= 1 ||
-      socket.id != rooms[data.roomCode].players[0].id
-    ) {
+    if (socket.id != rooms[data.options.roomCode].players[0].id) {
       return;
     }
 
-    const player = rooms[data.roomCode].players.find(
+    rooms[data.options.roomCode].options = data.options;
+
+    if (rooms[data.options.roomCode].players.length <= 1) {
+      return;
+    }
+
+    const player = rooms[data.options.roomCode].players.find(
       (player) => player.id != socket.id
     );
     io.to(player.id).emit("updateSwitch", data);
@@ -551,6 +565,16 @@ io.on("connection", (socket) => {
       });
       io.to(gameCode).emit("userConnected", rooms[gameCode].players);
     } else {
+      // Remove room if room is empty
+      if (rooms[gameCode].players.length <= 0) {
+        rooms = _.omit(rooms, gameCode);
+        return;
+      }
+
+      // If the game is already finished then don't show any winners
+      if (rooms[gameCode].isFinished) {
+        return;
+      }
       for (const player of players) {
         // If user didn't provide one of maps it is added from started maps
         for (let i = 0; i < player.finishedMaps.length; i++) {
@@ -560,11 +584,6 @@ io.on("connection", (socket) => {
             player.moves[i] = {};
           }
         }
-      }
-
-      // If the game is already finished then don't show any winners
-      if (rooms[gameCode].isFinished) {
-        return;
       }
 
       rooms[gameCode].isFinished = true;
