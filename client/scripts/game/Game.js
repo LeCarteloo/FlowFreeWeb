@@ -13,16 +13,46 @@ class Game {
     // Getting the canvas and it context
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
+    // Setting the width and height of canvas
+    this.resize();
     this.isPlayable = isPlayable;
     this.draw = null;
+    this.lastPos;
 
     if (!isPlayable) {
       return;
     }
 
-    // Adding the event listeners for handling user events
-    this.canvas.addEventListener("mousedown", this.handleMouseDown.bind(this));
-    this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    // Adding the mouse event listeners for handling user events
+    if (matchMedia("(pointer:fine)").matches) {
+      console.log("YO");
+      this.canvas.addEventListener(
+        "mousedown",
+        this.handleMouseDown.bind(this)
+      );
+      this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    } else {
+      this.canvas.addEventListener(
+        "touchstart",
+        this.handleMouseDown.bind(this)
+      );
+      this.canvas.addEventListener("touchend", this.handleMouseUp.bind(this));
+    }
+
+    // Making canvas responsive
+    window.addEventListener("resize", () => {
+      this.resize();
+      this.isMapDrawn = false;
+      console.log(this.moves);
+      console.log(this.gameMap);
+      this.initialize(
+        this.gameMap,
+        this.numberOfColors,
+        this.mapSize,
+        this.moves,
+        this.solvedColors
+      );
+    });
 
     /* Bounding the handleMouseMove to a variable it will allow to 
         remove the listener after user no longer clicks left mouse button */
@@ -36,7 +66,8 @@ class Game {
     this.moves = moves;
     this.solvedColors = solvedColors;
 
-    if (this.isPlayable) {
+    if (this.isPlayable && Object.keys(moves).length === 0) {
+      console.log("YO");
       for (let i = 0; i < numberOfColors; i++) {
         this.moves[Object.keys(Colors)[i]] = {
           coords: [],
@@ -70,14 +101,40 @@ class Game {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  resize() {
+    if (window.matchMedia("(max-width: 720px)").matches) {
+      this.canvas.height = window.innerWidth * 0.8;
+      this.canvas.width = window.innerWidth * 0.8;
+    } else {
+      this.canvas.height = 700;
+      this.canvas.width = 700;
+    }
+  }
+
   handleMouseDown(event) {
     this.pressed = true;
-    var mouseX = Math.floor(
-      ((event.offsetX / this.tileW) * this.tileW) / this.tileH
-    );
-    var mouseY = Math.floor(
-      ((event.offsetY / this.tileW) * this.tileW) / this.tileH
-    );
+
+    let mouseX;
+    let mouseY;
+
+    if (matchMedia("(pointer:fine)").matches) {
+      mouseX = Math.floor(
+        ((event.offsetX / this.tileW) * this.tileW) / this.tileH
+      );
+      mouseY = Math.floor(
+        ((event.offsetY / this.tileW) * this.tileW) / this.tileH
+      );
+    } else {
+      const rect = this.canvas.getBoundingClientRect();
+      mouseX = Math.floor(
+        (((event.touches[0].clientX - rect.left) / this.tileW) * this.tileW) /
+          this.tileH
+      );
+      mouseY = Math.floor(
+        (((event.touches[0].clientY - rect.top) / this.tileW) * this.tileW) /
+          this.tileH
+      );
+    }
 
     if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
       this.moves[this.gameMap[mouseY][mouseX]].coords.push({
@@ -144,10 +201,10 @@ class Game {
 
     // console.log("Mouse pressed");
     // Drawing game when mouse is pressed
-    this.drawGame(event);
+    this.drawGame(mouseY, mouseX);
   }
 
-  drawGame(event) {
+  drawGame(mouseY, mouseX) {
     // Checking if canvas exists
     if (this.context == null) {
       return;
@@ -164,7 +221,7 @@ class Game {
       }
     }
 
-    if (!this.isMapDrawn && !this.isPlayable) {
+    if (!this.isMapDrawn) {
       for (const solvedColor of this.solvedColors) {
         const move = this.moves[solvedColor].coords;
         for (let i = 1; i < move.length; i++) {
@@ -179,12 +236,8 @@ class Game {
 
     // Coordsinates of a mouse when mouse is pressed
     // TODO: Code it diffrent (note)
-    var mouseX = Math.floor(
-      ((event.offsetX / this.tileW) * this.tileW) / this.tileH
-    );
-    var mouseY = Math.floor(
-      ((event.offsetY / this.tileW) * this.tileW) / this.tileH
-    );
+    var mouseX = mouseX;
+    var mouseY = mouseY;
 
     if (!this.pressed) {
       // If tile with point is pressed then 'IF' statement is executed
@@ -232,13 +285,17 @@ class Game {
                 If a value is upper case that tells that this is the point*/
         if (Utility.isPoint(this.gameMap[startPosition.Y][startPosition.X])) {
           this.selected = true;
-          this.drawGame(event);
+          this.drawGame(mouseY, mouseX);
         }
       } else {
         // Adding the mousemove event after pressing the button (For test purposes) // it should help to draw a pipe
         // TODO: make this function public and write it apart from MouseDown function
 
-        this.canvas.addEventListener("mousemove", this.boundMove);
+        if (matchMedia("(pointer:fine)").matches) {
+          this.canvas.addEventListener("mousemove", this.boundMove);
+        } else {
+          this.canvas.addEventListener("touchmove", this.boundMove);
+        }
         // this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
       }
     }
@@ -247,38 +304,75 @@ class Game {
   }
 
   handleMouseUp(event) {
+    console.log(this.moves);
+
     // Removing the onmousemove event when mouse button is unpressed
     this.canvas.removeEventListener("mousemove", this.boundMove);
-    // this.canvas.removeEventListener('mousemove', this.handleMouseMove);
+    this.canvas.removeEventListener("touchmove", this.boundMove);
 
     this.pressed = false;
 
-    // console.log("Mouse unpressed");
+    let mouseX;
+    let mouseY;
+
+    if (matchMedia("(pointer:fine)").matches) {
+      mouseX = Math.floor(
+        ((event.offsetX / this.tileW) * this.tileW) / this.tileH
+      );
+      mouseY = Math.floor(
+        ((event.offsetY / this.tileW) * this.tileW) / this.tileH
+      );
+    } else {
+      const rect = this.canvas.getBoundingClientRect();
+      mouseX = Math.floor(
+        (((this.lastPos.touches[0].clientX - rect.left) / this.tileW) *
+          this.tileW) /
+          this.tileH
+      );
+      mouseY = Math.floor(
+        (((this.lastPos.touches[0].clientY - rect.top) / this.tileW) *
+          this.tileW) /
+          this.tileH
+      );
+    }
 
     // Redrawing a game when button is unpressed (to remove unlinked pipes)
-    this.drawGame(event);
+    this.drawGame(mouseY, mouseX);
     // clearNotConntectedPipes(event.offsetX, event.offsetY);
   }
 
   handleMouseMove(event) {
-    // console.log(this.canvas);
-    // Canvas height and width are reduced by 3 to avoid moving on border of Map
-    if (
-      event.offsetX > 0 &&
-      event.offsetX <= this.canvas.width - 3 &&
-      event.offsetY > 0 &&
-      event.offsetY <= this.canvas.height - 3
-    ) {
-      // console.log(event.offsetY, this.tileH, this.tileW);
-      var mouseMoveX = Math.floor(
+    let mouseMoveX;
+    let mouseMoveY;
+
+    if (matchMedia("(pointer:fine)").matches) {
+      mouseMoveX = Math.floor(
         ((event.offsetX / this.tileW) * this.tileW) / this.tileH
       );
-      var mouseMoveY = Math.floor(
+      mouseMoveY = Math.floor(
         ((event.offsetY / this.tileW) * this.tileW) / this.tileH
       );
+    } else {
+      const rect = this.canvas.getBoundingClientRect();
+      mouseMoveX = Math.floor(
+        (((event.touches[0].clientX - rect.left) / this.tileW) * this.tileW) /
+          this.tileH
+      );
+      mouseMoveY = Math.floor(
+        (((event.touches[0].clientY - rect.top) / this.tileW) * this.tileW) /
+          this.tileH
+      );
+    }
 
-      //! Developer tool
-      // Debug.mouseOffset(event, debugMode);
+    // mouseMoveX >= 0 &&
+    // mouseMoveX < this.mapSize &&
+    // mouseMoveY >= 0 &&
+    // mouseMoveY < this.mapSize
+
+    // Canvas height and width are reduced by 3 to avoid moving on border of Map
+    if (true) {
+      console.log("YO");
+      this.lastPos = event;
       //  Drawing a lines
       if (this.gameMap[mouseMoveY][mouseMoveX] == "0") {
         // 'IF' does not allow diagonal moves

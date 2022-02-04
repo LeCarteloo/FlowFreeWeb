@@ -90,7 +90,7 @@
           Number of hints
           <input type="number" class="option" id="hints-amount" value="4" />
           Time limit
-          <input type="number" class="option" id="time-limit" value="1" />
+          <input type="number" class="option" id="time-limit" value="99" />
           Map size
           <input type="number" class="option" id="map-size" value="5" />
           Number of colors
@@ -115,12 +115,7 @@
           <span id="time-display">00:00</span>
           <span id="points-display">0 points</span>
         </div>
-        <canvas
-          id="game"
-          width="700"
-          height="700"
-          style="border: solid 2px #fff"
-        ></canvas>
+        <canvas id="game" style="border: solid 2px #fff"></canvas>
         <div class="game-buttons">
           <div class="hints-box">
             <button id="hints-btn" type="submit"><span>Use hint</span></button>

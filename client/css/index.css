@@ -212,7 +212,7 @@ input[type="number"] {
   user-select: none;
 }
 .game-buttons {
-  width: 100%;
+  width: 700px;
   margin-top: 5px;
   display: flex;
   flex-direction: row;
@@ -424,4 +424,18 @@ input:checked + .slider:before {
 }
 .reset-arrow {
   margin-right: 2%;
+}
+
+@media (max-width: 720px) {
+  .game-buttons {
+    width: 80%;
+  }
+  #change-btn,
+  #hints-btn {
+    width: 120px;
+    height: 35px;
+  }
+  #hints-display {
+    margin-top: 3px;
+  }
 }
