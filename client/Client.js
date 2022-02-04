@@ -493,7 +493,7 @@ function gameEnded(data) {
   console.log(winnerMoves);
   console.log(loserMoves);
 
-  winnerGame = new Game("winner-maps", false);
+  winnerGame = new Game("winner-maps", false, 2);
   winnerGame.initialize(
     winnerMaps[0],
     data.colors,
@@ -501,7 +501,7 @@ function gameEnded(data) {
     winnerMoves[0],
     winnerColors[0]
   );
-  loserGame = new Game("loser-maps", false);
+  loserGame = new Game("loser-maps", false, 2);
   loserGame.initialize(
     loserMaps[0],
     data.colors,

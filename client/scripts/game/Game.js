@@ -9,7 +9,7 @@ class Game {
   isMapDrawn = false;
   boundMove = null;
 
-  constructor(canvasId, isPlayable) {
+  constructor(canvasId, isPlayable, resizeType = 1) {
     // Getting the canvas and it context
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
@@ -18,6 +18,7 @@ class Game {
     this.isPlayable = isPlayable;
     this.draw = null;
     this.lastPos;
+    this.resizeType = resizeType;
 
     if (!isPlayable) {
       return;
@@ -43,8 +44,6 @@ class Game {
     window.addEventListener("resize", () => {
       this.resize();
       this.isMapDrawn = false;
-      console.log(this.moves);
-      console.log(this.gameMap);
       this.initialize(
         this.gameMap,
         this.numberOfColors,
@@ -67,7 +66,6 @@ class Game {
     this.solvedColors = solvedColors;
 
     if (this.isPlayable && Object.keys(moves).length === 0) {
-      console.log("YO");
       for (let i = 0; i < numberOfColors; i++) {
         this.moves[Object.keys(Colors)[i]] = {
           coords: [],
@@ -103,11 +101,21 @@ class Game {
 
   resize() {
     if (window.matchMedia("(max-width: 720px)").matches) {
-      this.canvas.height = window.innerWidth * 0.8;
-      this.canvas.width = window.innerWidth * 0.8;
+      if (this.resizeType == 1) {
+        this.canvas.height = window.innerWidth * 0.9;
+        this.canvas.width = window.innerWidth * 0.9;
+      } else {
+        this.canvas.height = window.innerWidth * 0.58;
+        this.canvas.width = window.innerWidth * 0.58;
+      }
     } else {
-      this.canvas.height = 700;
-      this.canvas.width = 700;
+      if (this.resizeType == 1) {
+        this.canvas.height = 700;
+        this.canvas.width = 700;
+      } else {
+        this.canvas.height = window.innerWidth * 0.3;
+        this.canvas.width = window.innerWidth * 0.3;
+      }
     }
   }
 
