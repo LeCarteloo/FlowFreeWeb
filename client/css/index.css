@@ -296,6 +296,7 @@ input:checked + .slider:before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: 0.5s;
 }
 .end-info {
   width: 100%;
@@ -410,6 +411,17 @@ canvas {
   transform: translateX(1500px);
 }
 
+#result,
+#winner-points,
+#loser-points {
+  display: flex;
+  justify-content: center;
+  font-size: 50px;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+
 .loser-info.move-middle {
   transform: translateX(-25vw);
 }
@@ -456,5 +468,10 @@ canvas {
   .loser-info.move-top,
   .winner-info.move-top {
     transform: translateX(0px);
+  }
+
+  #winner-points,
+  #loser-points {
+    font-size: 30px;
   }
 }

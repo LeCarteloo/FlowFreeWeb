@@ -388,7 +388,13 @@ function addChangeEvent(
       mapIndex = index;
     }
 
-    gameRef.initialize(map[index], 5, 5, moves[index], colors[index]);
+    gameRef.initialize(
+      map[index],
+      colorAmount.value,
+      map[0].length,
+      moves[index],
+      colors[index]
+    );
   });
 }
 
@@ -475,8 +481,6 @@ function gameEnded(data) {
     true
   );
 
-  console.log(data);
-
   const winner = document.getElementById("winner-name");
   const loser = document.getElementById("loser-name");
   winner.innerText = data.won.nickname;
@@ -489,9 +493,6 @@ function gameEnded(data) {
   loserMaps = data.lost.finishedMaps;
   loserColors = data.lost.solvedColors;
   loserMoves = data.lost.moves;
-
-  console.log(winnerMoves);
-  console.log(loserMoves);
 
   winnerGame = new Game("winner-maps", false, 2);
   winnerGame.initialize(
@@ -510,8 +511,6 @@ function gameEnded(data) {
     loserColors[0]
   );
 
-  console.log(winnerMaps.length);
-  console.log(winnerMaps);
   if (winnerMaps.length == 1) {
     winnerIncrease.style.display = "none";
     winnerReduce.style.display = "none";

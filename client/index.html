@@ -90,7 +90,7 @@
           Number of hints
           <input type="number" class="option" id="hints-amount" value="4" />
           Time limit
-          <input type="number" class="option" id="time-limit" value="99" />
+          <input type="number" class="option" id="time-limit" value="0.10" />
           Map size
           <input type="number" class="option" id="map-size" value="5" />
           Number of colors
@@ -179,6 +179,20 @@
     <script src="/scripts/game/enums/Positions.js"></script>
     <script src="/scripts/game/Draw.js"></script>
     <script src="/scripts/game/Game.js"></script>
+    <script>
+      // let map = [
+      //   ["R", "0", "G", "0", "O"],
+      //   ["0", "0", "B", "0", "Y"],
+      //   ["0", "0", "0", "0", "0"],
+      //   ["0", "G", "0", "O", "0"],
+      //   ["0", "R", "B", "Y", "0"],
+      // ];
+
+      // let game = new Game("winner-maps", false, 2);
+      // let game1 = new Game("loser-maps", false, 2);
+      // game.initialize(map, 5, 5);
+      // game1.initialize(map, 5, 5);
+    </script>
 
     <!-- Socket.io -->
     <script src="/socket.io/socket.io.js"></script>

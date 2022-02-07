@@ -20,6 +20,19 @@ class Game {
     this.lastPos;
     this.resizeType = resizeType;
 
+    // Making canvas responsive
+    window.addEventListener("resize", () => {
+      this.resize();
+      this.isMapDrawn = false;
+      this.initialize(
+        this.gameMap,
+        this.numberOfColors,
+        this.mapSize,
+        this.moves,
+        this.solvedColors
+      );
+    });
+
     if (!isPlayable) {
       return;
     }
@@ -39,19 +52,6 @@ class Game {
       );
       this.canvas.addEventListener("touchend", this.handleMouseUp.bind(this));
     }
-
-    // Making canvas responsive
-    window.addEventListener("resize", () => {
-      this.resize();
-      this.isMapDrawn = false;
-      this.initialize(
-        this.gameMap,
-        this.numberOfColors,
-        this.mapSize,
-        this.moves,
-        this.solvedColors
-      );
-    });
 
     /* Bounding the handleMouseMove to a variable it will allow to 
         remove the listener after user no longer clicks left mouse button */
@@ -251,8 +251,10 @@ class Game {
       // If tile with point is pressed then 'IF' statement is executed
       if (this.selected) {
         if (
-          (mouseY >= 0 || mouseY < this.mapSize) &&
-          (mouseX >= 0 || mouseX < this.mapSize)
+          mouseY >= 0 &&
+          mouseY < this.mapSize &&
+          mouseX >= 0 &&
+          mouseX < this.mapSize
         ) {
           if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
             this.moves[this.gameMap[mouseY][mouseX].toUpperCase()].coords.push({
@@ -312,8 +314,6 @@ class Game {
   }
 
   handleMouseUp(event) {
-    console.log(this.moves);
-
     // Removing the onmousemove event when mouse button is unpressed
     this.canvas.removeEventListener("mousemove", this.boundMove);
     this.canvas.removeEventListener("touchmove", this.boundMove);
@@ -373,13 +373,17 @@ class Game {
     }
 
     // mouseMoveX >= 0 &&
-    // mouseMoveX < this.mapSize &&
-    // mouseMoveY >= 0 &&
-    // mouseMoveY < this.mapSize
+    //   mouseMoveX < this.mapSize &&
+    //   mouseMoveY >= 0 &&
+    //   mouseMoveY < this.mapSize;
 
     // Canvas height and width are reduced by 3 to avoid moving on border of Map
-    if (true) {
-      console.log("YO");
+    if (
+      mouseMoveX >= 0 &&
+      mouseMoveX < this.mapSize &&
+      mouseMoveY >= 0 &&
+      mouseMoveY < this.mapSize
+    ) {
       this.lastPos = event;
       //  Drawing a lines
       if (this.gameMap[mouseMoveY][mouseMoveX] == "0") {
