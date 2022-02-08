@@ -254,6 +254,18 @@ button {
   transition: 0.4s;
 }
 
+@supports (backdrop-filter: blur(40px)) {
+  .options-tooltip {
+    backdrop-filter: blur(30px);
+  }
+}
+
+@supports not (backdrop-filter: blur(40px)) {
+  .options-tooltip {
+    background-color: #121212;
+  }
+}
+
 #btn-display:hover .options-tooltip,
 #btn-display:focus-within .options-tooltip {
   visibility: visible;

@@ -267,6 +267,7 @@ lobbyList.addEventListener("click", () => {
 function displayLobbies(rooms) {
   startScreen.style.display = "none";
   lobbySelector.style.display = "flex";
+  leaveRoom.style.display = "flex";
   document.querySelector(".lobbies-list").innerHTML = "";
   for (const id of Object.keys(rooms)) {
     createLobbyElem(
@@ -286,8 +287,8 @@ startGameBtn.addEventListener("click", () => {
     timeLimit: timeLimit.value,
     mapSize: mapSize.value,
     mapNumber: mapNumber.value,
-    canTouch: canTouch.checked,
     colorAmount: colorAmount.value,
+    canTouch: canTouch.checked,
     roomCode: clientRoom,
   };
   socket.emit("startGame", options);
@@ -632,6 +633,13 @@ function displayPoints(points) {
 function init() {
   startScreen.style.display = "none";
   lobbySelector.style.display = "none";
+  hintsAmount.disabled = false;
+  timeLimit.disabled = false;
+  mapSize.disabled = false;
+  mapNumber.disabled = false;
+  startGameBtn.disabled = false;
+  colorAmount.disabled = false;
+  canTouch.disabled = false;
   lobbyOptions.style.display = "flex";
 }
 
@@ -681,7 +689,7 @@ function handleHostGameStart(firstMap) {
   hintsDisplay.innerText = `Hints remaining: ${hintsAmount.value}`;
   //! colorAmount.value, mapSize.value <-- This should be from server not from client
   // Setting the canvas and drawing the map
-  gameObj = new Game("game", true);
+  gameObj = new Game("game", true, 1);
   gameObj.initialize(firstMap, colorAmount.value, mapSize.value);
   // Copying current game map
   startMap = JSON.parse(JSON.stringify(firstMap));

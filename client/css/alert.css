@@ -148,3 +148,9 @@
     /* background: linear-gradient(90deg, blue, green);
     background: green;
 } */
+
+@media (max-width: 720px) {
+  .progress-alert {
+    width: 70%;
+  }
+}

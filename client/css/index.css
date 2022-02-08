@@ -276,17 +276,32 @@ input:checked + .slider:before {
   position: absolute;
   top: 0;
   left: 0;
-  backdrop-filter: blur(0px);
   z-index: 999;
   display: none;
   align-items: center;
   flex-direction: column;
-  transition: backdrop-filter 2s;
 }
 .end-screen.move {
   display: flex;
-  backdrop-filter: blur(40px);
-  transition: backdrop-filter 2s;
+}
+@supports (backdrop-filter: blur(40px)) {
+  .end-screen {
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 2s;
+  }
+  .end-screen.move {
+    backdrop-filter: blur(40px);
+  }
+}
+
+@supports not (backdrop-filter: blur(40px)) {
+  .end-screen {
+    background-image: none;
+    transition: background-color 2s;
+  }
+  .end-screen.move {
+    background-color: #121212d2;
+  }
 }
 .winner-info,
 .loser-info {
@@ -438,6 +453,14 @@ canvas {
 @media (max-width: 720px) {
   .game-buttons {
     width: 80%;
+  }
+  #lobby-options {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .players {
+    width: 100%;
   }
   #change-btn,
   #hints-btn {

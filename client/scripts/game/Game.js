@@ -9,16 +9,16 @@ class Game {
   isMapDrawn = false;
   boundMove = null;
 
-  constructor(canvasId, isPlayable, resizeType = 1) {
+  constructor(canvasId, isPlayable, resizeType) {
     // Getting the canvas and it context
     this.canvas = document.getElementById(canvasId);
     this.context = this.canvas.getContext("2d");
     // Setting the width and height of canvas
+    this.resizeType = resizeType;
     this.resize();
     this.isPlayable = isPlayable;
     this.draw = null;
     this.lastPos;
-    this.resizeType = resizeType;
 
     // Making canvas responsive
     window.addEventListener("resize", () => {

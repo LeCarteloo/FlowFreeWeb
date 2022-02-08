@@ -1,5 +1,10 @@
 const express = require("express");
-const { makeid, validateData, validateNickname } = require("./Utility");
+const {
+  makeid,
+  validateData,
+  validateNickname,
+  validateOption,
+} = require("./Utility");
 const app = express();
 const port = 3000;
 const server = app.listen(port);
@@ -142,6 +147,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("startGame", (options) => {
+    // Validating given options
+    const values = Object.values(options);
+    for (let i = 0; i < values.length - 2; i++) {
+      if (!validateOption(values[i], socket)) {
+        return;
+      }
+    }
+
     if (options.mapNumber == 1) {
       io.to(options.roomCode).emit("hideButton");
     }
@@ -184,6 +197,9 @@ io.on("connection", (socket) => {
 
             // TODO: It should start only when maps are generated
             setTimeout(() => {
+              if (!rooms.hasOwnProperty(options.roomCode)) {
+                return;
+              }
               rooms[options.roomCode].isFinished = true;
               if (rooms[options.roomCode].players.length >= 2) {
                 const players = rooms[options.roomCode].players;
