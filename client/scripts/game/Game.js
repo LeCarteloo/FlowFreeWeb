@@ -39,7 +39,6 @@ class Game {
 
     // Adding the mouse event listeners for handling user events
     if (matchMedia("(pointer:fine)").matches) {
-      console.log("YO");
       this.canvas.addEventListener(
         "mousedown",
         this.handleMouseDown.bind(this)
@@ -78,6 +77,8 @@ class Game {
     this.tileW = this.canvas.width / this.mapSize;
     this.tileH = this.canvas.height / this.mapSize;
 
+    console.log(this.tileW, this.tileH, this.canvas.width, this.canvas.height);
+
     this.draw = new Draw(
       this.context,
       false,
@@ -110,8 +111,9 @@ class Game {
       }
     } else {
       if (this.resizeType == 1) {
-        this.canvas.height = 700;
-        this.canvas.width = 700;
+        const size = (window.innerWidth + window.innerHeight) / 4;
+        this.canvas.height = size;
+        this.canvas.width = size;
       } else {
         this.canvas.height = window.innerWidth * 0.3;
         this.canvas.width = window.innerWidth * 0.3;
@@ -143,6 +145,10 @@ class Game {
           this.tileH
       );
     }
+
+    console.log("EVENT", event.offsetX, event.offsetY);
+    console.log("TILE", mouseX, mouseY);
+    console.log("WIDTH", this.tileW, this.tileH);
 
     if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
       this.moves[this.gameMap[mouseY][mouseX]].coords.push({

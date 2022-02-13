@@ -21,7 +21,7 @@ class Draw {
           this.context.fillStyle = Colors[this.gameMap[y][x].toUpperCase()];
           this.context.fillRect(
             x * this.tileW,
-            y * this.tileW,
+            y * this.tileH,
             this.tileW,
             this.tileH
           );
@@ -38,7 +38,7 @@ class Draw {
         if (gameMap[y][x].toUpperCase() == point) {
           context.globalAlpha = 0.2;
           context.fillStyle = Colors[point];
-          context.fillRect(x * tileW, y * tileW, tileW, tileH);
+          context.fillRect(x * tileW, y * tileH, tileW, tileH);
           context.globalAlpha = 1.0;
         }
       }
@@ -50,11 +50,11 @@ class Draw {
     this.context.beginPath();
     this.context.moveTo(
       positionFrom.X * this.tileW + this.tileW / 2,
-      positionFrom.Y * this.tileW + this.tileW / 2
+      positionFrom.Y * this.tileH + this.tileH / 2
     ); // X, Y
     this.context.lineTo(
       positionTo.X * this.tileW + this.tileW / 2,
-      positionTo.Y * this.tileW + this.tileW / 2
+      positionTo.Y * this.tileH + this.tileH / 2
     );
 
     this.context.strokeStyle = color;

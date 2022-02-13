@@ -7,7 +7,9 @@ const {
 } = require("./Utility");
 const app = express();
 const port = 3000;
-const server = app.listen(port);
+const server = app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
 const io = require("socket.io")(server);
 const { performance, PerformanceObserver } = require("perf_hooks");
 const Points = require("./Points");

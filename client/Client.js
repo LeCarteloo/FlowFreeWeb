@@ -64,6 +64,7 @@ let clientRoom = 0;
 let gameObj = {};
 let startMap = [];
 let currentMap = [];
+let timerId = 0;
 
 let winnerMaps = [];
 let winnerIndex = 0;
@@ -340,6 +341,9 @@ canTouch.addEventListener("click", () => {
 
 leaveRoom.addEventListener("click", () => {
   leaveRoom.style.display = "none";
+  if (Object.keys(gameObj).length !== 0) {
+    gameObj.clear();
+  }
   handleLeaveRoom();
 });
 
@@ -473,6 +477,9 @@ function addKeyPressEvent(inputArray) {
 }
 
 function gameEnded(data) {
+  gameObj.clear();
+  clearInterval(timerId);
+
   endScreen.classList.add("move");
   animateEndScreen(
     "winner-points",
@@ -609,7 +616,25 @@ function hideButton() {
 }
 
 function startTimer(timeLimit) {
-  timer(timeLimit * 60, timeDisplay);
+  clearInterval(timerId);
+
+  let timer = timeLimit * 60;
+  let minutes;
+  let seconds;
+
+  timerId = setInterval(() => {
+    seconds = parseInt(timer % 60);
+    minutes = parseInt(timer / 60);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    timeDisplay.innerText = minutes + ":" + seconds;
+
+    if (--timer < 0) {
+      timer = timeLimit;
+    }
+  }, 1000);
 }
 
 function displayHint(hint) {
@@ -701,24 +726,4 @@ function changeMap(nextMap) {
   startMap = JSON.parse(JSON.stringify(nextMap.map));
   currentMap = nextMap.map;
   gameObj.initialize(nextMap.map, nextMap.colors, nextMap.size);
-}
-
-function timer(time, display) {
-  let timer = time;
-  let minutes;
-  let seconds;
-
-  setInterval(() => {
-    seconds = parseInt(timer % 60);
-    minutes = parseInt(timer / 60);
-
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-    display.innerText = minutes + ":" + seconds;
-
-    if (--timer < 0) {
-      timer = time;
-    }
-  }, 1000);
 }
