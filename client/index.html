@@ -32,7 +32,6 @@
             type="text"
             placeholder="Nickname"
             id="nickname"
-            value=""
             autocomplete="off"
             value=""
           />
@@ -93,10 +92,15 @@
           <input type="number" class="option" id="time-limit" value="1" />
           Map size
           <input type="number" class="option" id="map-size" value="5" />
+          <span class="map-size-info">*Recommended: 2 - 7</span>
           Number of colors
           <input type="number" class="option" id="color-amount" value="5" />
+          <span class="color-amount-info">
+            *Number of colors should be smaller than map size
+          </span>
           Map number
           <input type="number" class="option" id="map-number" value="2" />
+          <span class="map-number-info">*Recommended: 1 - 3</span>
           Pipes can touch
           <label class="switch">
             <input type="checkbox" id="can-touch" checked />
@@ -105,6 +109,9 @@
         </div>
         <br />
         <button type="submit" id="start-game"><span>START GAME</span></button>
+        <span class="start-game-info"
+          >*When pipes can touch map generation is faster</span
+        >
         <br />
       </div>
     </div>

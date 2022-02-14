@@ -698,6 +698,7 @@ function updateProgress(progress) {
 
 function showProgress() {
   progressAlert.classList.add("move");
+  updateProgress(5);
 }
 
 function hideProgress() {

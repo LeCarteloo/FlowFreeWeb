@@ -498,3 +498,37 @@ canvas {
     font-size: 30px;
   }
 }
+
+.map-size-info,
+.color-amount-info,
+.map-number-info,
+.can-touch-info {
+  height: 0px;
+  visibility: hidden;
+  transition: 0.1s;
+  text-align: center;
+}
+
+#map-size:focus + .map-size-info {
+  height: 30px;
+  visibility: visible;
+}
+
+#color-amount:focus + .color-amount-info {
+  height: 50px;
+  visibility: visible;
+}
+
+#map-number:focus + .map-number-info {
+  height: 30px;
+  visibility: visible;
+}
+
+#map-number:focus + .map-number-info {
+  height: 30px;
+  visibility: visible;
+}
+
+.start-game-info {
+  text-align: center;
+}
