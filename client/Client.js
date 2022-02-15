@@ -341,6 +341,7 @@ canTouch.addEventListener("click", () => {
 
 leaveRoom.addEventListener("click", () => {
   leaveRoom.style.display = "none";
+  pointsDisplay.innerText = "0 points";
   if (Object.keys(gameObj).length !== 0) {
     gameObj.clear();
   }
@@ -477,6 +478,8 @@ function addKeyPressEvent(inputArray) {
 }
 
 function gameEnded(data) {
+  changeMapBtn.style.display = "block";
+  pointsDisplay.innerText = "0 points";
   gameObj.clear();
   clearInterval(timerId);
 
@@ -669,6 +672,7 @@ function init() {
 }
 
 function handleLeaveRoom() {
+  changeMapBtn.style.display = "block";
   socket.emit("leaveRoom");
 }
 

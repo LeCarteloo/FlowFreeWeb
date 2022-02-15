@@ -524,11 +524,7 @@ canvas {
   visibility: visible;
 }
 
-#map-number:focus + .map-number-info {
-  height: 30px;
-  visibility: visible;
-}
-
 .start-game-info {
+  width: 200px;
   text-align: center;
 }
