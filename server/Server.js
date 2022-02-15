@@ -32,6 +32,11 @@ Array.prototype.indexOfArray = function (array) {
 
 // Event for whenever a connection is established between the server and a client
 io.on("connection", (socket) => {
+  socket.emit("displayAlert", {
+    type: "success",
+    text: "Lobby has been created!",
+  });
+
   socket.on("setNickname", (nickname) => {
     socket.nickname = nickname;
   });
