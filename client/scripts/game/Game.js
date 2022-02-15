@@ -77,8 +77,6 @@ class Game {
     this.tileW = this.canvas.width / this.mapSize;
     this.tileH = this.canvas.height / this.mapSize;
 
-    console.log(this.tileW, this.tileH, this.canvas.width, this.canvas.height);
-
     this.draw = new Draw(
       this.context,
       false,
@@ -146,11 +144,7 @@ class Game {
       );
     }
 
-    console.log("EVENT", event.offsetX, event.offsetY);
-    console.log("TILE", mouseX, mouseY);
-    console.log("WIDTH", this.tileW, this.tileH);
-
-    if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
+    if (Utility.isPoint(this.gameMap[mouseY][mouseX]) && mouseY && mouseX) {
       this.moves[this.gameMap[mouseY][mouseX]].coords.push({
         Y: mouseY,
         X: mouseX,

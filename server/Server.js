@@ -32,8 +32,6 @@ Array.prototype.indexOfArray = function (array) {
 
 // Event for whenever a connection is established between the server and a client
 io.on("connection", (socket) => {
-  console.log("DAMN");
-
   socket.on("setNickname", (nickname) => {
     socket.nickname = nickname;
   });
