@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 
 // Main views
 const startScreen = document.getElementById("start-screen");
