@@ -163,6 +163,7 @@ io.on("connection", (socket) => {
 
     // Showing to all users progress bar
     io.to(options.roomCode).emit("showProgress");
+    socket.emit("disableInputs");
 
     // Running task on diffrent thread (too not block main one)
     function runGenerateWorker(workerData) {

@@ -110,6 +110,18 @@ socket.on("updateSwitch", updateSwitch);
 socket.on("gameEnded", gameEnded);
 socket.on("displayResult", displayResult);
 socket.on("resetUi", resetUi);
+socket.on("disableInputs", disableInputs);
+
+function disableInputs() {
+  hintsAmount.disabled = true;
+  timeLimit.disabled = true;
+  mapSize.disabled = true;
+  mapNumber.disabled = true;
+  startGameBtn.disabled = true;
+  colorAmount.disabled = true;
+  canTouch.disabled = true;
+  startGameBtn.disabled = true;
+}
 
 createRoom.addEventListener("click", () => {
   startGameBtn.style.display = "block";
@@ -246,7 +258,8 @@ function joinLobby(code) {
   colorAmount.disabled = true;
   canTouch.disabled = true;
   startGameBtn.style.display = "none";
-  socket.emit("getOptions", code.value);
+  console.log(colorAmount.disabled);
+  socket.emit("getOptions", code);
   socket.emit("joinRoom", code);
 }
 
@@ -340,6 +353,14 @@ canTouch.addEventListener("click", () => {
 });
 
 leaveRoom.addEventListener("click", () => {
+  startGameBtn.disabled = false;
+  hintsAmount.disabled = false;
+  timeLimit.disabled = false;
+  mapSize.disabled = false;
+  mapNumber.disabled = false;
+  startGameBtn.disabled = false;
+  colorAmount.disabled = false;
+  canTouch.disabled = false;
   leaveRoom.style.display = "none";
   pointsDisplay.innerText = "0 points";
   if (Object.keys(gameObj).length !== 0) {
@@ -478,6 +499,14 @@ function addKeyPressEvent(inputArray) {
 }
 
 function gameEnded(data) {
+  startGameBtn.disabled = false;
+  hintsAmount.disabled = false;
+  timeLimit.disabled = false;
+  mapSize.disabled = false;
+  mapNumber.disabled = false;
+  startGameBtn.disabled = false;
+  colorAmount.disabled = false;
+  canTouch.disabled = false;
   changeMapBtn.style.display = "block";
   pointsDisplay.innerText = "0 points";
   gameObj.clear();
@@ -661,13 +690,6 @@ function displayPoints(points) {
 function init() {
   startScreen.style.display = "none";
   lobbySelector.style.display = "none";
-  hintsAmount.disabled = false;
-  timeLimit.disabled = false;
-  mapSize.disabled = false;
-  mapNumber.disabled = false;
-  startGameBtn.disabled = false;
-  colorAmount.disabled = false;
-  canTouch.disabled = false;
   lobbyOptions.style.display = "flex";
 }
 
