@@ -125,6 +125,14 @@ function disableInputs() {
 }
 
 createRoom.addEventListener("click", () => {
+  hintsAmount.disabled = false;
+  timeLimit.disabled = false;
+  mapSize.disabled = false;
+  mapNumber.disabled = false;
+  startGameBtn.disabled = false;
+  colorAmount.disabled = false;
+  canTouch.disabled = false;
+  startGameBtn.disabled = false;
   startGameBtn.style.display = "block";
   socket.emit("setNickname", nickname.value);
   socket.emit("createRoom");
