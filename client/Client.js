@@ -690,13 +690,6 @@ function displayPoints(points) {
 function init() {
   startScreen.style.display = "none";
   lobbySelector.style.display = "none";
-  hintsAmount.disabled = false;
-  timeLimit.disabled = false;
-  mapSize.disabled = false;
-  mapNumber.disabled = false;
-  startGameBtn.disabled = false;
-  colorAmount.disabled = false;
-  canTouch.disabled = false;
   lobbyOptions.style.display = "flex";
 }
 
