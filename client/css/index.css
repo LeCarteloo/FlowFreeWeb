@@ -129,8 +129,6 @@ button {
   background-color: #121212;
 }
 .lobby-group {
-  height: 100%;
-  width: 25%;
   display: flex;
   justify-content: center;
   align-items: center;
