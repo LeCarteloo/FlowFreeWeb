@@ -144,7 +144,7 @@ class Game {
       );
     }
 
-    if (Utility.isPoint(this.gameMap[mouseY][mouseX])) {
+    if (Utility.isPoint(this.gameMap[mouseY][mouseX]) && mouseY && mouseX) {
       this.moves[this.gameMap[mouseY][mouseX]].coords.push({
         Y: mouseY,
         X: mouseX,
@@ -506,6 +506,12 @@ class Game {
           currentPosition,
           endPosition
         );
+
+        this.moves[this.gameMap[mouseY][mouseX]].coords.push({
+          Y: mouseY,
+          X: mouseX,
+        });
+
         // Drawing the after glow of every pipe and point with that color
         this.draw.drawAfterGlow(this.gameMap[startPosition.Y][startPosition.X]);
         this.solvedColors.push(this.gameMap[startPosition.Y][startPosition.X]);

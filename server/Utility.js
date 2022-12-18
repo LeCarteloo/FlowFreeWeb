@@ -79,7 +79,7 @@ function validateOption(value, socket) {
   } else if (!regex.test(value)) {
     socket.emit("displayAlert", {
       type: "error",
-      text: "Options can be numbers only!",
+      text: "Options can be integers only!",
     });
     return false;
   }

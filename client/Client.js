@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3000");
+const socket = io();
 
 // Main views
 const startScreen = document.getElementById("start-screen");
@@ -123,7 +123,28 @@ function disableInputs() {
   startGameBtn.disabled = true;
 }
 
+socket.on("disableInputs", disableInputs);
+
+function disableInputs() {
+  hintsAmount.disabled = true;
+  timeLimit.disabled = true;
+  mapSize.disabled = true;
+  mapNumber.disabled = true;
+  startGameBtn.disabled = true;
+  colorAmount.disabled = true;
+  canTouch.disabled = true;
+  startGameBtn.disabled = true;
+}
+
 createRoom.addEventListener("click", () => {
+  hintsAmount.disabled = false;
+  timeLimit.disabled = false;
+  mapSize.disabled = false;
+  mapNumber.disabled = false;
+  startGameBtn.disabled = false;
+  colorAmount.disabled = false;
+  canTouch.disabled = false;
+  startGameBtn.disabled = false;
   startGameBtn.style.display = "block";
   socket.emit("setNickname", nickname.value);
   socket.emit("createRoom");
@@ -258,7 +279,6 @@ function joinLobby(code) {
   colorAmount.disabled = true;
   canTouch.disabled = true;
   startGameBtn.style.display = "none";
-  console.log(colorAmount.disabled);
   socket.emit("getOptions", code);
   socket.emit("joinRoom", code);
 }
