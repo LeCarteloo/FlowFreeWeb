@@ -110,6 +110,18 @@ socket.on("updateSwitch", updateSwitch);
 socket.on("gameEnded", gameEnded);
 socket.on("displayResult", displayResult);
 socket.on("resetUi", resetUi);
+socket.on("disableInputs", disableInputs);
+
+function disableInputs() {
+  hintsAmount.disabled = true;
+  timeLimit.disabled = true;
+  mapSize.disabled = true;
+  mapNumber.disabled = true;
+  startGameBtn.disabled = true;
+  colorAmount.disabled = true;
+  canTouch.disabled = true;
+  startGameBtn.disabled = true;
+}
 
 socket.on("disableInputs", disableInputs);
 
