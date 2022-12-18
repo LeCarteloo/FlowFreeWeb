@@ -11,7 +11,7 @@
   <p align="center">
     Flow Free game with AI algorithm to solve and generate maps with multiplayer version.
     <br />
-    <a href="https://flow-free-multiplayer.herokuapp.com/">Live Project</a>
+    <a href="https://flowfreeweb.up.railway.app/">Live Project</a>
     ·
     <a href="https://filippapiernik.pl/projects/FlowFreeWeb">Page about project</a>
   </p>
