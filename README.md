@@ -149,4 +149,4 @@ Helpful resources that helped in building this app.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[app-screenshot]: https://i.imgur.com/hyhdSoG.png
+[app-screenshot]: https://i.imgur.com/lBQdxLr.png
